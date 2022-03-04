@@ -1,0 +1,12 @@
+/target
+.idea/
+*.iml
+*~
+*#
+*.txt
+
+
+WinProject/target
+WinProject/.idea/
+WinProject/src/z_*.rs
+WinProject/Cargo.lock
