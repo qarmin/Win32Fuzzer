@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "Win32Fuzzer"
+name = "win32_fuzzer"
 version = "0.1.0"
