@@ -4,7 +4,8 @@
 *~
 *#
 *.txt
-
+*.data
+*.zst
 
 WinProject/target
 WinProject/.idea/
