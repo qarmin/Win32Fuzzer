@@ -1,5 +1,5 @@
 use crate::FileData;
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
@@ -176,12 +176,53 @@ use windows::Win32::UI::WindowsAndMessaging::*;
 use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
 use crate::more_bad_data::*;
+use rand::prelude::*;
+"###;
 
-pub fn z_<<<function_name>>>()  {
-    unsafe {
+    // <<functions>>
+    // <<number_of_functions>>
+    // <<class>>
+    let base_function = r###"""
+pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
+    let functions: [(fn(&mut File) -> (), &str, &str); <<number_of_functions>>] = [<<functions>>]; // function, function_name_in_rust, function_name 
+
+    println!("////////// Class <<class>>");
+
+    let mut functions_to_check: Vec<(fn(&mut File, &SettingsTaker) -> (), &str, &str)> = Vec::new();    
+    if !st.allowed_functions.is_empty() {
+        functions
+            .into_iter()
+            .filter(|e| st.allowed_functions.contains(&e.2.to_string()))
+            .for_each(|e| functions_to_check.push(e));
+    } else {
+        functions
+            .into_iter()
+            .filter(|e| !st.ignored_functions.contains(&e.2.to_string()))
+            .for_each(|e| functions_to_check.push(e));
+    }
+     
+    let number_of_function = if st.number_of_max_executed_function >= 0 {
+        st.number_of_max_executed_function as usize
+    } else {
+        functions_to_check.len() * st.repeating_number as usize
+    };
+    
+    // Random by default
+    for _i in 0..number_of_function {
+        // Missing some random functions
+        if rand::random::<bool>() {
+            let function = functions_to_check.choose(&mut rand::thread_rng()).unwrap().0;
+            function(file);
+        }
+    }    
+}
     "###;
-    let footer = r###"    }
-}"###;
+
+    // <<<function_name>>>
+    let single_function = r###"
+    pub fn a_<<_<<<function_name>>>()  {
+
+        "###;
 
     let file_name = format!("WinProject/src/z_{}.rs", file_path.to_lowercase());
 
@@ -191,6 +232,9 @@ pub fn z_<<<function_name>>>()  {
     let mut file = BufWriter::new(file);
 
     writeln!(file, "{}", header.replace("<<<function_name>>>", &file_path.to_lowercase())).unwrap();
+
+    let mut function_list: String = Default::default();
+    let mut number_of_functions = 0;
 
     for (function_name, arguments) in &file_data.functions {
         // Check if function is supported
@@ -238,6 +282,7 @@ pub fn z_<<<function_name>>>()  {
         let mut execute_arguments = "".to_string();
         let mut creation_of_arguments = "".to_string();
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
+            function_list += &format!("(a_{},\"{}\",\"{}\"),", file_path.to_lowercase(), file_path, function_name);
             if additional_arguments.argument_before.contains("mut") {
                 creation_of_arguments += &format!("\t\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
                 creation_of_arguments += &format!("\t\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
@@ -250,6 +295,9 @@ pub fn z_<<<function_name>>>()  {
                 execute_arguments += ",";
             }
         }
+        function_list.pop();
+        number_of_functions += 1;
+
         writeln!(
             file,
             "\t\tprintln!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
@@ -259,7 +307,18 @@ pub fn z_<<<function_name>>>()  {
         write!(file, "{}", creation_of_arguments).unwrap();
         writeln!(file, "\t\t{}({});\n", function_name, execute_arguments).unwrap();
     }
-    writeln!(file, "{}", footer).unwrap();
+
+    write!(
+        file,
+        "{}",
+        base_function
+            .replace("<<functions>>", &function_list)
+            .replace("<<number_of_functions>>", &number_of_functions.to_string())
+            .replace("<<class>>", file_path),
+    )
+    .unwrap();
+
+    // writeln!(file, "{}", footer).unwrap();
 }
 pub fn add_to_ignore_arguments(btreemap: &mut BTreeMap<String, u32>, key: &str) {
     if btreemap.contains_key(key) {
