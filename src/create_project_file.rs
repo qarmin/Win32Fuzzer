@@ -160,7 +160,18 @@ use windows::Win32::Graphics::DirectComposition::*;
 use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Storage::Compression::*;
 use windows::Win32::Security::Cryptography::Catalog::*;
-
+use windows::Win32::Security::AppLocker::*;
+use windows::Win32::Security::Cryptography::*;
+use windows::Win32::Security::DiagnosticDataQuery::*;
+use windows::Win32::UI::Xaml::Diagnostics::*;
+use windows::Win32::Graphics::Imaging::*;
+use windows::Win32::Security::Cryptography::Sip::*;
+use windows::Win32::UI::Input::Touch::*;
+use windows::Win32::Storage::Xps::*;
+use windows::Win32::Security::Cryptography::Certificates::*;
+use windows::Win32::UI::InteractionContext::*;
+use windows::Win32::Storage::FileHistory::*;
+use windows::Win32::UI::WindowsAndMessaging::*;
 
 use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
@@ -241,7 +252,7 @@ pub fn z_<<<function_name>>>()  {
         }
         writeln!(
             file,
-            "println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
+            "\t\tprintln!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
             function_name, file_path
         )
         .unwrap();

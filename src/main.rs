@@ -32,6 +32,7 @@ fn main() {
         ("string", "take_string"),
         // More advanced
         ("AsnObjectIdentifier", "get_strange_AsnObjectIdentifier"),
+        ("super::Foundation::BOOL", "get_strange_BOOL"),
         ("super::super::super::Foundation::BOOL", "get_strange_BOOL"),
         ("super::super::Foundation::BOOL", "get_strange_BOOL"),
         ("super::super::Foundation::BOOLEAN", "get_strange_BOOLEAN"),
@@ -46,6 +47,7 @@ fn main() {
         ("super::super::super::Foundation::HANDLE", "get_strange_HANDLE"),
         ("super::super::Graphics::Gdi::HBITMAP", "get_strange_HBITMAP"),
         ("super::Gdi::HDC", "get_strange_HDC"),
+        ("HDC", "get_strange_HDC"),
         ("super::super::Graphics::Gdi::HDC", "get_strange_HDC"),
         ("super::HDIAGNOSTIC_DATA_QUERY_SESSION", "get_strange_HDIAGNOSTIC_DATA_QUERY_SESSION"),
         ("HIMAGELIST", "get_strange_HIMAGELIST"),
@@ -54,6 +56,7 @@ fn main() {
         ("super::super::Foundation::HINSTANCE", "get_strange_HINSTANCE"),
         ("super::super::super::Foundation::HINSTANCE", "get_strange_HINSTANCE"),
         ("super::super::System::Registry::HKEY", "get_strange_HKEY"),
+        ("super::Registry::HKEY", "get_strange_HKEY"),
         ("HKEY", "get_strange_HKEY"),
         ("super::super::TextServices::HKL", "get_strange_HKL"),
         ("HMENU", "get_strange_HMENU"),
@@ -82,6 +85,42 @@ fn main() {
         ("super::super::super::Foundation::WPARAM", "get_strange_WPARAM"),
         ("super::super::Foundation::WPARAM", "get_strange_WPARAM"),
         ("ldap", "get_strange_ldap"),
+        ("super::Com::VARIANT", "get_strange_VARIANT"),
+        ("super::super::System::Com::VARIANT", "get_strange_VARIANT"),
+        ("super::super::super::System::Com::VARIANT", "get_strange_VARIANT"),
+        (
+            "super::super::System::Threading::LPTHREAD_START_ROUTINE",
+            "get_strange_LPTHREAD_START_ROUTINE",
+        ),
+        (
+            "super::super::System::WindowsProgramming::FH_SERVICE_PIPE_HANDLE",
+            "get_strange_FH_SERVICE_PIPE_HANDLE",
+        ),
+        ("WINDOW_LONG_PTR_INDEX", "get_strange_WINDOW_LONG_PTR_INDEX"),
+        ("super::super::Foundation::POINT", "get_strange_POINT"),
+        ("HWAVEOUT", "get_strange_HWAVEOUT"),
+        ("HACMDRIVER", "get_strange_HACMDRIVER"),
+        ("SP_DEVINFO_DATA", "get_strange_SP_DEVINFO_DATA"),
+        ("super::super::Foundation::DECIMAL", "get_strange_DECIMAL"),
+        ("super::Com::CY", "get_strange_CY"),
+        ("HINTERACTIONCONTEXT", "get_strange_HINTERACTIONCONTEXT"),
+        ("super::StructuredStorage::JET_INSTANCE", "get_strange_JET_INSTANCE"),
+        ("super::super::Security::SC_HANDLE", "get_strange_SC_HANDLE"),
+        ("HUIAPATTERNOBJECT", "get_strange_HUIAPATTERNOBJECT"),
+        ("SETUP_FILE_OPERATION", "get_strange_SETUP_FILE_OPERATION"),
+        ("super::super::Foundation::SIZE", "get_strange_SIZE"),
+        (
+            "super::super::super::System::Com::StructuredStorage::PROPVARIANT",
+            "get_strange_PROPVARIANT",
+        ),
+        ("SURFOBJ", "get_strange_SURFOBJ"),
+        ("VARSTRING", "get_strange_VARSTRING"),
+        ("REG_SAM_FLAGS", "get_strange_REG_SAM_FLAGS"),
+        ("super::super::Graphics::Gdi::HMONITOR", "get_strange_HMONITOR"),
+        ("ACL", "get_strange_ACL"),
+        ("PERF_DETAIL", "get_strange_PERF_DETAIL"),
+        ("super::WindowsAndMessaging::POINTER_INPUT_TYPE", "get_strange_POINTER_INPUT_TYPE"),
+        ("MrmPlatformVersion", "get_strange_MrmPlatformVersion"),
     ];
 
     let mut create_renames: HashMap<&str, &str> = HashMap::new();
@@ -103,6 +142,9 @@ fn main() {
         }
     }
 
+    let mut number_of_classes = 0;
+    let mut number_of_functions = 0;
+    let mut number_of_arguments = 0;
     for (class_name, path, exceptions) in things {
         if DISABLED_CLASSES.contains(&class_name) {
             continue;
@@ -110,8 +152,20 @@ fn main() {
         let exceptions: HashSet<_> = exceptions.iter().map(|e| e.to_string()).collect();
         let mut file_data = FileData::new();
         parse_file(&mut file_data, &path);
+        {
+            number_of_classes += 1;
+            number_of_functions += file_data.functions.len();
+            for (_name, arguments) in &file_data.functions {
+                number_of_arguments += arguments.len();
+            }
+        }
         create_project_file(&file_data, class_name, &create_renames, &exceptions, &mut ignored_arguments);
     }
+
+    println!(
+        "Classes: \"{}\", Functions: \"{}\", Arguments: \"{}\"",
+        number_of_classes, number_of_functions, number_of_arguments
+    );
 
     {
         let mut new_btreemap: BTreeMap<u32, String> = Default::default();
