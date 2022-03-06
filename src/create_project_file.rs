@@ -181,14 +181,15 @@ use rand::prelude::*;
 
     // <<functions>>
     // <<number_of_functions>>
+    // <<class_lowercase>>
     // <<class>>
-    let base_function = r###"""
-pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
+    let base_function = r###"
+pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
     let functions: [(fn(&mut File) -> (), &str, &str); <<number_of_functions>>] = [<<functions>>]; // function, function_name_in_rust, function_name 
 
     println!("////////// Class <<class>>");
 
-    let mut functions_to_check: Vec<(fn(&mut File, &SettingsTaker) -> (), &str, &str)> = Vec::new();    
+    let mut functions_to_check: Vec<(fn(&mut File, &SettingsTaker) -> (), &str)> = Vec::new();
     if !st.allowed_functions.is_empty() {
         functions
             .into_iter()
@@ -218,11 +219,15 @@ pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
 }
     "###;
 
-    // <<<function_name>>>
+    // <<function_name>>
+    // <<println>> - println which prints info about currently executed function
+    // <<arguments>> - creating arguments
+    // <<execution_code>> - Executing function
     let single_function = r###"
-    pub fn a_<<_<<<function_name>>>()  {
-
-        "###;
+pub fn a_<<function_name>>()  {
+	<<println>>
+<<arguments>>
+	<<execution_code>>}"###;
 
     let file_name = format!("WinProject/src/z_{}.rs", file_path.to_lowercase());
 
@@ -235,6 +240,7 @@ pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
 
     let mut function_list: String = Default::default();
     let mut number_of_functions = 0;
+    let mut each_function_body : Vec<String> = Vec::new();
 
     for (function_name, arguments) in &file_data.functions {
         // Check if function is supported
@@ -282,12 +288,12 @@ pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
         let mut execute_arguments = "".to_string();
         let mut creation_of_arguments = "".to_string();
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
-            function_list += &format!("(a_{},\"{}\",\"{}\"),", file_path.to_lowercase(), file_path, function_name);
+            function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
             if additional_arguments.argument_before.contains("mut") {
-                creation_of_arguments += &format!("\t\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
-                creation_of_arguments += &format!("\t\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!("\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
             } else {
-                creation_of_arguments += &format!("\t\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
             }
 
             execute_arguments += &format!("argument_{}.0", index);
@@ -295,25 +301,31 @@ pub fn z_<<function_name>>(file: &mut File, st: &SettingsTaker) {
                 execute_arguments += ",";
             }
         }
-        function_list.pop();
         number_of_functions += 1;
-
-        writeln!(
-            file,
-            "\t\tprintln!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
-            function_name, file_path
-        )
-        .unwrap();
-        write!(file, "{}", creation_of_arguments).unwrap();
-        writeln!(file, "\t\t{}({});\n", function_name, execute_arguments).unwrap();
+        
+        
+        let print = format!("println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",function_name, file_path);
+        let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
+        
+    
+        each_function_body.push(single_function.replace("<<function_name>>",&function_name)
+        .replace("<<println>>",&print)
+        .replace("<<arguments>>",&creation_of_arguments)
+        .replace("<<execution_code>>",&executed_arguments)
+        );
+    }
+    for i in each_function_body{
+    	writeln!(file, "{}", i).unwrap();
     }
 
+    function_list.pop(); // Remove latest ,
     write!(
         file,
         "{}",
         base_function
             .replace("<<functions>>", &function_list)
             .replace("<<number_of_functions>>", &number_of_functions.to_string())
+            .replace("<<class_lowercase>>", &file_path.to_lowercase())
             .replace("<<class>>", file_path),
     )
     .unwrap();
