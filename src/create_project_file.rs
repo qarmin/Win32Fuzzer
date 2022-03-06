@@ -195,14 +195,14 @@ pub fn z_<<<function_name>>>()  {
             let mut add_arg = ArgumentAdditional::new();
             add_arg.original_argument = arg.clone();
 
-            if let Some(right_space) = arg.rfind(" ") {
+            if let Some(right_space) = arg.rfind(' ') {
                 add_arg.argument_before = arg[..right_space].to_string();
                 add_arg.argument_type = arg[right_space + 1..].to_string();
             } else {
                 add_arg.argument_type = arg.clone();
             }
 
-            if arg.contains("*const") || arg.contains("ffi::c_void") {
+            if arg.contains("*const") || arg.contains("ffi::c_void") || arg.contains("*mut *mut ") {
                 // println!("Not supported '''{}'''", arg); // Maybe TODO
                 // add_to_ignore_arguments(ignored_arguments, arg); // TODO Renable this later
                 is_supported = false;
@@ -239,16 +239,22 @@ pub fn z_<<<function_name>>>()  {
                 execute_arguments += ",";
             }
         }
+        writeln!(
+            file,
+            "println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
+            function_name, file_path
+        )
+        .unwrap();
         write!(file, "{}", creation_of_arguments).unwrap();
         writeln!(file, "\t\t{}({});\n", function_name, execute_arguments).unwrap();
     }
     writeln!(file, "{}", footer).unwrap();
 }
-pub fn add_to_ignore_arguments(btreemap: &mut BTreeMap<String, u32>, key: &String) {
+pub fn add_to_ignore_arguments(btreemap: &mut BTreeMap<String, u32>, key: &str) {
     if btreemap.contains_key(key) {
         *btreemap.get_mut(key).unwrap() += 1;
     } else {
-        btreemap.insert(key.clone(), 1);
+        btreemap.insert(key.to_string(), 1);
     }
 }
 

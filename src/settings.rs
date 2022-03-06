@@ -2,7 +2,57 @@ use std::collections::BTreeMap;
 
 pub const WINDOWS_RS_FOLDER: &str = "/home/rafal/test/windows-rs/";
 pub const DISABLED_CLASSES: &[&str] = &[
-    "Gaming", // To run require(at least) api-ms-win-gaming-expandedresources-l1-1-0.dll
+    "Gaming",                              // api-ms-win-gaming-expandedresources-l1-1-0.dll
+    "P2P",                                 // p2p.dll
+    "BiometricFramework",                  // winbio.dll
+    "DeploymentServices",                  // wdstptc.dll
+    "FileSystem",                          // clfsw32.dll, txfw32.dll, wofutil.dll
+    "CloudFilters",                        // cldapi.dll
+    "Identity",                            // tokenbinding.dll
+    "WindowsConnectionManager",            // ondemandconnroutehelper.dll
+    "WindowsProgramming",                  // wldp.dll, api-ms-win-core-realtime-l1-1-2.dll, api-ms-win-core-apiquery-l2-1-0.dll
+    "ActiveDirectory",                     // dsparse.dll, dsprop.dll
+    "AllJoyn",                             // msajapi.dll
+    "ApplicationInstallationAndServicing", // mspatchc.dll
+    "Communication",                       // api-ms-win-core-comm-l1-1-1.dll, api-ms-win-core-comm-l1-1-2.dll
+    "EnterpriseData",                      // srpapi.dll, efswrt.dll
+    "EventCollector",                      // wecapi.dll
+    "ExtensibleAuthenticationProtocol",    // eappprxy.dll, eappcfg.dll
+    "Fax",                                 // fxsutility.dll, winfax.dll
+    "Globalization",                       // bcp47mrm.dll, icu.dll
+    "GroupPolicy",                         // gpedit.dll
+    "HostComputeNetwork",                  // computenetwork.dll
+    "HostComputeSystem",                   // computecore.dll, computestorage.dll
+    "Hypervisor",                          // vmsavedstatedumpprovider.dll
+    "Clustering",                          // ntlanman.dll
+    "ColorSystem",                         // icm32.dll
+    "Cryptography",                        // infocardapi.dll
+    "DeveloperLicensing",                  // wsclient.dll
+    "Dhcp",                                // dhcpsapi.dll
+    "Js",                                  // chakra.dll
+    "Magnification",                       // magnification.dll
+    "Memory",                              // api-ms-win-core-memory-l1-1-8.dll
+    "MobileDeviceManagementRegistration",  // mdmlocalmanagement.dll, mdmregistration.dll
+    "MsHtml",                              // imgutil.dll, msrating.dll
+    "NetShell",                            // netsh.dll
+    "OfflineFiles",                        // cscapi.dll
+    "ProjectedFileSystem",                 // projectedfslib.dll
+    "Rpc",                                 // rpcns4.dll
+    "Rras",                                // rtm.dll
+    "SecurityCenter",                      // wscapi.dll
+    "Sensors",                             // sensorsutilsv2.dll
+    "SqlLite",                             // winsqlite3.dll
+    "SubsystemForLinux",                   //api-ms-win-wsl-api-l1-1-0.dll
+    "SystemInformation",                   // api-ms-win-core-sysinfo-l1-2-4.dll, api-ms-win-core-sysinfo-l1-2-3.dll
+    "UserAccessLogging",                   // ualapi.dll
+    "WNet",                                //ntlanman.dll
+    "WinSock",                             // windows.networking
+    "WindowsFirewall",                     // api-ms-win-net-isolation-l1-1-0.dll
+    "WindowsNetworkVirtualization",        // wnvapi.dll
+    "WindowsWebServices",                  // webauthn.dll
+    "XboxController",                      // xinputuap.dll
+    "IscsiDisc",                           // iscsidsc.dll
+                                           /////////////////////////
 ];
 
 // List of classes which are handled manually(because have already set exception list)
@@ -77,384 +127,441 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "GdiGetPageHandle",                           // Not implemented
                 "GetPrinterDriverPackagePathA",               // Not implemented
                 "GetSpoolFileHandle",                         // Not implemented
+                "GetPrintOutputInfo",                         //
+                "GetPrinterDriver2A",                         //
+                "GetPrinterDriver2W",                         //
+                "GetPrinterDriverPackagePathW",               //
+                "SplIsSessionZero",                           //
+                "CorePrinterDriverInstalledW",                //
+                "CorePrinterDriverInstalledA",                //
             ],
         ),
-        // (
-        //     "Dwm",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dwm/mod.rs"),
-        //     vec![
-        //         "DwmRegisterThumbnail",    // Expected 2 arguments, found 3
-        //         "DwmSetDxFrameDuration",   // Not implemented
-        //         "DwmIsCompositionEnabled", //
-        //     ],
-        // ),
-        // (
-        //     "Gaming",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Gaming/mod.rs"),
-        //     vec![
-        //         "GetExpandedResourceExclusiveCpuCount", // Expected 0, found 1 argument
-        //     ],
-        // ),
-        // (
-        //     "Dxgi",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dxgi/mod.rs"),
-        //     vec![
-        //         "DXGIDeclareAdapterRemovalSupport", // Not Implemented
-        //     ],
-        // ),
-        // (
-        //     "BiometricFramework",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/BiometricFramework/mod.rs"
-        //     ),
-        //     vec![
-        //         "WinBioEnrollCapture", // Invalid number of arguments
-        //         "WinBioLocateSensor",  // Invalid number of arguments
-        //     ],
-        // ),
-        // (
-        //     "Com",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/mod.rs"),
-        //     vec![
-        //         "CoGetCallerTID",    // Invalid number of arguments
-        //         "CoGetContextToken", // Invalid number of arguments
-        //     ],
-        // ),
-        // (
-        //     "CloudFilters",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/CloudFilters/mod.rs"),
-        //     vec![
-        //         "CfGetTransferKey", // Invalid number of arguments
-        //     ],
-        // ),
-        // (
-        //     "Debug",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
-        //     ),
-        //     vec![
-        //         "FatalExit",              // Crashes Everything
-        //         "SymFunctionTableAccess", // TODO not exists, why?
-        //         "SymGetModuleBase",       // TODO not exists, why?
-        //         "SymLoadModule",          // TODO not exists, why?
-        //         "SymUnloadModule",        // TODO not exists, why?
-        //     ],
-        // ),
-        // (
-        //     "DeploymentServices",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DeploymentServices/mod.rs"
-        //     ),
-        //     vec![
-        //         "WdsCliGetEnumerationFlags",              // Invalid number of arguments
-        //         "WdsCliFindFirstImage",                   // Invalid number of arguments
-        //         "WdsCliGetImageHandleFromFindHandle",     // Invalid number of arguments
-        //         "WdsCliGetImageHandleFromTransferHandle", // Invalid number of arguments
-        //         "WdsCliGetImageIndex",                    // Invalid number of arguments
-        //         "WdsCliGetImageSize",                     // Invalid number of arguments
-        //         "WdsCliGetTransferSize",                  // Invalid number of arguments
-        //         "WdsCliGetImageVersion",                  //
-        //         "WdsCliGetImagePath",                     //
-        //         "WdsCliGetImageNamespace",                //
-        //         "WdsCliGetImageName",                     //
-        //         "WdsCliGetImageLanguage",                 //
-        //         "WdsCliGetImageHalName",                  //
-        //         "WdsCliGetImageGroup",                    //
-        //         "WdsCliGetImageDescription",              //
-        //         "WdsCliGetDriverQueryXml",                //
-        //     ],
-        // ),
-        // (
-        //     "FileSystem",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileSystem/mod.rs"),
-        //     vec![
-        //         "WofGetDriverVersion", // Invalid number of arguments
-        //         "WofWimAddEntry",      // Invalid number of arguments
-        //     ],
-        // ),
-        // (
-        //     "Identity",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authentication/Identity/mod.rs"
-        //     ),
-        //     vec![
-        //         "SLGetWindowsInformationDWORD", // Invalid number of arguments
-        //     ],
-        // ),
-        // (
-        //     "MediaFoundation",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/MediaFoundation/mod.rs"
-        //     ),
-        //     vec![
-        //         "MFAllocateSerialWorkQueue",        //
-        //         "MFAllocateWorkQueue",              //
-        //         "MFFrameRateToAverageTimePerFrame", //
-        //         "MFGetPlaneSize",                   //
-        //         "MFGetStrideForBitmapInfoHeader",   //
-        //         "MFGetTimerPeriodicity",            //
-        //         "MFGetWorkQueueMMCSSPriority",      //
-        //         "MFGetWorkQueueMMCSSTaskId",        //
-        //     ],
-        // ),
-        // (
-        //     "Ole",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
-        //     vec![
-        //         "VarI4FromI8",     //
-        //         "VarI4FromStr",    //
-        //         "VarI4FromUI4",    //
-        //         "VarI4FromUI8",    //
-        //         "VarI8FromStr",    //
-        //         "VarI8FromUI4",    //
-        //         "VarI8FromUI4",    //
-        //         "VarI8FromUI8",    //
-        //         "VarUI4FromI4",    //
-        //         "VarUI4FromI8",    //
-        //         "VarUI4FromStr",   //
-        //         "VarUI4FromUI8",   //
-        //         "VarUI8FromI8",    //
-        //         "VarUI8FromStr",   //
-        //         "VarUI8FromUI4",   //
-        //         "VarDateFromI4",   //
-        //         "VarDateFromI8",   //
-        //         "VarDateFromR4",   //
-        //         "VarDateFromR8",   //
-        //         "VarDateFromStr",  //
-        //         "VarDateFromUI2",  //
-        //         "VarDateFromUI4",  //
-        //         "VarDateFromUI8",  //
-        //         "VarI4FromDate",   //
-        //         "VarI4FromR4",     //
-        //         "VarI4FromR8",     //
-        //         "VarI4FromUI2",    //
-        //         "VarI8FromDate",   //
-        //         "VarI8FromR4",     //
-        //         "VarI8FromR8",     //
-        //         "VarI8FromUI2",    //
-        //         "VarR4FromDate",   //
-        //         "VarR4FromI4",     //
-        //         "VarR4FromI8",     //
-        //         "VarR4FromR8",     //
-        //         "VarR4FromStr",    //
-        //         "VarR4FromUI2",    //
-        //         "VarR4FromUI4",    //
-        //         "VarR4FromUI8",    //
-        //         "VarR8FromDate",   //
-        //         "VarR8FromI4",     //
-        //         "VarR8FromI8",     //
-        //         "VarR8FromR4",     //
-        //         "VarR8FromStr",    //
-        //         "VarR8FromUI2",    //
-        //         "VarR8FromUI4",    //
-        //         "VarR8FromUI8",    //
-        //         "VarR8Pow",        //
-        //         "VarR8Round",      //
-        //         "VarUI2FromDate",  //
-        //         "VarUI2FromI4",    //
-        //         "VarUI2FromI8",    //
-        //         "VarUI2FromR4",    //
-        //         "VarUI2FromStr",   //
-        //         "VarUI2FromUI4",   //
-        //         "VarUI2FromUI8",   //
-        //         "VarUI4FromDate",  //
-        //         "VarUI4FromR4",    //
-        //         "VarUI4FromR8",    //
-        //         "VarUI4FromUI2",   //
-        //         "VarUI8FromDate",  //
-        //         "VarUI8FromR4",    //
-        //         "VarUI8FromR8",    //
-        //         "VarUI8FromUI2",   //
-        //         "VarBoolFromDate", //
-        //         "VarBoolFromI2",   //
-        //         "VarBoolFromI4",   //
-        //         "VarBoolFromI8",   //
-        //         "VarBoolFromR4",   //
-        //         "VarBoolFromR8",   //
-        //         "VarBoolFromStr",  //
-        //         "VarBoolFromUI1",  //
-        //         "VarBoolFromUI2",  //
-        //         "VarBoolFromUI4",  //
-        //         "VarBoolFromUI8",  //
-        //         "VarDateFromBool", //
-        //         "VarDateFromI2",   //
-        //         "VarDateFromUI1",  //
-        //         "VarI2FromBool",   //
-        //         "VarI2FromDate",   //
-        //         "VarI2FromI4",     //
-        //         "VarI2FromI8",     //
-        //         "VarI2FromR4",     //
-        //         "VarI2FromR8",     //
-        //         "VarI2FromStr",    //
-        //         "VarI2FromUI1",    //
-        //         "VarI2FromUI2",    //
-        //         "VarI2FromUI4",    //
-        //         "VarI2FromUI8",    //
-        //         "VarI4FromBool",   //
-        //         "VarI4FromI2",     //
-        //         "VarI4FromUI1",    //
-        //         "VarI8FromBool",   //
-        //         "VarI8FromI2",     //
-        //         "VarI8FromUI1",    //
-        //         "VarR4FromBool",   //
-        //         "VarR4FromI2",     //
-        //         "VarR4FromUI1",    //
-        //         "VarR8FromBool",   //
-        //         "VarR8FromI2",     //
-        //         "VarR8FromUI1",    //
-        //         "VarUI1FromBool",  //
-        //         "VarUI1FromDate",  //
-        //         "VarUI1FromI2",    //
-        //         "VarUI1FromI4",    //
-        //         "VarUI1FromI8",    //
-        //         "VarUI1FromR4",    //
-        //         "VarUI1FromR8",    //
-        //         "VarUI1FromStr",   //
-        //         "VarUI1FromUI2",   //
-        //         "VarUI1FromUI4",   //
-        //         "VarUI1FromUI8",   //
-        //         "VarUI2FromBool",  //
-        //         "VarUI2FromI2",    //
-        //         "VarUI2FromUI1",   //
-        //         "VarUI4FromBool",  //
-        //         "VarUI4FromI2",    //
-        //         "VarUI4FromUI1",   //
-        //         "VarUI8FromBool",  //
-        //         "VarUI8FromI2",    //
-        //         "VarUI8FromUI1",   //
-        //     ],
-        // ),
-        // (
-        //     "P2P",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/P2P/mod.rs"
-        //     ),
-        //     vec![
-        //         "PeerIdentityGetCryptKey",     //
-        //         "PeerCollabGetSigninOptions",  //
-        //         "PeerNameToPeerHostName",      //
-        //         "PeerIdentityImport",          //
-        //         "PeerIdentityGetXML",          //
-        //         "PeerIdentityGetFriendlyName", //
-        //         "PeerIdentityGetDefault",      //
-        //         "PeerIdentityExport",          //
-        //         "PeerIdentityCreate",          //
-        //         "PeerHostNameToPeerName",      //
-        //         "PeerCreatePeerName",          //
-        //         "PeerCollabGetEndpointName",   //
-        //         "PeerCollabExportContact",     //
-        //     ],
-        // ),
-        // (
-        //     "PrintTicket",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/PrintTicket/mod.rs"
-        //     ),
-        //     vec![
-        //         "PTQuerySchemaVersionSupport", //
-        //     ],
-        // ),
-        // (
-        //     "Printing",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
-        //     vec!["AddPrintDeviceObject"],
-        // ),
-        // (
-        //     "Printing2",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Xps/Printing/mod.rs"),
-        //     vec!["AddPrintDeviceObject"],
-        // ),
-        // (
-        //     "Shell",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/mod.rs"),
-        //     vec![
-        //         "RegisterScaleChangeEvent",                //
-        //         "SHGetDriveMedia",                         //
-        //         "SHIsFileAvailableOffline",                //
-        //         "SHStrDupW",                               //
-        //         "SHStrDupA",                               //
-        //         "PathCchSkipRoot",                         //
-        //         "PathCchFindExtension",                    //
-        //         "PathAllocCombine",                        //
-        //         "PathAllocCanonicalize",                   //
-        //         "HlinkTranslateURL",                       //
-        //         "HlinkGetValueFromParams",                 //
-        //         "HlinkGetSpecialReference",                //
-        //         "GetCurrentProcessExplicitAppUserModelID", //
-        //     ],
-        // ),
-        // (
-        //     "Threading",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"),
-        //     vec![
-        //         "ExitProcess",          // Just crashes app
-        //         "ExitThread",           // Just crashes app
-        //         "GetThreadDescription", //
-        //     ],
-        // ),
-        // (
-        //     "Urlmon",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"),
-        //     vec![
-        //         "IEInstallScope", //
-        //         "FindMediaType",  //
-        //     ],
-        // ),
-        // (
-        //     "WinRT",
-        //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/mod.rs"),
-        //     vec![
-        //         "RoGetApartmentIdentifier", //
-        //         "RoGetErrorReportingFlags", //
-        //     ],
-        // ),
-        // (
-        //     "WindowsAndMessaging",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/WindowsAndMessaging/mod.rs"
-        //     ),
-        //     vec![
-        //         "MrmGetPriFileContentChecksum", //
-        //     ],
-        // ),
-        // (
-        //     "WindowsConnectionManager",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsConnectionManager/mod.rs"
-        //     ),
-        //     vec![
-        //         "OnDemandGetRoutingHint", //
-        //     ],
-        // ),
-        // (
-        //     "WindowsProgramming",
-        //     format!(
-        //         "{}{}",
-        //         WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WindowsProgramming/mod.rs"
-        //     ),
-        //     vec![
-        //         "QueryAuxiliaryCounterFrequency", //
-        //         "WldpIsDynamicCodePolicyEnabled", //
-        //     ],
-        // ),
-        ///////////////////////////
-        ///////////////////////////
-        ///////////////////////////
-        ///////////////////////////
-        //AUTOMATICALLY GENERATED//
-        ///////////////////////////
-        ///////////////////////////
-        ///////////////////////////
-        ///////////////////////////
+        (
+            "Dwm",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dwm/mod.rs"),
+            vec![
+                "DwmRegisterThumbnail",       // Expected 2 arguments, found 3
+                "DwmSetDxFrameDuration",      // Not implemented
+                "DwmIsCompositionEnabled",    //
+                "DwmGetGraphicsStreamClient", //
+            ],
+        ),
+        (
+            "Gaming",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Gaming/mod.rs"),
+            vec![
+                "GetExpandedResourceExclusiveCpuCount", // Expected 0, found 1 argument
+            ],
+        ),
+        (
+            "Dxgi",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dxgi/mod.rs"),
+            vec![
+                "DXGIDeclareAdapterRemovalSupport", // Not Implemented
+            ],
+        ),
+        (
+            "BiometricFramework",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/BiometricFramework/mod.rs"
+            ),
+            vec![
+                "WinBioEnrollCapture", // Invalid number of arguments
+                "WinBioLocateSensor",  // Invalid number of arguments
+            ],
+        ),
+        (
+            "Com",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/mod.rs"),
+            vec![
+                "CoGetCallerTID",              // Invalid number of arguments
+                "CoGetContextToken",           // Invalid number of arguments
+                "CLSIDFromProgID",             //
+                "CLSIDFromProgIDEx",           //
+                "CLSIDFromString",             //
+                "CoCreateGuid",                //
+                "CoFileTimeNow",               //
+                "CoGetCurrentLogicalThreadId", //
+                "GetClassFile",                //
+                "IIDFromString",               //
+            ],
+        ),
+        (
+            "CloudFilters",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/CloudFilters/mod.rs"),
+            vec![
+                "CfGetTransferKey", // Invalid number of arguments
+            ],
+        ),
+        (
+            "Debug",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
+            ),
+            vec![
+                "FatalExit",              // Crashes Everything
+                "SymFunctionTableAccess", // TODO not exists, why?
+                "SymGetModuleBase",       // TODO not exists, why?
+                "SymLoadModule",          // TODO not exists, why?
+                "SymUnloadModule",        // TODO not exists, why?
+                "Beep",                   // Beeps, useless and stops executing of app
+            ],
+        ),
+        (
+            "DeploymentServices",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DeploymentServices/mod.rs"
+            ),
+            vec![
+                "WdsCliGetEnumerationFlags",              // Invalid number of arguments
+                "WdsCliFindFirstImage",                   // Invalid number of arguments
+                "WdsCliGetImageHandleFromFindHandle",     // Invalid number of arguments
+                "WdsCliGetImageHandleFromTransferHandle", // Invalid number of arguments
+                "WdsCliGetImageIndex",                    // Invalid number of arguments
+                "WdsCliGetImageSize",                     // Invalid number of arguments
+                "WdsCliGetTransferSize",                  // Invalid number of arguments
+                "WdsCliGetImageVersion",                  //
+                "WdsCliGetImagePath",                     //
+                "WdsCliGetImageNamespace",                //
+                "WdsCliGetImageName",                     //
+                "WdsCliGetImageLanguage",                 //
+                "WdsCliGetImageHalName",                  //
+                "WdsCliGetImageGroup",                    //
+                "WdsCliGetImageDescription",              //
+                "WdsCliGetDriverQueryXml",                //
+            ],
+        ),
+        (
+            "FileSystem",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileSystem/mod.rs"),
+            vec![
+                "WofGetDriverVersion", // Invalid number of arguments
+                "WofWimAddEntry",      // Invalid number of arguments
+            ],
+        ),
+        (
+            "Identity",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authentication/Identity/mod.rs"
+            ),
+            vec![
+                "SLGetWindowsInformationDWORD", // Invalid number of arguments
+            ],
+        ),
+        (
+            "MediaFoundation",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/MediaFoundation/mod.rs"
+            ),
+            vec![
+                "MFAllocateSerialWorkQueue",        //
+                "MFAllocateWorkQueue",              //
+                "MFFrameRateToAverageTimePerFrame", //
+                "MFGetPlaneSize",                   //
+                "MFGetStrideForBitmapInfoHeader",   //
+                "MFGetTimerPeriodicity",            //
+                "MFGetWorkQueueMMCSSPriority",      //
+                "MFGetWorkQueueMMCSSTaskId",        //
+            ],
+        ),
+        (
+            "Ole",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
+            vec![
+                "VarI4FromI8",     //
+                "VarI4FromStr",    //
+                "VarI4FromUI4",    //
+                "VarI4FromUI8",    //
+                "VarI8FromStr",    //
+                "VarI8FromUI4",    //
+                "VarI8FromUI4",    //
+                "VarI8FromUI8",    //
+                "VarUI4FromI4",    //
+                "VarUI4FromI8",    //
+                "VarUI4FromStr",   //
+                "VarUI4FromUI8",   //
+                "VarUI8FromI8",    //
+                "VarUI8FromStr",   //
+                "VarUI8FromUI4",   //
+                "VarDateFromI4",   //
+                "VarDateFromI8",   //
+                "VarDateFromR4",   //
+                "VarDateFromR8",   //
+                "VarDateFromStr",  //
+                "VarDateFromUI2",  //
+                "VarDateFromUI4",  //
+                "VarDateFromUI8",  //
+                "VarI4FromDate",   //
+                "VarI4FromR4",     //
+                "VarI4FromR8",     //
+                "VarI4FromUI2",    //
+                "VarI8FromDate",   //
+                "VarI8FromR4",     //
+                "VarI8FromR8",     //
+                "VarI8FromUI2",    //
+                "VarR4FromDate",   //
+                "VarR4FromI4",     //
+                "VarR4FromI8",     //
+                "VarR4FromR8",     //
+                "VarR4FromStr",    //
+                "VarR4FromUI2",    //
+                "VarR4FromUI4",    //
+                "VarR4FromUI8",    //
+                "VarR8FromDate",   //
+                "VarR8FromI4",     //
+                "VarR8FromI8",     //
+                "VarR8FromR4",     //
+                "VarR8FromStr",    //
+                "VarR8FromUI2",    //
+                "VarR8FromUI4",    //
+                "VarR8FromUI8",    //
+                "VarR8Pow",        //
+                "VarR8Round",      //
+                "VarUI2FromDate",  //
+                "VarUI2FromI4",    //
+                "VarUI2FromI8",    //
+                "VarUI2FromR4",    //
+                "VarUI2FromStr",   //
+                "VarUI2FromUI4",   //
+                "VarUI2FromUI8",   //
+                "VarUI4FromDate",  //
+                "VarUI4FromR4",    //
+                "VarUI4FromR8",    //
+                "VarUI4FromUI2",   //
+                "VarUI8FromDate",  //
+                "VarUI8FromR4",    //
+                "VarUI8FromR8",    //
+                "VarUI8FromUI2",   //
+                "VarBoolFromDate", //
+                "VarBoolFromI2",   //
+                "VarBoolFromI4",   //
+                "VarBoolFromI8",   //
+                "VarBoolFromR4",   //
+                "VarBoolFromR8",   //
+                "VarBoolFromStr",  //
+                "VarBoolFromUI1",  //
+                "VarBoolFromUI2",  //
+                "VarBoolFromUI4",  //
+                "VarBoolFromUI8",  //
+                "VarDateFromBool", //
+                "VarDateFromI2",   //
+                "VarDateFromUI1",  //
+                "VarI2FromBool",   //
+                "VarI2FromDate",   //
+                "VarI2FromI4",     //
+                "VarI2FromI8",     //
+                "VarI2FromR4",     //
+                "VarI2FromR8",     //
+                "VarI2FromStr",    //
+                "VarI2FromUI1",    //
+                "VarI2FromUI2",    //
+                "VarI2FromUI4",    //
+                "VarI2FromUI8",    //
+                "VarI4FromBool",   //
+                "VarI4FromI2",     //
+                "VarI4FromUI1",    //
+                "VarI8FromBool",   //
+                "VarI8FromI2",     //
+                "VarI8FromUI1",    //
+                "VarR4FromBool",   //
+                "VarR4FromI2",     //
+                "VarR4FromUI1",    //
+                "VarR8FromBool",   //
+                "VarR8FromI2",     //
+                "VarR8FromUI1",    //
+                "VarUI1FromBool",  //
+                "VarUI1FromDate",  //
+                "VarUI1FromI2",    //
+                "VarUI1FromI4",    //
+                "VarUI1FromI8",    //
+                "VarUI1FromR4",    //
+                "VarUI1FromR8",    //
+                "VarUI1FromStr",   //
+                "VarUI1FromUI2",   //
+                "VarUI1FromUI4",   //
+                "VarUI1FromUI8",   //
+                "VarUI2FromBool",  //
+                "VarUI2FromI2",    //
+                "VarUI2FromUI1",   //
+                "VarUI4FromBool",  //
+                "VarUI4FromI2",    //
+                "VarUI4FromUI1",   //
+                "VarUI8FromBool",  //
+                "VarUI8FromI2",    //
+                "VarUI8FromUI1",   //
+                "VarBoolFromI1",   //
+                "VarBstrFromBool", //
+                "VarBstrFromDate", //
+                "VarBstrFromI1",   //
+                "VarBstrFromI2",   //
+                "VarBstrFromI4",   //
+                "VarBstrFromI8",   //
+                "VarBstrFromR4",   //
+                "VarBstrFromR8",   //
+                "VarBstrFromUI1",  //
+                "VarBstrFromUI2",  //
+                "VarBstrFromUI4",  //
+                "VarBstrFromUI8",  //
+                "VarDateFromI1",   //
+                "VarI2FromI1",     //
+                "VarI4FromI1",     //
+                "VarI8FromI1",     //
+                "VarMonthName",    //
+                "VarR4FromI1",     //
+                "VarUI1FromI1",    //
+                "VarUI2FromI1",    //
+                "VarUI4FromI1",    //
+                "VarUI8FromI1",    //
+                "VarWeekdayName",  //
+            ],
+        ),
+        (
+            "P2P",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/P2P/mod.rs"
+            ),
+            vec![
+                "PeerIdentityGetCryptKey",     //
+                "PeerCollabGetSigninOptions",  //
+                "PeerNameToPeerHostName",      //
+                "PeerIdentityImport",          //
+                "PeerIdentityGetXML",          //
+                "PeerIdentityGetFriendlyName", //
+                "PeerIdentityGetDefault",      //
+                "PeerIdentityExport",          //
+                "PeerIdentityCreate",          //
+                "PeerHostNameToPeerName",      //
+                "PeerCreatePeerName",          //
+                "PeerCollabGetEndpointName",   //
+                "PeerCollabExportContact",     //
+            ],
+        ),
+        (
+            "PrintTicket",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/PrintTicket/mod.rs"
+            ),
+            vec![
+                "PTQuerySchemaVersionSupport", //
+            ],
+        ),
+        (
+            "Printing",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
+            vec![
+                "AddPrintDeviceObject",        // ?
+                "CorePrinterDriverInstalledA", //
+                "CorePrinterDriverInstalledW", //
+            ],
+        ),
+        (
+            "Printing2",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Xps/Printing/mod.rs"),
+            vec![],
+        ),
+        (
+            "Shell",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/mod.rs"),
+            vec![
+                "RegisterScaleChangeEvent",                //
+                "SHGetDriveMedia",                         //
+                "SHIsFileAvailableOffline",                //
+                "SHStrDupW",                               //
+                "SHStrDupA",                               //
+                "PathCchSkipRoot",                         //
+                "PathCchFindExtension",                    //
+                "PathAllocCombine",                        //
+                "PathAllocCanonicalize",                   //
+                "HlinkTranslateURL",                       //
+                "HlinkGetValueFromParams",                 //
+                "HlinkGetSpecialReference",                //
+                "GetCurrentProcessExplicitAppUserModelID", //
+                "SHCLSIDFromString",                       //
+            ],
+        ),
+        (
+            "Threading",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"),
+            vec![
+                "ExitProcess",          // Just crashes app
+                "ExitThread",           // Just crashes app
+                "GetThreadDescription", //
+            ],
+        ),
+        (
+            "Urlmon",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"),
+            vec![
+                "IEInstallScope", //
+                "FindMediaType",  //
+                "GetClassURL",    //
+            ],
+        ),
+        (
+            "WinRT",
+            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/mod.rs"),
+            vec![
+                "RoGetApartmentIdentifier",            //
+                "RoGetErrorReportingFlags",            //
+                "WindowsCompareStringOrdinal",         //
+                "WindowsConcatString",                 //
+                "WindowsCreateString",                 //
+                "WindowsDuplicateString",              //
+                "WindowsReplaceString",                //
+                "WindowsStringHasEmbeddedNull",        //
+                "WindowsSubstring",                    //
+                "WindowsSubstringWithSpecifiedLength", //
+                "WindowsTrimStringEnd",                //
+                "WindowsTrimStringStart",              //
+            ],
+        ),
+        (
+            "WindowsAndMessaging",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/WindowsAndMessaging/mod.rs"
+            ),
+            vec![
+                "MrmGetPriFileContentChecksum", //
+            ],
+        ),
+        (
+            "WindowsConnectionManager",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsConnectionManager/mod.rs"
+            ),
+            vec![
+                "OnDemandGetRoutingHint", //
+            ],
+        ),
+        (
+            "WindowsProgramming",
+            format!(
+                "{}{}",
+                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WindowsProgramming/mod.rs"
+            ),
+            vec![
+                "QueryAuxiliaryCounterFrequency", //
+                "WldpIsDynamicCodePolicyEnabled", //
+            ],
+        ),
+        // ////////////////////////
+        // ////////////////////////
+        // ////////////////////////
+        // ////////////////////////
+        // AUTOMATICALLY GENERATED
+        // ////////////////////////
+        // ////////////////////////
+        // ////////////////////////
+        // ////////////////////////
         // (
         //     "Accessibility",
         //     format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Accessibility/mod.rs"),

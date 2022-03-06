@@ -15,14 +15,14 @@ pub fn parse_file(file_data: &mut FileData, file_path: &str) {
         if started_to_read {
             if trim_line.starts_with("pub fn ") {
                 let end_line = trim_line.strip_prefix("pub fn ").unwrap();
-                if let Some(start_index) = end_line.find("(") {
+                if let Some(start_index) = end_line.find('(') {
                     let function_name = &end_line[..start_index];
-                    if let Some(end_index) = end_line.find(")") {
+                    if let Some(end_index) = end_line.find(')') {
                         let arguments_raw = &end_line[start_index + 1..end_index];
                         // println!("DEBUG: Validation {}",arguments_raw);
                         let mut arg = Vec::new();
                         if !arguments_raw.is_empty() {
-                            let splits = arguments_raw.split(",");
+                            let splits = arguments_raw.split(',');
                             for split in splits {
                                 let one_argument = split.split(": ").map(|e| e.to_string()).collect::<Vec<String>>();
                                 if one_argument.len() != 2 {
@@ -39,8 +39,8 @@ pub fn parse_file(file_data: &mut FileData, file_path: &str) {
                 } else {
                     panic!("Missing ( in {}", end_line);
                 }
-            } else if trim_line.starts_with("#") {
-            } else if line.starts_with("}") {
+            } else if trim_line.starts_with('#') {
+            } else if line.starts_with('}') {
                 break;
             } else {
                 panic!("Found line {}", line);

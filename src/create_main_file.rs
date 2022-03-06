@@ -4,7 +4,7 @@ use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::io::Write;
 
-pub fn create_main_file(things: &Vec<(&str, String, Vec<&str>)>) {
+pub fn create_main_file(things: &[(&str, String, Vec<&str>)]) {
     let file_name = "WinProject/src/main.rs";
 
     let _ = fs::remove_file(&file_name);
@@ -18,6 +18,7 @@ pub fn create_main_file(things: &Vec<(&str, String, Vec<&str>)>) {
 #![allow(unused_unsafe)]
 #![allow(unused_must_use)]
 #![allow(dead_code)]
+#![allow(non_snake_case)]
 
 mod basic_data;
 mod more_bad_data;
