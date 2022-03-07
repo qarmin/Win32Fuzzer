@@ -6,6 +6,4 @@ I created it to help Wine to better mimic Windows OS and allow running more Wind
 
 Looks that currently tests - Classes: "165", Functions: "10540", Arguments: "35174"
 
-## TODO
-- Add settings
-- Add random execution
+This project works fine with `windows-rs 0.33.0`, so it may require rewrite to support newer versions since

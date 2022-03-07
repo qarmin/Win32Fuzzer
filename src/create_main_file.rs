@@ -32,6 +32,7 @@ use crate::basic_data::read_from_file;
     // <<functions>> -
     let main_start = r###"
 fn main() {
+    println!("Started Win32Api");
     let st = read_from_file();
 
     let mut file = OpenOptions::new().write(true).truncate(true).create(true).open("results.txt").unwrap();
@@ -53,6 +54,8 @@ fn main() {
             }
         }
     }
+    println!("Ending fuzzing.");
+}
     "###;
 
     let mut mod_to_add = "".to_string();
@@ -81,7 +84,6 @@ fn main() {
     writeln!(file, "{}", use_crate_to_add).unwrap();
 
     writeln!(file, "{}", main_start).unwrap();
-    writeln!(file, "}}").unwrap();
 }
 
 // #![allow(unused_imports)]

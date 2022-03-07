@@ -254,7 +254,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "WebSocket",
                                            // "WiFi",
                                            // "WinHttp",
-                                           // "WinInet",
                                            // "WinML",
                                            // "WinSock",
                                            // "WinTrust",
@@ -882,6 +881,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             vec![
                 "GetResolvedPackageFullNameForPackageDependency", //
                 "CheckIsMSIXPackage",                             //
+                "DeactivatePackageVirtualizationContext", // Not runs on Windows - Nie znaleziono punktu wejścia procedury DeactivatePackageVirtualizationContext w bibliotece
+                "DeletePackageDependency",                // Not runs on Windows
             ],
         ),
         (
@@ -1138,7 +1139,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DirectComposition/mod.rs"
             ),
-            vec![],
+            vec![
+                "DCompositionBoostCompositorClock", // Not run on Windows
+            ],
         ),
         (
             "DirectDraw",
@@ -1307,7 +1310,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Gdi",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Gdi/mod.rs"),
-            vec![],
+            vec![
+                "TransparentBlt", // Not runs on Windows
+            ],
         ),
         (
             "Globalization",
@@ -2029,7 +2034,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "WinInet",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WinInet/mod.rs"),
-            vec![],
+            vec![
+                "ExportCookieFileA",              // Not runs on windows
+                "ExportCookieFileW",              // Not runs on windows
+                "FindP3PPolicySymbol",            // Not runs on windows
+                "GetDiskInfoA",                   // Not runs on windows
+                "ImportCookieFileA",              // Not runs on windows
+                "ImportCookieFileW",              // Not runs on windows
+                "InternalInternetGetCookie",      // Not runs on windows
+                "IsDomainLegalCookieDomainA",     // Not runs on windows
+                "IsDomainLegalCookieDomainW",     // Not runs on windows
+                "FwpmDynamicKeywordUnsubscribe0", // Not runs on windows
+            ],
         ),
         (
             "WinML",
@@ -2055,7 +2071,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFilteringPlatform/mod.rs"
             ),
-            vec![],
+            vec![
+                "FwpmDynamicKeywordUnsubscribe0", // Not runs on Windows
+            ],
         ),
         (
             "WindowsFirewall",

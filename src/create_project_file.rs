@@ -1,5 +1,5 @@
 use crate::FileData;
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
@@ -177,6 +177,7 @@ use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
 use crate::more_bad_data::*;
 use rand::prelude::*;
+use std::fs::File;
 "###;
 
     // <<functions>>
@@ -185,27 +186,33 @@ use rand::prelude::*;
     // <<class>>
     let base_function = r###"
 pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
-    let functions: [(fn(&mut File) -> (), &str, &str); <<number_of_functions>>] = [<<functions>>]; // function, function_name_in_rust, function_name 
+    let functions: [(fn(&mut File) -> (), &str); <<number_of_functions>>] = [<<functions>>]; // function, function_name_in_rust, function_name 
 
     println!("////////// Class <<class>>");
 
-    let mut functions_to_check: Vec<(fn(&mut File, &SettingsTaker) -> (), &str)> = Vec::new();
+    let mut functions_to_check: Vec<(fn(&mut File) -> (), &str)> = Vec::new();
     if !st.allowed_functions.is_empty() {
         functions
             .into_iter()
-            .filter(|e| st.allowed_functions.contains(&e.2.to_string()))
+            .filter(|e| st.allowed_functions.contains(&e.1.to_string()))
             .for_each(|e| functions_to_check.push(e));
     } else {
         functions
             .into_iter()
-            .filter(|e| !st.ignored_functions.contains(&e.2.to_string()))
+            .filter(|e| !st.ignored_functions.contains(&e.1.to_string()))
             .for_each(|e| functions_to_check.push(e));
     }
      
     let number_of_function = if st.number_of_max_executed_function >= 0 {
         st.number_of_max_executed_function as usize
     } else {
-        functions_to_check.len() * st.repeating_number as usize
+        functions_to_check.len()
+    };
+    
+    let repeating_number = if st.repeating_number > 0{
+        st.repeating_number
+    } else {
+        1
     };
     
     // Random by default
@@ -213,7 +220,9 @@ pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
         // Missing some random functions
         if rand::random::<bool>() {
             let function = functions_to_check.choose(&mut rand::thread_rng()).unwrap().0;
-            function(file);
+            for _z in 0..repeating_number{
+                function(file);
+            }
         }
     }    
 }
@@ -224,10 +233,12 @@ pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
     // <<arguments>> - creating arguments
     // <<execution_code>> - Executing function
     let single_function = r###"
-pub fn a_<<function_name>>()  {
+pub fn a_<<function_name>>(_file : &mut File)  {
 	<<println>>
 <<arguments>>
-	<<execution_code>>}"###;
+    unsafe {
+	    <<execution_code>>  }
+}"###;
 
     let file_name = format!("WinProject/src/z_{}.rs", file_path.to_lowercase());
 
@@ -240,7 +251,7 @@ pub fn a_<<function_name>>()  {
 
     let mut function_list: String = Default::default();
     let mut number_of_functions = 0;
-    let mut each_function_body : Vec<String> = Vec::new();
+    let mut each_function_body: Vec<String> = Vec::new();
 
     for (function_name, arguments) in &file_data.functions {
         // Check if function is supported
@@ -288,6 +299,7 @@ pub fn a_<<function_name>>()  {
         let mut execute_arguments = "".to_string();
         let mut creation_of_arguments = "".to_string();
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
+            number_of_functions += 1;
             function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
             if additional_arguments.argument_before.contains("mut") {
                 creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
@@ -301,21 +313,23 @@ pub fn a_<<function_name>>()  {
                 execute_arguments += ",";
             }
         }
-        number_of_functions += 1;
-        
-        
-        let print = format!("println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",function_name, file_path);
+
+        let print = format!(
+            "println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
+            function_name, file_path
+        );
         let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
-        
-    
-        each_function_body.push(single_function.replace("<<function_name>>",&function_name)
-        .replace("<<println>>",&print)
-        .replace("<<arguments>>",&creation_of_arguments)
-        .replace("<<execution_code>>",&executed_arguments)
+
+        each_function_body.push(
+            single_function
+                .replace("<<function_name>>", function_name)
+                .replace("<<println>>", &print)
+                .replace("<<arguments>>", &creation_of_arguments)
+                .replace("<<execution_code>>", &executed_arguments),
         );
     }
-    for i in each_function_body{
-    	writeln!(file, "{}", i).unwrap();
+    for i in each_function_body {
+        writeln!(file, "{}", i).unwrap();
     }
 
     function_list.pop(); // Remove latest ,

@@ -155,7 +155,7 @@ fn main() {
         {
             number_of_classes += 1;
             number_of_functions += file_data.functions.len();
-            for (_name, arguments) in &file_data.functions {
+            for arguments in file_data.functions.values() {
                 number_of_arguments += arguments.len();
             }
         }
