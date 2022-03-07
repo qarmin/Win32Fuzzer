@@ -348,6 +348,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "SplIsSessionZero",                           //
                 "CorePrinterDriverInstalledW",                //
                 "CorePrinterDriverInstalledA",                //
+                "ConnectToPrinterDlg",                        // Shows Dialog in Windows
             ],
         ),
         (
@@ -416,12 +417,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
             ),
             vec![
-                "FatalExit",              // Crashes Everything
-                "SymFunctionTableAccess", // TODO not exists, why?
-                "SymGetModuleBase",       // TODO not exists, why?
-                "SymLoadModule",          // TODO not exists, why?
-                "SymUnloadModule",        // TODO not exists, why?
-                "Beep",                   // Beeps, useless and stops executing of app
+                "FatalExit",                          // Crashes Everything
+                "SymFunctionTableAccess",             // TODO not exists, why?
+                "SymGetModuleBase",                   // TODO not exists, why?
+                "SymLoadModule",                      // TODO not exists, why?
+                "SymUnloadModule",                    // TODO not exists, why?
+                "Beep",                               // Beeps, useless and stops executing of app
+                "DebugBreak",                         // "Crashes" fuzzer
+                "SymGetSearchPath",                   // Crashes Windows
+                "TerminateProcessOnMemoryExhaustion", // Crashes Windows
+                "FatalAppExitW",                      // Crashes Windows
+                "SymMatchFileNameW",                  // Crashes Windows
+                "FatalAppExitA",                      // Crashes Windows
             ],
         ),
         (
@@ -488,197 +495,210 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Ole",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
             vec![
-                "VarI4FromI8",     //
-                "VarI4FromStr",    //
-                "VarI4FromUI4",    //
-                "VarI4FromUI8",    //
-                "VarI8FromStr",    //
-                "VarI8FromUI4",    //
-                "VarI8FromUI4",    //
-                "VarI8FromUI8",    //
-                "VarUI4FromI4",    //
-                "VarUI4FromI8",    //
-                "VarUI4FromStr",   //
-                "VarUI4FromUI8",   //
-                "VarUI8FromI8",    //
-                "VarUI8FromStr",   //
-                "VarUI8FromUI4",   //
-                "VarDateFromI4",   //
-                "VarDateFromI8",   //
-                "VarDateFromR4",   //
-                "VarDateFromR8",   //
-                "VarDateFromStr",  //
-                "VarDateFromUI2",  //
-                "VarDateFromUI4",  //
-                "VarDateFromUI8",  //
-                "VarI4FromDate",   //
-                "VarI4FromR4",     //
-                "VarI4FromR8",     //
-                "VarI4FromUI2",    //
-                "VarI8FromDate",   //
-                "VarI8FromR4",     //
-                "VarI8FromR8",     //
-                "VarI8FromUI2",    //
-                "VarR4FromDate",   //
-                "VarR4FromI4",     //
-                "VarR4FromI8",     //
-                "VarR4FromR8",     //
-                "VarR4FromStr",    //
-                "VarR4FromUI2",    //
-                "VarR4FromUI4",    //
-                "VarR4FromUI8",    //
-                "VarR8FromDate",   //
-                "VarR8FromI4",     //
-                "VarR8FromI8",     //
-                "VarR8FromR4",     //
-                "VarR8FromStr",    //
-                "VarR8FromUI2",    //
-                "VarR8FromUI4",    //
-                "VarR8FromUI8",    //
-                "VarR8Pow",        //
-                "VarR8Round",      //
-                "VarUI2FromDate",  //
-                "VarUI2FromI4",    //
-                "VarUI2FromI8",    //
-                "VarUI2FromR4",    //
-                "VarUI2FromStr",   //
-                "VarUI2FromUI4",   //
-                "VarUI2FromUI8",   //
-                "VarUI4FromDate",  //
-                "VarUI4FromR4",    //
-                "VarUI4FromR8",    //
-                "VarUI4FromUI2",   //
-                "VarUI8FromDate",  //
-                "VarUI8FromR4",    //
-                "VarUI8FromR8",    //
-                "VarUI8FromUI2",   //
-                "VarBoolFromDate", //
-                "VarBoolFromI2",   //
-                "VarBoolFromI4",   //
-                "VarBoolFromI8",   //
-                "VarBoolFromR4",   //
-                "VarBoolFromR8",   //
-                "VarBoolFromStr",  //
-                "VarBoolFromUI1",  //
-                "VarBoolFromUI2",  //
-                "VarBoolFromUI4",  //
-                "VarBoolFromUI8",  //
-                "VarDateFromBool", //
-                "VarDateFromI2",   //
-                "VarDateFromUI1",  //
-                "VarI2FromBool",   //
-                "VarI2FromDate",   //
-                "VarI2FromI4",     //
-                "VarI2FromI8",     //
-                "VarI2FromR4",     //
-                "VarI2FromR8",     //
-                "VarI2FromStr",    //
-                "VarI2FromUI1",    //
-                "VarI2FromUI2",    //
-                "VarI2FromUI4",    //
-                "VarI2FromUI8",    //
-                "VarI4FromBool",   //
-                "VarI4FromI2",     //
-                "VarI4FromUI1",    //
-                "VarI8FromBool",   //
-                "VarI8FromI2",     //
-                "VarI8FromUI1",    //
-                "VarR4FromBool",   //
-                "VarR4FromI2",     //
-                "VarR4FromUI1",    //
-                "VarR8FromBool",   //
-                "VarR8FromI2",     //
-                "VarR8FromUI1",    //
-                "VarUI1FromBool",  //
-                "VarUI1FromDate",  //
-                "VarUI1FromI2",    //
-                "VarUI1FromI4",    //
-                "VarUI1FromI8",    //
-                "VarUI1FromR4",    //
-                "VarUI1FromR8",    //
-                "VarUI1FromStr",   //
-                "VarUI1FromUI2",   //
-                "VarUI1FromUI4",   //
-                "VarUI1FromUI8",   //
-                "VarUI2FromBool",  //
-                "VarUI2FromI2",    //
-                "VarUI2FromUI1",   //
-                "VarUI4FromBool",  //
-                "VarUI4FromI2",    //
-                "VarUI4FromUI1",   //
-                "VarUI8FromBool",  //
-                "VarUI8FromI2",    //
-                "VarUI8FromUI1",   //
-                "VarBoolFromI1",   //
-                "VarBstrFromBool", //
-                "VarBstrFromDate", //
-                "VarBstrFromI1",   //
-                "VarBstrFromI2",   //
-                "VarBstrFromI4",   //
-                "VarBstrFromI8",   //
-                "VarBstrFromR4",   //
-                "VarBstrFromR8",   //
-                "VarBstrFromUI1",  //
-                "VarBstrFromUI2",  //
-                "VarBstrFromUI4",  //
-                "VarBstrFromUI8",  //
-                "VarDateFromI1",   //
-                "VarI2FromI1",     //
-                "VarI4FromI1",     //
-                "VarI8FromI1",     //
-                "VarMonthName",    //
-                "VarR4FromI1",     //
-                "VarUI1FromI1",    //
-                "VarUI2FromI1",    //
-                "VarUI4FromI1",    //
-                "VarUI8FromI1",    //
-                "VarWeekdayName",  //
-                "VarBoolFromCy",   //
-                "VarBstrFromCy",   //
-                "VarCyAbs",        //
-                "VarCyAdd",        //
-                "VarCyFix",        //
-                "VarCyFromBool",   //
-                "VarCyFromDate",   //
-                "VarCyFromI1",     //
-                "VarCyFromI2",     //
-                "VarCyFromI4",     //
-                "VarCyFromI8",     //
-                "VarCyFromR4",     //
-                "VarCyFromR8",     //
-                "VarCyFromStr",    //
-                "VarCyFromUI1",    //
-                "VarCyFromUI2",    //
-                "VarCyFromUI4",    //
-                "VarCyFromUI8",    //
-                "VarCyInt",        //
-                "VarCyMul",        //
-                "VarCyMulI4",      //
-                "VarCyMulI8",      //
-                "VarCyNeg",        //
-                "VarCyRound",      //
-                "VarCySub",        //
-                "VarDateFromCy",   //
-                "VarDecFromBool",  //
-                "VarDecFromCy",    //
-                "VarDecFromDate",  //
-                "VarDecFromI1",    //
-                "VarDecFromI2",    //
-                "VarDecFromI4",    //
-                "VarDecFromI8",    //
-                "VarDecFromR4",    //
-                "VarDecFromR8",    //
-                "VarDecFromStr",   //
-                "VarDecFromUI1",   //
-                "VarDecFromUI2",   //
-                "VarDecFromUI4",   //
-                "VarDecFromUI8",   //
-                "VarI4FromCy",     //
-                "VarI8FromCy",     //
-                "VarUI1FromCy",    //
-                "VarUI2FromCy",    //
-                "VarUI4FromCy",    //
-                "VarUI8FromCy",    //
+                "VarI4FromI8",              //
+                "VarI4FromStr",             //
+                "VarI4FromUI4",             //
+                "VarI4FromUI8",             //
+                "VarI8FromStr",             //
+                "VarI8FromUI4",             //
+                "VarI8FromUI4",             //
+                "VarI8FromUI8",             //
+                "VarUI4FromI4",             //
+                "VarUI4FromI8",             //
+                "VarUI4FromStr",            //
+                "VarUI4FromUI8",            //
+                "VarUI8FromI8",             //
+                "VarUI8FromStr",            //
+                "VarUI8FromUI4",            //
+                "VarDateFromI4",            //
+                "VarDateFromI8",            //
+                "VarDateFromR4",            //
+                "VarDateFromR8",            //
+                "VarDateFromStr",           //
+                "VarDateFromUI2",           //
+                "VarDateFromUI4",           //
+                "VarDateFromUI8",           //
+                "VarI4FromDate",            //
+                "VarI4FromR4",              //
+                "VarI4FromR8",              //
+                "VarI4FromUI2",             //
+                "VarI8FromDate",            //
+                "VarI8FromR4",              //
+                "VarI8FromR8",              //
+                "VarI8FromUI2",             //
+                "VarR4FromDate",            //
+                "VarR4FromI4",              //
+                "VarR4FromI8",              //
+                "VarR4FromR8",              //
+                "VarR4FromStr",             //
+                "VarR4FromUI2",             //
+                "VarR4FromUI4",             //
+                "VarR4FromUI8",             //
+                "VarR8FromDate",            //
+                "VarR8FromI4",              //
+                "VarR8FromI8",              //
+                "VarR8FromR4",              //
+                "VarR8FromStr",             //
+                "VarR8FromUI2",             //
+                "VarR8FromUI4",             //
+                "VarR8FromUI8",             //
+                "VarR8Pow",                 //
+                "VarR8Round",               //
+                "VarUI2FromDate",           //
+                "VarUI2FromI4",             //
+                "VarUI2FromI8",             //
+                "VarUI2FromR4",             //
+                "VarUI2FromStr",            //
+                "VarUI2FromUI4",            //
+                "VarUI2FromUI8",            //
+                "VarUI4FromDate",           //
+                "VarUI4FromR4",             //
+                "VarUI4FromR8",             //
+                "VarUI4FromUI2",            //
+                "VarUI8FromDate",           //
+                "VarUI8FromR4",             //
+                "VarUI8FromR8",             //
+                "VarUI8FromUI2",            //
+                "VarBoolFromDate",          //
+                "VarBoolFromI2",            //
+                "VarBoolFromI4",            //
+                "VarBoolFromI8",            //
+                "VarBoolFromR4",            //
+                "VarBoolFromR8",            //
+                "VarBoolFromStr",           //
+                "VarBoolFromUI1",           //
+                "VarBoolFromUI2",           //
+                "VarBoolFromUI4",           //
+                "VarBoolFromUI8",           //
+                "VarDateFromBool",          //
+                "VarDateFromI2",            //
+                "VarDateFromUI1",           //
+                "VarI2FromBool",            //
+                "VarI2FromDate",            //
+                "VarI2FromI4",              //
+                "VarI2FromI8",              //
+                "VarI2FromR4",              //
+                "VarI2FromR8",              //
+                "VarI2FromStr",             //
+                "VarI2FromUI1",             //
+                "VarI2FromUI2",             //
+                "VarI2FromUI4",             //
+                "VarI2FromUI8",             //
+                "VarI4FromBool",            //
+                "VarI4FromI2",              //
+                "VarI4FromUI1",             //
+                "VarI8FromBool",            //
+                "VarI8FromI2",              //
+                "VarI8FromUI1",             //
+                "VarR4FromBool",            //
+                "VarR4FromI2",              //
+                "VarR4FromUI1",             //
+                "VarR8FromBool",            //
+                "VarR8FromI2",              //
+                "VarR8FromUI1",             //
+                "VarUI1FromBool",           //
+                "VarUI1FromDate",           //
+                "VarUI1FromI2",             //
+                "VarUI1FromI4",             //
+                "VarUI1FromI8",             //
+                "VarUI1FromR4",             //
+                "VarUI1FromR8",             //
+                "VarUI1FromStr",            //
+                "VarUI1FromUI2",            //
+                "VarUI1FromUI4",            //
+                "VarUI1FromUI8",            //
+                "VarUI2FromBool",           //
+                "VarUI2FromI2",             //
+                "VarUI2FromUI1",            //
+                "VarUI4FromBool",           //
+                "VarUI4FromI2",             //
+                "VarUI4FromUI1",            //
+                "VarUI8FromBool",           //
+                "VarUI8FromI2",             //
+                "VarUI8FromUI1",            //
+                "VarBoolFromI1",            //
+                "VarBstrFromBool",          //
+                "VarBstrFromDate",          //
+                "VarBstrFromI1",            //
+                "VarBstrFromI2",            //
+                "VarBstrFromI4",            //
+                "VarBstrFromI8",            //
+                "VarBstrFromR4",            //
+                "VarBstrFromR8",            //
+                "VarBstrFromUI1",           //
+                "VarBstrFromUI2",           //
+                "VarBstrFromUI4",           //
+                "VarBstrFromUI8",           //
+                "VarDateFromI1",            //
+                "VarI2FromI1",              //
+                "VarI4FromI1",              //
+                "VarI8FromI1",              //
+                "VarMonthName",             //
+                "VarR4FromI1",              //
+                "VarUI1FromI1",             //
+                "VarUI2FromI1",             //
+                "VarUI4FromI1",             //
+                "VarUI8FromI1",             //
+                "VarWeekdayName",           //
+                "VarBoolFromCy",            //
+                "VarBstrFromCy",            //
+                "VarCyAbs",                 //
+                "VarCyAdd",                 //
+                "VarCyFix",                 //
+                "VarCyFromBool",            //
+                "VarCyFromDate",            //
+                "VarCyFromI1",              //
+                "VarCyFromI2",              //
+                "VarCyFromI4",              //
+                "VarCyFromI8",              //
+                "VarCyFromR4",              //
+                "VarCyFromR8",              //
+                "VarCyFromStr",             //
+                "VarCyFromUI1",             //
+                "VarCyFromUI2",             //
+                "VarCyFromUI4",             //
+                "VarCyFromUI8",             //
+                "VarCyInt",                 //
+                "VarCyMul",                 //
+                "VarCyMulI4",               //
+                "VarCyMulI8",               //
+                "VarCyNeg",                 //
+                "VarCyRound",               //
+                "VarCySub",                 //
+                "VarDateFromCy",            //
+                "VarDecFromBool",           //
+                "VarDecFromCy",             //
+                "VarDecFromDate",           //
+                "VarDecFromI1",             //
+                "VarDecFromI2",             //
+                "VarDecFromI4",             //
+                "VarDecFromI8",             //
+                "VarDecFromR4",             //
+                "VarDecFromR8",             //
+                "VarDecFromStr",            //
+                "VarDecFromUI1",            //
+                "VarDecFromUI2",            //
+                "VarDecFromUI4",            //
+                "VarDecFromUI8",            //
+                "VarI4FromCy",              //
+                "VarI8FromCy",              //
+                "VarUI1FromCy",             //
+                "VarUI2FromCy",             //
+                "VarUI4FromCy",             //
+                "VarUI8FromCy",             //
+                "VarI1FromCy",              // Crashes Windows
+                "VarI1FromBool",            // Crashes Windows
+                "VarI1FromUI1",             // Crashes Windows
+                "VarI1FromI2",              // Crashes Windows
+                "VarI1FromR8",              // Crashes Windows
+                "VarI1FromR4",              // Crashes Windows
+                "VarI1FromUI2",             // Crashes Windows
+                "VarI1FromI4",              // Crashes Windows
+                "VarI1FromDate",            // Crashes Windows
+                "VarI1FromUI8",             // Crashes Windows
+                "VarI1FromUI4",             // Crashes Windows
+                "OleDestroyMenuDescriptor", // Crashes Windows
+                "VarI1FromI8",              // Crashes Windows
             ],
         ),
         (
@@ -720,6 +740,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "AddPrintDeviceObject",        // ?
                 "CorePrinterDriverInstalledA", //
                 "CorePrinterDriverInstalledW", //
+                "RouterAllocBidiMem",          // Crashes Windows
+                "Shell_GetCachedImageIndex",   // Crashes Windows
+                "SHRegSetPathA",               // Crashes Windows
             ],
         ),
         (
@@ -745,6 +768,35 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "HlinkGetSpecialReference",                //
                 "GetCurrentProcessExplicitAppUserModelID", //
                 "SHCLSIDFromString",                       //
+                "PathCchCanonicalizeEx",                   // Crashes Windows
+                "SHSimpleIDListFromPath",                  // Crashes Windows
+                "SHAnsiToAnsi",                            // Crashes Windows
+                "RestartDialogEx",                         // Restart Windows
+                "StrCmpICW",                               // Crashes Windows
+                "wnsprintfW",                              // Crashes Windows
+                "SHGetNewLinkInfoW",                       // Crashes Windows
+                "StrCmpNICA",                              // Crashes Windows
+                "PathCchAddBackslash",                     // Crashes Windows
+                "SHRegGetBoolUSValueW",                    // Crashes Windows
+                "SHRegCreateUSKeyW",                       // Crashes Windows
+                "SHUnicodeToUnicode",                      // Crashes Windows
+                "ExtractAssociatedIconW",                  // Crashes Windows
+                "SHFind_InitMenuPopup",                    // Crashes Windows
+                "PathCchCanonicalize",                     // Crashes Windows
+                "UrlFixupW",                               // Crashes Windows
+                "StrCmpNCW",                               // Crashes Windows
+                "SetCurrentProcessExplicitAppUserModelID", // Crashes Windows
+                "StrCpyNW",                                // Crashes Windows
+                "SHRegCloseUSKey",                         // Crashes Windows
+                "DoEnvironmentSubstA",                     // Crashes Windows
+                "CommandLineToArgvW",                      // Crashes Windows
+                "SHEvaluateSystemCommandTemplate",         // Crashes Windows
+                "PathBuildRootW",                          // Crashes Windows
+                "PathCchRemoveBackslash",                  // Crashes Windows
+                "SHRegSetPathW",                           // Crashes Windows
+                "FindExecutableW",                         // Crashes Windows
+                "SHMessageBoxCheckW",                      // Opens message box
+                "PathQualify",                             // Crashes Windows
             ],
         ),
         (
@@ -883,6 +935,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "CheckIsMSIXPackage",                             //
                 "DeactivatePackageVirtualizationContext", // Not runs on Windows - Nie znaleziono punktu wejścia procedury DeactivatePackageVirtualizationContext w bibliotece
                 "DeletePackageDependency",                // Not runs on Windows
+                "GetCurrentPackageVirtualizationContext", // Not runs on Windows
             ],
         ),
         (
@@ -1424,7 +1477,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/InstallableFileSystems/mod.rs"
             ),
-            vec![],
+            vec![
+                "FilterAttach",                  // Not in Windows
+                "FilterAttachAtAltitude",        // Not in Windows
+                "FilterDetach",                  // Not in Windows
+                "FilterFindClose",               // Not in Windows
+                "FilterGetDosName",              // Not in Windows
+                "FilterInstanceFindClose",       // Not in Windows
+                "FilterLoad",                    // Not in Windows
+                "FilterUnload",                  // Not in Windows
+                "FilterVolumeFindClose",         // Not in Windows
+                "FilterVolumeInstanceFindClose", // Not in Windows
+            ],
         ),
         (
             "InteractionContext",
@@ -2045,6 +2109,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "IsDomainLegalCookieDomainA",     // Not runs on windows
                 "IsDomainLegalCookieDomainW",     // Not runs on windows
                 "FwpmDynamicKeywordUnsubscribe0", // Not runs on windows
+                "DoConnectoidsExist",             // Not runs on windows
+                "IsProfilesEnabled",              // Not in Windows
             ],
         ),
         (

@@ -231,12 +231,14 @@ pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
     // <<function_name>>
     // <<println>> - println which prints info about currently executed function
     // <<arguments>> - creating arguments
+    // <<print_execution_code>> - Print about executing function
     // <<execution_code>> - Executing function
     let single_function = r###"
-pub fn a_<<function_name>>(_file : &mut File)  {
+pub fn a_<<function_name>>(file : &mut File)  {
 	<<println>>
 <<arguments>>
     unsafe {
+	    <<print_execution_code>>
 	    <<execution_code>>  }
 }"###;
 
@@ -298,14 +300,23 @@ pub fn a_<<function_name>>(_file : &mut File)  {
 
         let mut execute_arguments = "".to_string();
         let mut creation_of_arguments = "".to_string();
+        function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
+        number_of_functions += 1;
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
-            number_of_functions += 1;
-            function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
             if additional_arguments.argument_before.contains("mut") {
                 creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!(
+                    "\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n",
+                    index, index
+                );
                 creation_of_arguments += &format!("\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = &mut argument{};\"));\n", index, index);
             } else {
                 creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!(
+                    "\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n",
+                    index, index
+                );
             }
 
             execute_arguments += &format!("argument_{}.0", index);
@@ -315,16 +326,18 @@ pub fn a_<<function_name>>(_file : &mut File)  {
         }
 
         let print = format!(
-            "println!(\"_____ Executing function \\\"{}\\\" from class \\\"{}\\\"\");",
+            "print_and_save(file, \"// Executing function \\\"{}\\\" from class \\\"{}\\\"\".to_string());",
             function_name, file_path
         );
         let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
+        let print_executed_arguments = format!("print_and_save(file,format!(\"{}({});\"));", function_name, execute_arguments);
 
         each_function_body.push(
             single_function
                 .replace("<<function_name>>", function_name)
                 .replace("<<println>>", &print)
                 .replace("<<arguments>>", &creation_of_arguments)
+                .replace("<<print_execution_code>>", &print_executed_arguments)
                 .replace("<<execution_code>>", &executed_arguments),
         );
     }

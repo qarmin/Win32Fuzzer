@@ -1,6 +1,8 @@
 use rand::prelude::SliceRandom;
 use rand::{thread_rng, Rng};
 use std::fs;
+use std::fs::File;
+use std::io::Write;
 
 pub struct SettingsTaker {
     pub(crate) ignored_functions: Vec<String>,
@@ -10,6 +12,11 @@ pub struct SettingsTaker {
     pub(crate) repeating_number: u32,
     pub(crate) all_repeating_number: u32,
     pub(crate) number_of_max_executed_function: i32,
+}
+
+pub fn print_and_save(file: &mut File, text: String) {
+    println!("{}", text);
+    writeln!(file, "{}", text).unwrap();
 }
 
 pub fn take_string() -> (String, String) {
