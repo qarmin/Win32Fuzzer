@@ -12,6 +12,7 @@ pub struct SettingsTaker {
     pub(crate) repeating_number: u32,
     pub(crate) all_repeating_number: u32,
     pub(crate) number_of_max_executed_function: i32,
+    pub(crate) random: bool,
 }
 
 pub fn print_and_save(file: &mut File, text: String) {
@@ -125,6 +126,7 @@ pub fn read_from_file() -> SettingsTaker {
                 repeating_number: 3,
                 all_repeating_number: 1,
                 number_of_max_executed_function: -1,
+                random: false,
             };
         }
     };
@@ -137,6 +139,7 @@ pub fn read_from_file() -> SettingsTaker {
         repeating_number: 3,
         all_repeating_number: 1,
         number_of_max_executed_function: -1,
+        random: false,
     };
 
     enum MODES {
@@ -148,6 +151,7 @@ pub fn read_from_file() -> SettingsTaker {
         Repeating,
         AllRepeating,
         MaxExecutedFunction,
+        Random,
     }
 
     let mut current_mode: MODES = MODES::None;
@@ -171,6 +175,8 @@ pub fn read_from_file() -> SettingsTaker {
             current_mode = MODES::AllRepeating;
         } else if new_line == "number_of_max_executed_function:" {
             current_mode = MODES::MaxExecutedFunction;
+        } else if new_line == "number_of_max_executed_function:" {
+            current_mode = MODES::Random;
         } else {
             if !new_line.is_empty() {
                 match current_mode {
@@ -193,6 +199,11 @@ pub fn read_from_file() -> SettingsTaker {
                             st.number_of_max_executed_function = number;
                         }
                     }
+                    MODES::Random => match new_line.trim() {
+                        "1" | "true" => st.random = true,
+                        "0" | "false" => st.random = false,
+                        _ => (),
+                    },
                     MODES::None => println!("SETTING: Missing mode for {}", new_line),
                 }
             }
@@ -229,6 +240,7 @@ pub fn read_from_file() -> SettingsTaker {
         println!("Repeating - {}", st.repeating_number);
         println!("All Repeating - {}", st.all_repeating_number);
         println!("Max Executed Functions - {}", st.number_of_max_executed_function);
+        println!("Randoms - {}", st.random);
         println!("End settings loading");
     }
 

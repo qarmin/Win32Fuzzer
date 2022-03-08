@@ -216,10 +216,15 @@ pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
     };
     
     // Random by default
-    for _i in 0..number_of_function {
+    for i in 0..number_of_function {
         // Missing some random functions
-        if rand::random::<bool>() {
+        if st.random && rand::random::<bool>() {
             let function = functions_to_check.choose(&mut rand::thread_rng()).unwrap().0;
+            for _z in 0..repeating_number{
+                function(file);
+            }
+        } else if !st.random {
+            let function = functions_to_check[i % functions_to_check.len()].0;
             for _z in 0..repeating_number{
                 function(file);
             }

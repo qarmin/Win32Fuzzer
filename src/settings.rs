@@ -2,6 +2,10 @@ use std::collections::BTreeMap;
 
 pub const WINDOWS_RS_FOLDER: &str = "/home/rafal/test/windows-rs/";
 pub const DISABLED_CLASSES: &[&str] = &[
+    "AddressBook", // Shows message box when os doesn't have any mail app inside
+    "Imapi",       // Shows message box when os doesn't have any mail app inside
+    "Shutdown",    // Shutdown computer
+    //
     "Gaming",                              // api-ms-win-gaming-expandedresources-l1-1-0.dll
     "P2P",                                 // p2p.dll
     "BiometricFramework",                  // winbio.dll
@@ -741,8 +745,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "CorePrinterDriverInstalledA", //
                 "CorePrinterDriverInstalledW", //
                 "RouterAllocBidiMem",          // Crashes Windows
-                "Shell_GetCachedImageIndex",   // Crashes Windows
                 "SHRegSetPathA",               // Crashes Windows
+                "ConnectToPrinterDlg",         // Shows Printer Dialog
             ],
         ),
         (
@@ -796,25 +800,61 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "SHRegSetPathW",                           // Crashes Windows
                 "FindExecutableW",                         // Crashes Windows
                 "SHMessageBoxCheckW",                      // Opens message box
+                "SHMessageBoxCheckA",                      // Opens message box
                 "PathQualify",                             // Crashes Windows
+                "StrCmpNICW",                              // Crashes Windows
+                "StrCmpCW",                                // Crashes Windows
+                "PathCleanupSpec",                         // Crashes Windows
+                "SHMessageBoxCheckW",                      // Opens message box
+                "StrCmpCA",                                // Crashes Windows
+                "PathIsUNCEx",                             // Crashes Windows
+                "SHEmptyRecycleBinA",                      // Clean Recycle Bin
+                "SHEmptyRecycleBinW",                      // Crashes Windowsv
+                "WinHelpW",                                // Opens help in Windows
+                "WinHelpA",                                // Opens help in Windows
+                "SHRegOpenUSKeyW",                         // Crashes Windows
+                "ExtractAssociatedIconExW",                // Crashes Windows
+                "SHGetNewLinkInfoA",                       // Crashes Windows
+                "PathCchAddBackslashEx",                   // Crashes Windows
+                "DoEnvironmentSubstW",                     // Crashes Windows
+                "SHStripMneumonicW",                       // Crashes Windows
+                "StrCmpNCA",                               // Crashes Windows
+                "Shell_GetCachedImageIndexW",              // Crashes Windows
+                "wnsprintfA",                              // Crashes Windows
+                "SHStripMneumonicA",                       // Crashes Windows
+                "RestartDialog",                           // Restart Box
+                "StrCmpICA",                               // Crashes Windows
+                "FindExecutableA",                         // Crashes Windows
+                "StrCatChainW",                            // Crashes Windows
+                "PathCchRemoveBackslashEx",                // Crashes Windows
+                "Shell_GetCachedImageIndex",               // Crashes Windows
+                "SHRegSetPathA",                           // Crashes Windows
             ],
         ),
         (
             "Threading",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"),
             vec![
-                "ExitProcess",          // Just crashes app
-                "ExitThread",           // Just crashes app
-                "GetThreadDescription", //
+                "ExitProcess",                      // Just crashes app
+                "ExitThread",                       // Just crashes app
+                "GetThreadDescription",             //
+                "Sleep",                            // Sleep threads
+                "SleepEx",                          // Sleep threads
+                "AvSetMmMaxThreadCharacteristicsW", // Crashes Windows
+                "AvSetMmThreadCharacteristicsA",    // Crashes Windows
+                "AvSetMmThreadCharacteristicsW",    // Crashes Windows
+                "AvSetMmMaxThreadCharacteristicsA", // Crashes Windows
+                "CloseThreadpoolCleanupGroup",      // Crashes Windows
             ],
         ),
         (
             "Urlmon",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"),
             vec![
-                "IEInstallScope", //
-                "FindMediaType",  //
-                "GetClassURL",    //
+                "IEInstallScope",       //
+                "FindMediaType",        //
+                "GetClassURL",          //
+                "CoInternetCompareUrl", // Crashes Windows
             ],
         ),
         (
@@ -954,7 +994,12 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Bluetooth",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Bluetooth/mod.rs"),
-            vec![],
+            vec![
+                "BluetoothFindRadioClose",           // Crashes Windows
+                "BluetoothFindDeviceClose",          // Crashes Windows
+                "BluetoothFindNextRadio",            // Crashes Windows
+                "BluetoothUnregisterAuthentication", // Crashes Windows
+            ],
         ),
         (
             "Cabinets",
@@ -972,7 +1017,12 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Catalog/mod.rs"
             ),
-            vec![],
+            vec![
+                "CryptCATAdminReleaseContext",          // Crashes Windows
+                "CryptCATAdminReleaseCatalogContext",   // Crashes Windows
+                "CryptCATAdminAddCatalog",              // Crashes Windows
+                "CryptCATAdminCalcHashFromFileHandle2", // Crashes Windows
+            ],
         ),
         (
             "Ceip",
@@ -1030,12 +1080,17 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Compression",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Compression/mod.rs"),
-            vec![],
+            vec![
+                "CloseDecompressor", // Crashes Windows
+                "ResetDecompressor", // Crashes Windows
+            ],
         ),
         (
             "Console",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Console/mod.rs"),
-            vec![],
+            vec![
+                "FreeConsole", // Crashes Windows
+            ],
         ),
         (
             "Controls",
@@ -1049,6 +1104,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "GetBufferedPaintTargetRect", //
                 "GetThemeRect",               //
                 "GetThemePosition",           //
+                "DlgDirSelectComboBoxExA",    // Crashes Windows
+                "DlgDirSelectExA",            // Crashes Windows
             ],
         ),
         (
@@ -1062,7 +1119,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Credentials",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Credentials/mod.rs"),
-            vec![],
+            vec![
+                "CredUIParseUserNameA", // Crashes Windows
+                "CredGetSessionTypes",  // Crashes Windows
+            ],
         ),
         (
             "Cryptography",
@@ -1080,7 +1140,12 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "DataExchange",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DataExchange/mod.rs"),
-            vec![],
+            vec![
+                "GetAtomNameA",       // Crashes Windows
+                "GlobalGetAtomNameW", // Crashes Windows
+                "GlobalGetAtomNameA", // Crashes Windows
+                "GetAtomNameW",       // Crashes Windows
+            ],
         ),
         (
             "DeveloperLicensing",
@@ -1101,7 +1166,16 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/DeviceAndDriverInstallation/mod.rs"
             ),
-            vec![],
+            vec![
+                "SetupBackupErrorW",         // Show Error
+                "SetupDeleteErrorA",         // Show Error
+                "SetupDeleteErrorW",         // Show Error
+                "InstallHinfSectionW",       // Show Error
+                "SetupBackupErrorA",         // Show Error
+                "SetupRenameErrorW",         // Show Error
+                "SetupRenameErrorA",         // Show Error
+                "SetupDiBuildClassInfoList", // Crashes Windows
+            ],
         ),
         (
             "DeviceQuery",
@@ -1238,7 +1312,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Display",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Display/mod.rs"),
-            vec![],
+            vec![
+                "EngUnicodeToMultiByteN", // Crashes Windows
+                "EngMultiByteToUnicodeN", // Crashes Windows
+            ],
         ),
         (
             "DistributedFileSystem",
@@ -1288,7 +1365,17 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Environment",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Environment/mod.rs"),
-            vec![],
+            vec![
+                "ExpandEnvironmentStringsW",        // Crashes Windows
+                "SetEnvironmentStringsW",           // Crashes Windows
+                "NeedCurrentDirectoryForExePathW",  // Crashes Windows
+                "GetCurrentDirectoryA",             // Crashes Windows
+                "NeedCurrentDirectoryForExePathA",  // Crashes Windows
+                "SetEnvironmentVariableW",          // Crashes Windows
+                "GetCurrentDirectoryW",             // Crashes Windows
+                "ExpandEnvironmentStringsA",        // Crashes Windows
+                "ExpandEnvironmentStringsForUserW", // Crashes Windows
+            ],
         ),
         (
             "ErrorReporting",
@@ -1296,7 +1383,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ErrorReporting/mod.rs"
             ),
-            vec![],
+            vec![
+                "WerRegisterAppLocalDump", // Crashes Window
+            ],
         ),
         (
             "Etw",
@@ -1364,7 +1453,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Gdi",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Gdi/mod.rs"),
             vec![
-                "TransparentBlt", // Not runs on Windows
+                "TransparentBlt",        // Not runs on Windows
+                "MapWindowPoints",       // Crashes Windows
+                "GetEnhMetaFileW",       // Crashes Windows
+                "GetTextExtentPointW",   // Crashes Windows
+                "AddFontResourceW",      // Crashes Windows
+                "GetTextExtentPoint32W", // Crashes Windows
+                "GetEnhMetaFileA",       // Crashes Windows
+                "GetMetaFileW",          // Crashes Windows
+                "GetMetaFileA",          // Crashes Windows
             ],
         ),
         (
@@ -1427,7 +1524,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/HumanInterfaceDevice/mod.rs"
             ),
-            vec![],
+            vec![
+                "HidD_FreePreparsedData", // Crashes Windows
+            ],
         ),
         (
             "Hypervisor",
@@ -1459,7 +1558,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Ime",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/Ime/mod.rs"),
-            vec![],
+            vec![
+                "ImmInstallIMEA", // Crashes Windows
+            ],
         ),
         (
             "IndexServer",
@@ -1506,7 +1607,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/IpHelper/mod.rs"
             ),
-            vec![],
+            vec![
+                "GetIpErrorString", // Crashes Windows
+            ],
         ),
         (
             "IscsiDisc",
@@ -1559,18 +1662,42 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/KeyboardAndMouse/mod.rs"
             ),
-            vec![],
+            vec![
+                "GetKeyNameTextA",        // Crashes Windows
+                "GetKeyboardLayoutNameA", // Crashes Windows
+            ],
         ),
         (
             "Ldap",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/Ldap/mod.rs"),
-            vec![],
+            vec![
+                "ldap_initW",       // Crashes Windows
+                "ldap_err2stringW", // Crashes Windows
+                "ldap_init",        // Crashes Windows
+                "cldap_openW",      // Crashes Windows
+                "ldap_sslinitA",    // Crashes Windows
+                "cldap_open",       // Crashes Windows
+                "ldap_err2stringA", // Crashes Windows
+                "ldap_sslinit",     // Crashes Windows
+                "ldap_openW",       // Crashes Windows
+                "cldap_openA",      // Crashes Windows
+                "ldap_sslinitW",    // Crashes Windows
+                "ldap_openA",       // Crashes Windows
+                "ldap_initA",       // Crashes Windows
+                "ldap_err2string",  // Crashes Windows
+                "ldap_open",        // Crashes Windows
+            ],
         ),
         (
             "LibraryLoader",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/LibraryLoader/mod.rs"),
             vec![
                 "FreeLibraryAndExitThread", // Looks that crashes it
+                "GetDllDirectoryA",         // Crashes Windows
+                "GetDllDirectoryW",         // Crashes Windows
+                "GetModuleFileNameA",       // Crashes Windows
+                "AddDllDirectory",          // Crashes Windows
+                "GetModuleFileNameW",       // Crashes Windows
             ],
         ),
         (
@@ -1643,7 +1770,24 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Multimedia",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Multimedia/mod.rs"),
-            vec![],
+            vec![
+                "DrawDibStart",                 // Crashes Windows
+                "ICInstall",                    // Crashes Windows
+                "mmioStringToFOURCCW",          // Crashes Windows
+                "mmTaskBlock",                  // Freeze on Windows
+                "AVIBuildFilterW",              // Crashes Windows
+                "mciGetDeviceIDA",              // Crashes Windows
+                "DrawDibGetPalette",            // Crashes Windows
+                "AVIBuildFilterA",              // Crashes Windows
+                "DrawDibStop",                  // Crashes Windows
+                "DrawDibClose",                 // Crashes Windows
+                "DrawDibEnd",                   // Crashes Windows
+                "mciGetDeviceIDFromElementIDA", // Crashes Windows
+                "mciSendStringA",               // Crashes Windows
+                "mciSendStringW",               // Crashes Windows
+                "MCIWndCreateW",                // Spams windows on Windows
+                "MCIWndCreateA",                // Spams windows on Windows
+            ],
         ),
         (
             "NetBios",
@@ -1659,7 +1803,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetManagement/mod.rs"
             ),
-            vec![],
+            vec![
+                "RouterAssert",      // Crashes Windows
+                "NetScheduleJobAdd", // Crashes Windows
+            ],
         ),
         (
             "NetShell",
@@ -1719,12 +1866,16 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Performance",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Performance/mod.rs"),
-            vec![],
+            vec![
+                "PerfEnumerateCounterSet", // Crashes Windows
+            ],
         ),
         (
             "Pipes",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Pipes/mod.rs"),
-            vec![],
+            vec![
+                "WaitNamedPipeW", // Crashes Windows
+            ],
         ),
         (
             "Pnp",
@@ -1763,7 +1914,22 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "ProcessStatus",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ProcessStatus/mod.rs"),
-            vec![],
+            vec![
+                "K32EnumProcesses", // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+                "",                 // Crashes Windows
+            ],
         ),
         (
             "ProjectedFileSystem",
@@ -1784,6 +1950,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "InitPropVariantFromResource",       //
                 "InitPropVariantFromStringAsVector", //
                 "InitVariantFromResource",           //
+                "ClearPropVariantArray",             // Crashes Windows
+                "ClearVariantArray",                 // Crashes Windows
             ],
         ),
         (
@@ -1809,7 +1977,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "RemoteDesktop",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/RemoteDesktop/mod.rs"),
-            vec![],
+            vec![
+                "WTSWaitSystemEvent", // Freeze Windows
+            ],
         ),
         (
             "RemoteManagement",
@@ -1838,7 +2008,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Data/RightsManagement/mod.rs"
             ),
-            vec![],
+            vec![
+                "DRMCheckSecurity", // Crashes Windows
+            ],
         ),
         (
             "Rpc",
@@ -1856,12 +2028,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Search",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Search/mod.rs"),
-            vec![],
+            vec![
+                "SQLCloseEnumServers", // Crashes Windows
+            ],
         ),
         (
             "Security",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/mod.rs"),
-            vec![],
+            vec![
+                "GetLengthSid",   // Crashes Windows
+                "EqualPrefixSid", // Crashes Windows
+                "EqualSid",       // Crashes Windows
+                "CopySid",        // Crashes Windows
+            ],
         ),
         (
             "SecurityCenter",
@@ -2012,7 +2191,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/TpmBaseServices/mod.rs"
             ),
-            vec![],
+            vec![
+                "GetDeviceIDString", // Crashes Windows
+            ],
         ),
         (
             "UI",
@@ -2111,6 +2292,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "FwpmDynamicKeywordUnsubscribe0", // Not runs on windows
                 "DoConnectoidsExist",             // Not runs on windows
                 "IsProfilesEnabled",              // Not in Windows
+                "InternetUnlockRequestFile",      // Crashes Windows
+                "InternetShowSecurityInfoByURLA", // Crashes Windows
+                "InternetShowSecurityInfoByURLW", // Crashes Windows
+                "InternetShowSecurityInfoByURL",  // Crashes Windows
             ],
         ),
         (
@@ -2129,7 +2314,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "WinTrust",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/WinTrust/mod.rs"),
-            vec![],
+            vec![
+                "OpenPersonalTrustDBDialog", // Opens Windows trust dialog
+            ],
         ),
         (
             "WindowsFilteringPlatform",
