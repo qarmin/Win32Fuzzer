@@ -149,7 +149,7 @@ fn main() {
         if DISABLED_CLASSES.contains(&class_name) {
             continue;
         }
-        let exceptions: HashSet<_> = exceptions.iter().map(|e| e.to_string()).collect();
+        let exceptions: HashSet<_> = exceptions.iter().map(|e| e.0.to_string()).collect();
         let mut file_data = FileData::new();
         parse_file(&mut file_data, &path);
         {

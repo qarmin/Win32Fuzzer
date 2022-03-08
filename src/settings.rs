@@ -1,3 +1,4 @@
+use self::TypeOfProblem::*;
 use std::collections::BTreeMap;
 
 pub const WINDOWS_RS_FOLDER: &str = "/home/rafal/test/windows-rs/";
@@ -301,84 +302,92 @@ pub const MANUAL_CLASSES: &[&str] = &[
     "WindowsProgramming",
 ];
 
-pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
+pub enum TypeOfProblem {
+    NotImplementedLinux,
+    NotImplementedWindows,
+    InvalidNumberOfArguments,
+    ShowsDialogWindows,
+    CrashesWindows,
+    //CrashesLinux,
+    CrashAutomatic, // Crashes are normal for this code
+    Freeze,
+    Other,
+}
+
+pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfProblem)>)> {
     vec![
         (
             "Printer",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
             vec![
-                "AddPrintDeviceObject",                       // Difference in number of arguments
-                "CloseSpoolFileHandle",                       // Not implemented
-                "CommitSpoolData",                            // Not implemented
-                "DeletePrinterIC",                            // Not implemented
-                "GdiGetPageCount",                            // Not implemented
-                "CloseSpoolFileHandle",                       // Not implemented
-                "DeleteJobNamedProperty",                     // Not implemented
-                "DeletePrinterDataA",                         // Not implemented
-                "DeletePrinterDataW",                         // Not implemented
-                "DeletePrinterDriverPackageA",                // Not implemented
-                "DeletePrinterDriverPackageW",                // Not implemented
-                "DeletePrinterKeyA",                          // Not implemented
-                "DeletePrinterKeyW",                          // Not implemented
-                "GdiDeleteSpoolFileHandle",                   // Not implemented
-                "GdiEndDocEMF",                               // Not implemented
-                "GdiEndPageEMF",                              // Not implemented
-                "GdiGetDC",                                   // Not implemented
-                "GdiStartPageEMF",                            // Not implemented
-                "InstallPrinterDriverFromPackageA",           // Not implemented
-                "InstallPrinterDriverFromPackageW",           // Not implemented
-                "PrinterMessageBoxA",                         // Not implemented
-                "PrinterMessageBoxW",                         // Not implemented
-                "ProvidorFindClosePrinterChangeNotification", // Not implemented
-                "RemovePrintDeviceObject",                    // Not implemented
-                "RouterAllocBidiMem",                         // Not implemented
-                "RouterAllocBidiResponseContainer",           // Not implemented
-                "RouterAllocPrinterNotifyInfo",               // Not implemented
-                "SpoolerFindClosePrinterChangeNotification",  // Not implemented
-                "UnRegisterForPrintAsyncNotifications",       // Not implemented
-                "UpdatePrintDeviceObject",                    // Not implemented
-                "WaitForPrinterChange",                       // Not implemented
-                "GdiGetPageHandle",                           // Not implemented
-                "GdiGetSpoolFileHandle",                      // Not implemented
-                "GdiResetDCEMF",                              // Not implemented
-                "GdiGetPageHandle",                           // Not implemented
-                "GdiGetPageHandle",                           // Not implemented
-                "GetPrinterDriverPackagePathA",               // Not implemented
-                "GetSpoolFileHandle",                         // Not implemented
-                "GetPrintOutputInfo",                         //
-                "GetPrinterDriver2A",                         //
-                "GetPrinterDriver2W",                         //
-                "GetPrinterDriverPackagePathW",               //
-                "SplIsSessionZero",                           //
-                "CorePrinterDriverInstalledW",                //
-                "CorePrinterDriverInstalledA",                //
-                "ConnectToPrinterDlg",                        // Shows Dialog in Windows
+                ("AddPrintDeviceObject", InvalidNumberOfArguments),
+                ("CloseSpoolFileHandle", NotImplementedLinux),
+                ("CommitSpoolData", NotImplementedLinux),
+                ("DeletePrinterIC", NotImplementedLinux),
+                ("GdiGetPageCount", NotImplementedLinux),
+                ("CloseSpoolFileHandle", NotImplementedLinux),
+                ("DeleteJobNamedProperty", NotImplementedLinux),
+                ("DeletePrinterDataA", NotImplementedLinux),
+                ("DeletePrinterDataW", NotImplementedLinux),
+                ("DeletePrinterDriverPackageA", NotImplementedLinux),
+                ("DeletePrinterDriverPackageW", NotImplementedLinux),
+                ("DeletePrinterKeyA", NotImplementedLinux),
+                ("DeletePrinterKeyW", NotImplementedLinux),
+                ("GdiDeleteSpoolFileHandle", NotImplementedLinux),
+                ("GdiEndDocEMF", NotImplementedLinux),
+                ("GdiEndPageEMF", NotImplementedLinux),
+                ("GdiGetDC", NotImplementedLinux),
+                ("GdiStartPageEMF", NotImplementedLinux),
+                ("InstallPrinterDriverFromPackageA", NotImplementedLinux),
+                ("InstallPrinterDriverFromPackageW", NotImplementedLinux),
+                ("PrinterMessageBoxA", NotImplementedLinux),
+                ("PrinterMessageBoxW", NotImplementedLinux),
+                ("ProvidorFindClosePrinterChangeNotification", NotImplementedLinux),
+                ("RemovePrintDeviceObject", NotImplementedLinux),
+                ("RouterAllocBidiMem", NotImplementedLinux),
+                ("RouterAllocBidiResponseContainer", NotImplementedLinux),
+                ("RouterAllocPrinterNotifyInfo", NotImplementedLinux),
+                ("SpoolerFindClosePrinterChangeNotification", NotImplementedLinux),
+                ("UnRegisterForPrintAsyncNotifications", NotImplementedLinux),
+                ("UpdatePrintDeviceObject", NotImplementedLinux),
+                ("WaitForPrinterChange", NotImplementedLinux),
+                ("GdiGetPageHandle", NotImplementedLinux),
+                ("GdiGetSpoolFileHandle", NotImplementedLinux),
+                ("GdiResetDCEMF", NotImplementedLinux),
+                ("GdiGetPageHandle", NotImplementedLinux),
+                ("GdiGetPageHandle", NotImplementedLinux),
+                ("GetPrinterDriverPackagePathA", NotImplementedLinux),
+                ("GetSpoolFileHandle", NotImplementedLinux),
+                ("GetPrintOutputInfo", InvalidNumberOfArguments),
+                ("GetPrinterDriver2A", InvalidNumberOfArguments),
+                ("GetPrinterDriver2W", InvalidNumberOfArguments),
+                ("GetPrinterDriverPackagePathW", InvalidNumberOfArguments),
+                ("SplIsSessionZero", InvalidNumberOfArguments),
+                ("CorePrinterDriverInstalledW", InvalidNumberOfArguments),
+                ("CorePrinterDriverInstalledA", InvalidNumberOfArguments),
+                ("ConnectToPrinterDlg", ShowsDialogWindows),
             ],
         ),
         (
             "Dwm",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dwm/mod.rs"),
             vec![
-                "DwmRegisterThumbnail",        // Expected 2 arguments, found 3
-                "DwmSetDxFrameDuration",       // Not implemented
-                "DwmIsCompositionEnabled",     //
-                "DwmGetGraphicsStreamClient",  //
-                "DwmQueryThumbnailSourceSize", //
+                ("DwmRegisterThumbnail", InvalidNumberOfArguments),
+                ("DwmSetDxFrameDuration", NotImplementedLinux),
+                ("DwmIsCompositionEnabled", InvalidNumberOfArguments),
+                ("DwmGetGraphicsStreamClient", InvalidNumberOfArguments),
+                ("DwmQueryThumbnailSourceSize", InvalidNumberOfArguments),
             ],
         ),
         (
             "Gaming",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Gaming/mod.rs"),
-            vec![
-                "GetExpandedResourceExclusiveCpuCount", // Expected 0, found 1 argument
-            ],
+            vec![("GetExpandedResourceExclusiveCpuCount", InvalidNumberOfArguments)],
         ),
         (
             "Dxgi",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dxgi/mod.rs"),
-            vec![
-                "DXGIDeclareAdapterRemovalSupport", // Not Implemented
-            ],
+            vec![("DXGIDeclareAdapterRemovalSupport", NotImplementedLinux)],
         ),
         (
             "BiometricFramework",
@@ -386,33 +395,28 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/BiometricFramework/mod.rs"
             ),
-            vec![
-                "WinBioEnrollCapture", // Invalid number of arguments
-                "WinBioLocateSensor",  // Invalid number of arguments
-            ],
+            vec![("WinBioEnrollCapture", CrashesWindows), ("WinBioLocateSensor", CrashesWindows)],
         ),
         (
             "Com",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/mod.rs"),
             vec![
-                "CoGetCallerTID",              // Invalid number of arguments
-                "CoGetContextToken",           // Invalid number of arguments
-                "CLSIDFromProgID",             //
-                "CLSIDFromProgIDEx",           //
-                "CLSIDFromString",             //
-                "CoCreateGuid",                //
-                "CoFileTimeNow",               //
-                "CoGetCurrentLogicalThreadId", //
-                "GetClassFile",                //
-                "IIDFromString",               //
+                ("CoGetCallerTID", CrashesWindows),
+                ("CoGetContextToken", CrashesWindows),
+                ("CLSIDFromProgID", InvalidNumberOfArguments),
+                ("CLSIDFromProgIDEx", InvalidNumberOfArguments),
+                ("CLSIDFromString", InvalidNumberOfArguments),
+                ("CoCreateGuid", InvalidNumberOfArguments),
+                ("CoFileTimeNow", InvalidNumberOfArguments),
+                ("CoGetCurrentLogicalThreadId", InvalidNumberOfArguments),
+                ("GetClassFile", InvalidNumberOfArguments),
+                ("IIDFromString", InvalidNumberOfArguments),
             ],
         ),
         (
             "CloudFilters",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/CloudFilters/mod.rs"),
-            vec![
-                "CfGetTransferKey", // Invalid number of arguments
-            ],
+            vec![("CfGetTransferKey", CrashesWindows)],
         ),
         (
             "Debug",
@@ -421,18 +425,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
             ),
             vec![
-                "FatalExit",                          // Crashes Everything
-                "SymFunctionTableAccess",             // TODO not exists, why?
-                "SymGetModuleBase",                   // TODO not exists, why?
-                "SymLoadModule",                      // TODO not exists, why?
-                "SymUnloadModule",                    // TODO not exists, why?
-                "Beep",                               // Beeps, useless and stops executing of app
-                "DebugBreak",                         // "Crashes" fuzzer
-                "SymGetSearchPath",                   // Crashes Windows
-                "TerminateProcessOnMemoryExhaustion", // Crashes Windows
-                "FatalAppExitW",                      // Crashes Windows
-                "SymMatchFileNameW",                  // Crashes Windows
-                "FatalAppExitA",                      // Crashes Windows
+                ("FatalExit", CrashAutomatic),
+                ("SymFunctionTableAccess", NotImplementedWindows),
+                ("SymGetModuleBase", NotImplementedWindows),
+                ("SymLoadModule", NotImplementedWindows),
+                ("SymUnloadModule", NotImplementedWindows),
+                ("Beep", Freeze),
+                ("DebugBreak", CrashAutomatic),
+                ("SymGetSearchPath", CrashesWindows),
+                ("TerminateProcessOnMemoryExhaustion", CrashesWindows),
+                ("FatalAppExitW", CrashesWindows),
+                ("SymMatchFileNameW", CrashesWindows),
+                ("FatalAppExitA", CrashesWindows),
             ],
         ),
         (
@@ -442,31 +446,28 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DeploymentServices/mod.rs"
             ),
             vec![
-                "WdsCliGetEnumerationFlags",              // Invalid number of arguments
-                "WdsCliFindFirstImage",                   // Invalid number of arguments
-                "WdsCliGetImageHandleFromFindHandle",     // Invalid number of arguments
-                "WdsCliGetImageHandleFromTransferHandle", // Invalid number of arguments
-                "WdsCliGetImageIndex",                    // Invalid number of arguments
-                "WdsCliGetImageSize",                     // Invalid number of arguments
-                "WdsCliGetTransferSize",                  // Invalid number of arguments
-                "WdsCliGetImageVersion",                  //
-                "WdsCliGetImagePath",                     //
-                "WdsCliGetImageNamespace",                //
-                "WdsCliGetImageName",                     //
-                "WdsCliGetImageLanguage",                 //
-                "WdsCliGetImageHalName",                  //
-                "WdsCliGetImageGroup",                    //
-                "WdsCliGetImageDescription",              //
-                "WdsCliGetDriverQueryXml",                //
+                ("WdsCliGetEnumerationFlags", CrashesWindows),
+                ("WdsCliFindFirstImage", CrashesWindows),
+                ("WdsCliGetImageHandleFromFindHandle", CrashesWindows),
+                ("WdsCliGetImageHandleFromTransferHandle", CrashesWindows),
+                ("WdsCliGetImageIndex", CrashesWindows),
+                ("WdsCliGetImageSize", CrashesWindows),
+                ("WdsCliGetTransferSize", CrashesWindows),
+                ("WdsCliGetImageVersion", InvalidNumberOfArguments),
+                ("WdsCliGetImagePath", InvalidNumberOfArguments),
+                ("WdsCliGetImageNamespace", InvalidNumberOfArguments),
+                ("WdsCliGetImageName", InvalidNumberOfArguments),
+                ("WdsCliGetImageLanguage", InvalidNumberOfArguments),
+                ("WdsCliGetImageHalName", InvalidNumberOfArguments),
+                ("WdsCliGetImageGroup", InvalidNumberOfArguments),
+                ("WdsCliGetImageDescription", InvalidNumberOfArguments),
+                ("WdsCliGetDriverQueryXml", InvalidNumberOfArguments),
             ],
         ),
         (
             "FileSystem",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileSystem/mod.rs"),
-            vec![
-                "WofGetDriverVersion", // Invalid number of arguments
-                "WofWimAddEntry",      // Invalid number of arguments
-            ],
+            vec![("WofGetDriverVersion", CrashesWindows), ("WofWimAddEntry", CrashesWindows)],
         ),
         (
             "Identity",
@@ -474,9 +475,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authentication/Identity/mod.rs"
             ),
-            vec![
-                "SLGetWindowsInformationDWORD", // Invalid number of arguments
-            ],
+            vec![("SLGetWindowsInformationDWORD", CrashesWindows)],
         ),
         (
             "MediaFoundation",
@@ -485,224 +484,224 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/MediaFoundation/mod.rs"
             ),
             vec![
-                "MFAllocateSerialWorkQueue",        //
-                "MFAllocateWorkQueue",              //
-                "MFFrameRateToAverageTimePerFrame", //
-                "MFGetPlaneSize",                   //
-                "MFGetStrideForBitmapInfoHeader",   //
-                "MFGetTimerPeriodicity",            //
-                "MFGetWorkQueueMMCSSPriority",      //
-                "MFGetWorkQueueMMCSSTaskId",        //
+                ("MFAllocateSerialWorkQueue", InvalidNumberOfArguments),
+                ("MFAllocateWorkQueue", InvalidNumberOfArguments),
+                ("MFFrameRateToAverageTimePerFrame", InvalidNumberOfArguments),
+                ("MFGetPlaneSize", InvalidNumberOfArguments),
+                ("MFGetStrideForBitmapInfoHeader", InvalidNumberOfArguments),
+                ("MFGetTimerPeriodicity", InvalidNumberOfArguments),
+                ("MFGetWorkQueueMMCSSPriority", InvalidNumberOfArguments),
+                ("MFGetWorkQueueMMCSSTaskId", InvalidNumberOfArguments),
             ],
         ),
         (
             "Ole",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
             vec![
-                "VarI4FromI8",              //
-                "VarI4FromStr",             //
-                "VarI4FromUI4",             //
-                "VarI4FromUI8",             //
-                "VarI8FromStr",             //
-                "VarI8FromUI4",             //
-                "VarI8FromUI4",             //
-                "VarI8FromUI8",             //
-                "VarUI4FromI4",             //
-                "VarUI4FromI8",             //
-                "VarUI4FromStr",            //
-                "VarUI4FromUI8",            //
-                "VarUI8FromI8",             //
-                "VarUI8FromStr",            //
-                "VarUI8FromUI4",            //
-                "VarDateFromI4",            //
-                "VarDateFromI8",            //
-                "VarDateFromR4",            //
-                "VarDateFromR8",            //
-                "VarDateFromStr",           //
-                "VarDateFromUI2",           //
-                "VarDateFromUI4",           //
-                "VarDateFromUI8",           //
-                "VarI4FromDate",            //
-                "VarI4FromR4",              //
-                "VarI4FromR8",              //
-                "VarI4FromUI2",             //
-                "VarI8FromDate",            //
-                "VarI8FromR4",              //
-                "VarI8FromR8",              //
-                "VarI8FromUI2",             //
-                "VarR4FromDate",            //
-                "VarR4FromI4",              //
-                "VarR4FromI8",              //
-                "VarR4FromR8",              //
-                "VarR4FromStr",             //
-                "VarR4FromUI2",             //
-                "VarR4FromUI4",             //
-                "VarR4FromUI8",             //
-                "VarR8FromDate",            //
-                "VarR8FromI4",              //
-                "VarR8FromI8",              //
-                "VarR8FromR4",              //
-                "VarR8FromStr",             //
-                "VarR8FromUI2",             //
-                "VarR8FromUI4",             //
-                "VarR8FromUI8",             //
-                "VarR8Pow",                 //
-                "VarR8Round",               //
-                "VarUI2FromDate",           //
-                "VarUI2FromI4",             //
-                "VarUI2FromI8",             //
-                "VarUI2FromR4",             //
-                "VarUI2FromStr",            //
-                "VarUI2FromUI4",            //
-                "VarUI2FromUI8",            //
-                "VarUI4FromDate",           //
-                "VarUI4FromR4",             //
-                "VarUI4FromR8",             //
-                "VarUI4FromUI2",            //
-                "VarUI8FromDate",           //
-                "VarUI8FromR4",             //
-                "VarUI8FromR8",             //
-                "VarUI8FromUI2",            //
-                "VarBoolFromDate",          //
-                "VarBoolFromI2",            //
-                "VarBoolFromI4",            //
-                "VarBoolFromI8",            //
-                "VarBoolFromR4",            //
-                "VarBoolFromR8",            //
-                "VarBoolFromStr",           //
-                "VarBoolFromUI1",           //
-                "VarBoolFromUI2",           //
-                "VarBoolFromUI4",           //
-                "VarBoolFromUI8",           //
-                "VarDateFromBool",          //
-                "VarDateFromI2",            //
-                "VarDateFromUI1",           //
-                "VarI2FromBool",            //
-                "VarI2FromDate",            //
-                "VarI2FromI4",              //
-                "VarI2FromI8",              //
-                "VarI2FromR4",              //
-                "VarI2FromR8",              //
-                "VarI2FromStr",             //
-                "VarI2FromUI1",             //
-                "VarI2FromUI2",             //
-                "VarI2FromUI4",             //
-                "VarI2FromUI8",             //
-                "VarI4FromBool",            //
-                "VarI4FromI2",              //
-                "VarI4FromUI1",             //
-                "VarI8FromBool",            //
-                "VarI8FromI2",              //
-                "VarI8FromUI1",             //
-                "VarR4FromBool",            //
-                "VarR4FromI2",              //
-                "VarR4FromUI1",             //
-                "VarR8FromBool",            //
-                "VarR8FromI2",              //
-                "VarR8FromUI1",             //
-                "VarUI1FromBool",           //
-                "VarUI1FromDate",           //
-                "VarUI1FromI2",             //
-                "VarUI1FromI4",             //
-                "VarUI1FromI8",             //
-                "VarUI1FromR4",             //
-                "VarUI1FromR8",             //
-                "VarUI1FromStr",            //
-                "VarUI1FromUI2",            //
-                "VarUI1FromUI4",            //
-                "VarUI1FromUI8",            //
-                "VarUI2FromBool",           //
-                "VarUI2FromI2",             //
-                "VarUI2FromUI1",            //
-                "VarUI4FromBool",           //
-                "VarUI4FromI2",             //
-                "VarUI4FromUI1",            //
-                "VarUI8FromBool",           //
-                "VarUI8FromI2",             //
-                "VarUI8FromUI1",            //
-                "VarBoolFromI1",            //
-                "VarBstrFromBool",          //
-                "VarBstrFromDate",          //
-                "VarBstrFromI1",            //
-                "VarBstrFromI2",            //
-                "VarBstrFromI4",            //
-                "VarBstrFromI8",            //
-                "VarBstrFromR4",            //
-                "VarBstrFromR8",            //
-                "VarBstrFromUI1",           //
-                "VarBstrFromUI2",           //
-                "VarBstrFromUI4",           //
-                "VarBstrFromUI8",           //
-                "VarDateFromI1",            //
-                "VarI2FromI1",              //
-                "VarI4FromI1",              //
-                "VarI8FromI1",              //
-                "VarMonthName",             //
-                "VarR4FromI1",              //
-                "VarUI1FromI1",             //
-                "VarUI2FromI1",             //
-                "VarUI4FromI1",             //
-                "VarUI8FromI1",             //
-                "VarWeekdayName",           //
-                "VarBoolFromCy",            //
-                "VarBstrFromCy",            //
-                "VarCyAbs",                 //
-                "VarCyAdd",                 //
-                "VarCyFix",                 //
-                "VarCyFromBool",            //
-                "VarCyFromDate",            //
-                "VarCyFromI1",              //
-                "VarCyFromI2",              //
-                "VarCyFromI4",              //
-                "VarCyFromI8",              //
-                "VarCyFromR4",              //
-                "VarCyFromR8",              //
-                "VarCyFromStr",             //
-                "VarCyFromUI1",             //
-                "VarCyFromUI2",             //
-                "VarCyFromUI4",             //
-                "VarCyFromUI8",             //
-                "VarCyInt",                 //
-                "VarCyMul",                 //
-                "VarCyMulI4",               //
-                "VarCyMulI8",               //
-                "VarCyNeg",                 //
-                "VarCyRound",               //
-                "VarCySub",                 //
-                "VarDateFromCy",            //
-                "VarDecFromBool",           //
-                "VarDecFromCy",             //
-                "VarDecFromDate",           //
-                "VarDecFromI1",             //
-                "VarDecFromI2",             //
-                "VarDecFromI4",             //
-                "VarDecFromI8",             //
-                "VarDecFromR4",             //
-                "VarDecFromR8",             //
-                "VarDecFromStr",            //
-                "VarDecFromUI1",            //
-                "VarDecFromUI2",            //
-                "VarDecFromUI4",            //
-                "VarDecFromUI8",            //
-                "VarI4FromCy",              //
-                "VarI8FromCy",              //
-                "VarUI1FromCy",             //
-                "VarUI2FromCy",             //
-                "VarUI4FromCy",             //
-                "VarUI8FromCy",             //
-                "VarI1FromCy",              // Crashes Windows
-                "VarI1FromBool",            // Crashes Windows
-                "VarI1FromUI1",             // Crashes Windows
-                "VarI1FromI2",              // Crashes Windows
-                "VarI1FromR8",              // Crashes Windows
-                "VarI1FromR4",              // Crashes Windows
-                "VarI1FromUI2",             // Crashes Windows
-                "VarI1FromI4",              // Crashes Windows
-                "VarI1FromDate",            // Crashes Windows
-                "VarI1FromUI8",             // Crashes Windows
-                "VarI1FromUI4",             // Crashes Windows
-                "OleDestroyMenuDescriptor", // Crashes Windows
-                "VarI1FromI8",              // Crashes Windows
+                ("VarI4FromI8", InvalidNumberOfArguments),
+                ("VarI4FromStr", InvalidNumberOfArguments),
+                ("VarI4FromUI4", InvalidNumberOfArguments),
+                ("VarI4FromUI8", InvalidNumberOfArguments),
+                ("VarI8FromStr", InvalidNumberOfArguments),
+                ("VarI8FromUI4", InvalidNumberOfArguments),
+                ("VarI8FromUI4", InvalidNumberOfArguments),
+                ("VarI8FromUI8", InvalidNumberOfArguments),
+                ("VarUI4FromI4", InvalidNumberOfArguments),
+                ("VarUI4FromI8", InvalidNumberOfArguments),
+                ("VarUI4FromStr", InvalidNumberOfArguments),
+                ("VarUI4FromUI8", InvalidNumberOfArguments),
+                ("VarUI8FromI8", InvalidNumberOfArguments),
+                ("VarUI8FromStr", InvalidNumberOfArguments),
+                ("VarUI8FromUI4", InvalidNumberOfArguments),
+                ("VarDateFromI4", InvalidNumberOfArguments),
+                ("VarDateFromI8", InvalidNumberOfArguments),
+                ("VarDateFromR4", InvalidNumberOfArguments),
+                ("VarDateFromR8", InvalidNumberOfArguments),
+                ("VarDateFromStr", InvalidNumberOfArguments),
+                ("VarDateFromUI2", InvalidNumberOfArguments),
+                ("VarDateFromUI4", InvalidNumberOfArguments),
+                ("VarDateFromUI8", InvalidNumberOfArguments),
+                ("VarI4FromDate", InvalidNumberOfArguments),
+                ("VarI4FromR4", InvalidNumberOfArguments),
+                ("VarI4FromR8", InvalidNumberOfArguments),
+                ("VarI4FromUI2", InvalidNumberOfArguments),
+                ("VarI8FromDate", InvalidNumberOfArguments),
+                ("VarI8FromR4", InvalidNumberOfArguments),
+                ("VarI8FromR8", InvalidNumberOfArguments),
+                ("VarI8FromUI2", InvalidNumberOfArguments),
+                ("VarR4FromDate", InvalidNumberOfArguments),
+                ("VarR4FromI4", InvalidNumberOfArguments),
+                ("VarR4FromI8", InvalidNumberOfArguments),
+                ("VarR4FromR8", InvalidNumberOfArguments),
+                ("VarR4FromStr", InvalidNumberOfArguments),
+                ("VarR4FromUI2", InvalidNumberOfArguments),
+                ("VarR4FromUI4", InvalidNumberOfArguments),
+                ("VarR4FromUI8", InvalidNumberOfArguments),
+                ("VarR8FromDate", InvalidNumberOfArguments),
+                ("VarR8FromI4", InvalidNumberOfArguments),
+                ("VarR8FromI8", InvalidNumberOfArguments),
+                ("VarR8FromR4", InvalidNumberOfArguments),
+                ("VarR8FromStr", InvalidNumberOfArguments),
+                ("VarR8FromUI2", InvalidNumberOfArguments),
+                ("VarR8FromUI4", InvalidNumberOfArguments),
+                ("VarR8FromUI8", InvalidNumberOfArguments),
+                ("VarR8Pow", InvalidNumberOfArguments),
+                ("VarR8Round", InvalidNumberOfArguments),
+                ("VarUI2FromDate", InvalidNumberOfArguments),
+                ("VarUI2FromI4", InvalidNumberOfArguments),
+                ("VarUI2FromI8", InvalidNumberOfArguments),
+                ("VarUI2FromR4", InvalidNumberOfArguments),
+                ("VarUI2FromStr", InvalidNumberOfArguments),
+                ("VarUI2FromUI4", InvalidNumberOfArguments),
+                ("VarUI2FromUI8", InvalidNumberOfArguments),
+                ("VarUI4FromDate", InvalidNumberOfArguments),
+                ("VarUI4FromR4", InvalidNumberOfArguments),
+                ("VarUI4FromR8", InvalidNumberOfArguments),
+                ("VarUI4FromUI2", InvalidNumberOfArguments),
+                ("VarUI8FromDate", InvalidNumberOfArguments),
+                ("VarUI8FromR4", InvalidNumberOfArguments),
+                ("VarUI8FromR8", InvalidNumberOfArguments),
+                ("VarUI8FromUI2", InvalidNumberOfArguments),
+                ("VarBoolFromDate", InvalidNumberOfArguments),
+                ("VarBoolFromI2", InvalidNumberOfArguments),
+                ("VarBoolFromI4", InvalidNumberOfArguments),
+                ("VarBoolFromI8", InvalidNumberOfArguments),
+                ("VarBoolFromR4", InvalidNumberOfArguments),
+                ("VarBoolFromR8", InvalidNumberOfArguments),
+                ("VarBoolFromStr", InvalidNumberOfArguments),
+                ("VarBoolFromUI1", InvalidNumberOfArguments),
+                ("VarBoolFromUI2", InvalidNumberOfArguments),
+                ("VarBoolFromUI4", InvalidNumberOfArguments),
+                ("VarBoolFromUI8", InvalidNumberOfArguments),
+                ("VarDateFromBool", InvalidNumberOfArguments),
+                ("VarDateFromI2", InvalidNumberOfArguments),
+                ("VarDateFromUI1", InvalidNumberOfArguments),
+                ("VarI2FromBool", InvalidNumberOfArguments),
+                ("VarI2FromDate", InvalidNumberOfArguments),
+                ("VarI2FromI4", InvalidNumberOfArguments),
+                ("VarI2FromI8", InvalidNumberOfArguments),
+                ("VarI2FromR4", InvalidNumberOfArguments),
+                ("VarI2FromR8", InvalidNumberOfArguments),
+                ("VarI2FromStr", InvalidNumberOfArguments),
+                ("VarI2FromUI1", InvalidNumberOfArguments),
+                ("VarI2FromUI2", InvalidNumberOfArguments),
+                ("VarI2FromUI4", InvalidNumberOfArguments),
+                ("VarI2FromUI8", InvalidNumberOfArguments),
+                ("VarI4FromBool", InvalidNumberOfArguments),
+                ("VarI4FromI2", InvalidNumberOfArguments),
+                ("VarI4FromUI1", InvalidNumberOfArguments),
+                ("VarI8FromBool", InvalidNumberOfArguments),
+                ("VarI8FromI2", InvalidNumberOfArguments),
+                ("VarI8FromUI1", InvalidNumberOfArguments),
+                ("VarR4FromBool", InvalidNumberOfArguments),
+                ("VarR4FromI2", InvalidNumberOfArguments),
+                ("VarR4FromUI1", InvalidNumberOfArguments),
+                ("VarR8FromBool", InvalidNumberOfArguments),
+                ("VarR8FromI2", InvalidNumberOfArguments),
+                ("VarR8FromUI1", InvalidNumberOfArguments),
+                ("VarUI1FromBool", InvalidNumberOfArguments),
+                ("VarUI1FromDate", InvalidNumberOfArguments),
+                ("VarUI1FromI2", InvalidNumberOfArguments),
+                ("VarUI1FromI4", InvalidNumberOfArguments),
+                ("VarUI1FromI8", InvalidNumberOfArguments),
+                ("VarUI1FromR4", InvalidNumberOfArguments),
+                ("VarUI1FromR8", InvalidNumberOfArguments),
+                ("VarUI1FromStr", InvalidNumberOfArguments),
+                ("VarUI1FromUI2", InvalidNumberOfArguments),
+                ("VarUI1FromUI4", InvalidNumberOfArguments),
+                ("VarUI1FromUI8", InvalidNumberOfArguments),
+                ("VarUI2FromBool", InvalidNumberOfArguments),
+                ("VarUI2FromI2", InvalidNumberOfArguments),
+                ("VarUI2FromUI1", InvalidNumberOfArguments),
+                ("VarUI4FromBool", InvalidNumberOfArguments),
+                ("VarUI4FromI2", InvalidNumberOfArguments),
+                ("VarUI4FromUI1", InvalidNumberOfArguments),
+                ("VarUI8FromBool", InvalidNumberOfArguments),
+                ("VarUI8FromI2", InvalidNumberOfArguments),
+                ("VarUI8FromUI1", InvalidNumberOfArguments),
+                ("VarBoolFromI1", InvalidNumberOfArguments),
+                ("VarBstrFromBool", InvalidNumberOfArguments),
+                ("VarBstrFromDate", InvalidNumberOfArguments),
+                ("VarBstrFromI1", InvalidNumberOfArguments),
+                ("VarBstrFromI2", InvalidNumberOfArguments),
+                ("VarBstrFromI4", InvalidNumberOfArguments),
+                ("VarBstrFromI8", InvalidNumberOfArguments),
+                ("VarBstrFromR4", InvalidNumberOfArguments),
+                ("VarBstrFromR8", InvalidNumberOfArguments),
+                ("VarBstrFromUI1", InvalidNumberOfArguments),
+                ("VarBstrFromUI2", InvalidNumberOfArguments),
+                ("VarBstrFromUI4", InvalidNumberOfArguments),
+                ("VarBstrFromUI8", InvalidNumberOfArguments),
+                ("VarDateFromI1", InvalidNumberOfArguments),
+                ("VarI2FromI1", InvalidNumberOfArguments),
+                ("VarI4FromI1", InvalidNumberOfArguments),
+                ("VarI8FromI1", InvalidNumberOfArguments),
+                ("VarMonthName", InvalidNumberOfArguments),
+                ("VarR4FromI1", InvalidNumberOfArguments),
+                ("VarUI1FromI1", InvalidNumberOfArguments),
+                ("VarUI2FromI1", InvalidNumberOfArguments),
+                ("VarUI4FromI1", InvalidNumberOfArguments),
+                ("VarUI8FromI1", InvalidNumberOfArguments),
+                ("VarWeekdayName", InvalidNumberOfArguments),
+                ("VarBoolFromCy", InvalidNumberOfArguments),
+                ("VarBstrFromCy", InvalidNumberOfArguments),
+                ("VarCyAbs", InvalidNumberOfArguments),
+                ("VarCyAdd", InvalidNumberOfArguments),
+                ("VarCyFix", InvalidNumberOfArguments),
+                ("VarCyFromBool", InvalidNumberOfArguments),
+                ("VarCyFromDate", InvalidNumberOfArguments),
+                ("VarCyFromI1", InvalidNumberOfArguments),
+                ("VarCyFromI2", InvalidNumberOfArguments),
+                ("VarCyFromI4", InvalidNumberOfArguments),
+                ("VarCyFromI8", InvalidNumberOfArguments),
+                ("VarCyFromR4", InvalidNumberOfArguments),
+                ("VarCyFromR8", InvalidNumberOfArguments),
+                ("VarCyFromStr", InvalidNumberOfArguments),
+                ("VarCyFromUI1", InvalidNumberOfArguments),
+                ("VarCyFromUI2", InvalidNumberOfArguments),
+                ("VarCyFromUI4", InvalidNumberOfArguments),
+                ("VarCyFromUI8", InvalidNumberOfArguments),
+                ("VarCyInt", InvalidNumberOfArguments),
+                ("VarCyMul", InvalidNumberOfArguments),
+                ("VarCyMulI4", InvalidNumberOfArguments),
+                ("VarCyMulI8", InvalidNumberOfArguments),
+                ("VarCyNeg", InvalidNumberOfArguments),
+                ("VarCyRound", InvalidNumberOfArguments),
+                ("VarCySub", InvalidNumberOfArguments),
+                ("VarDateFromCy", InvalidNumberOfArguments),
+                ("VarDecFromBool", InvalidNumberOfArguments),
+                ("VarDecFromCy", InvalidNumberOfArguments),
+                ("VarDecFromDate", InvalidNumberOfArguments),
+                ("VarDecFromI1", InvalidNumberOfArguments),
+                ("VarDecFromI2", InvalidNumberOfArguments),
+                ("VarDecFromI4", InvalidNumberOfArguments),
+                ("VarDecFromI8", InvalidNumberOfArguments),
+                ("VarDecFromR4", InvalidNumberOfArguments),
+                ("VarDecFromR8", InvalidNumberOfArguments),
+                ("VarDecFromStr", InvalidNumberOfArguments),
+                ("VarDecFromUI1", InvalidNumberOfArguments),
+                ("VarDecFromUI2", InvalidNumberOfArguments),
+                ("VarDecFromUI4", InvalidNumberOfArguments),
+                ("VarDecFromUI8", InvalidNumberOfArguments),
+                ("VarI4FromCy", InvalidNumberOfArguments),
+                ("VarI8FromCy", InvalidNumberOfArguments),
+                ("VarUI1FromCy", InvalidNumberOfArguments),
+                ("VarUI2FromCy", InvalidNumberOfArguments),
+                ("VarUI4FromCy", InvalidNumberOfArguments),
+                ("VarUI8FromCy", InvalidNumberOfArguments),
+                ("VarI1FromCy", CrashesWindows),
+                ("VarI1FromBool", CrashesWindows),
+                ("VarI1FromUI1", CrashesWindows),
+                ("VarI1FromI2", CrashesWindows),
+                ("VarI1FromR8", CrashesWindows),
+                ("VarI1FromR4", CrashesWindows),
+                ("VarI1FromUI2", CrashesWindows),
+                ("VarI1FromI4", CrashesWindows),
+                ("VarI1FromDate", CrashesWindows),
+                ("VarI1FromUI8", CrashesWindows),
+                ("VarI1FromUI4", CrashesWindows),
+                ("OleDestroyMenuDescriptor", CrashesWindows),
+                ("VarI1FromI8", CrashesWindows),
             ],
         ),
         (
@@ -712,19 +711,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/P2P/mod.rs"
             ),
             vec![
-                "PeerIdentityGetCryptKey",     //
-                "PeerCollabGetSigninOptions",  //
-                "PeerNameToPeerHostName",      //
-                "PeerIdentityImport",          //
-                "PeerIdentityGetXML",          //
-                "PeerIdentityGetFriendlyName", //
-                "PeerIdentityGetDefault",      //
-                "PeerIdentityExport",          //
-                "PeerIdentityCreate",          //
-                "PeerHostNameToPeerName",      //
-                "PeerCreatePeerName",          //
-                "PeerCollabGetEndpointName",   //
-                "PeerCollabExportContact",     //
+                ("PeerIdentityGetCryptKey", InvalidNumberOfArguments),
+                ("PeerCollabGetSigninOptions", InvalidNumberOfArguments),
+                ("PeerNameToPeerHostName", InvalidNumberOfArguments),
+                ("PeerIdentityImport", InvalidNumberOfArguments),
+                ("PeerIdentityGetXML", InvalidNumberOfArguments),
+                ("PeerIdentityGetFriendlyName", InvalidNumberOfArguments),
+                ("PeerIdentityGetDefault", InvalidNumberOfArguments),
+                ("PeerIdentityExport", InvalidNumberOfArguments),
+                ("PeerIdentityCreate", InvalidNumberOfArguments),
+                ("PeerHostNameToPeerName", InvalidNumberOfArguments),
+                ("PeerCreatePeerName", InvalidNumberOfArguments),
+                ("PeerCollabGetEndpointName", InvalidNumberOfArguments),
+                ("PeerCollabExportContact", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -733,20 +732,17 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/PrintTicket/mod.rs"
             ),
-            vec![
-                "PTQuerySchemaVersionSupport", //
-            ],
+            vec![("PTQuerySchemaVersionSupport", InvalidNumberOfArguments)],
         ),
         (
             "Printing",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
             vec![
-                "AddPrintDeviceObject",        // ?
-                "CorePrinterDriverInstalledA", //
-                "CorePrinterDriverInstalledW", //
-                "RouterAllocBidiMem",          // Crashes Windows
-                "SHRegSetPathA",               // Crashes Windows
-                "ConnectToPrinterDlg",         // Shows Printer Dialog
+                ("CorePrinterDriverInstalledA", InvalidNumberOfArguments),
+                ("CorePrinterDriverInstalledW", InvalidNumberOfArguments),
+                ("RouterAllocBidiMem", CrashesWindows),
+                ("SHRegSetPathA", CrashesWindows),
+                ("ConnectToPrinterDlg", ShowsDialogWindows),
             ],
         ),
         (
@@ -758,121 +754,121 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Shell",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/mod.rs"),
             vec![
-                "RegisterScaleChangeEvent",                //
-                "SHGetDriveMedia",                         //
-                "SHIsFileAvailableOffline",                //
-                "SHStrDupW",                               //
-                "SHStrDupA",                               //
-                "PathCchSkipRoot",                         //
-                "PathCchFindExtension",                    //
-                "PathAllocCombine",                        //
-                "PathAllocCanonicalize",                   //
-                "HlinkTranslateURL",                       //
-                "HlinkGetValueFromParams",                 //
-                "HlinkGetSpecialReference",                //
-                "GetCurrentProcessExplicitAppUserModelID", //
-                "SHCLSIDFromString",                       //
-                "PathCchCanonicalizeEx",                   // Crashes Windows
-                "SHSimpleIDListFromPath",                  // Crashes Windows
-                "SHAnsiToAnsi",                            // Crashes Windows
-                "RestartDialogEx",                         // Restart Windows
-                "StrCmpICW",                               // Crashes Windows
-                "wnsprintfW",                              // Crashes Windows
-                "SHGetNewLinkInfoW",                       // Crashes Windows
-                "StrCmpNICA",                              // Crashes Windows
-                "PathCchAddBackslash",                     // Crashes Windows
-                "SHRegGetBoolUSValueW",                    // Crashes Windows
-                "SHRegCreateUSKeyW",                       // Crashes Windows
-                "SHUnicodeToUnicode",                      // Crashes Windows
-                "ExtractAssociatedIconW",                  // Crashes Windows
-                "SHFind_InitMenuPopup",                    // Crashes Windows
-                "PathCchCanonicalize",                     // Crashes Windows
-                "UrlFixupW",                               // Crashes Windows
-                "StrCmpNCW",                               // Crashes Windows
-                "SetCurrentProcessExplicitAppUserModelID", // Crashes Windows
-                "StrCpyNW",                                // Crashes Windows
-                "SHRegCloseUSKey",                         // Crashes Windows
-                "DoEnvironmentSubstA",                     // Crashes Windows
-                "CommandLineToArgvW",                      // Crashes Windows
-                "SHEvaluateSystemCommandTemplate",         // Crashes Windows
-                "PathBuildRootW",                          // Crashes Windows
-                "PathCchRemoveBackslash",                  // Crashes Windows
-                "SHRegSetPathW",                           // Crashes Windows
-                "FindExecutableW",                         // Crashes Windows
-                "SHMessageBoxCheckW",                      // Opens message box
-                "SHMessageBoxCheckA",                      // Opens message box
-                "PathQualify",                             // Crashes Windows
-                "StrCmpNICW",                              // Crashes Windows
-                "StrCmpCW",                                // Crashes Windows
-                "PathCleanupSpec",                         // Crashes Windows
-                "SHMessageBoxCheckW",                      // Opens message box
-                "StrCmpCA",                                // Crashes Windows
-                "PathIsUNCEx",                             // Crashes Windows
-                "SHEmptyRecycleBinA",                      // Clean Recycle Bin
-                "SHEmptyRecycleBinW",                      // Crashes Windowsv
-                "WinHelpW",                                // Opens help in Windows
-                "WinHelpA",                                // Opens help in Windows
-                "SHRegOpenUSKeyW",                         // Crashes Windows
-                "ExtractAssociatedIconExW",                // Crashes Windows
-                "SHGetNewLinkInfoA",                       // Crashes Windows
-                "PathCchAddBackslashEx",                   // Crashes Windows
-                "DoEnvironmentSubstW",                     // Crashes Windows
-                "SHStripMneumonicW",                       // Crashes Windows
-                "StrCmpNCA",                               // Crashes Windows
-                "Shell_GetCachedImageIndexW",              // Crashes Windows
-                "wnsprintfA",                              // Crashes Windows
-                "SHStripMneumonicA",                       // Crashes Windows
-                "RestartDialog",                           // Restart Box
-                "StrCmpICA",                               // Crashes Windows
-                "FindExecutableA",                         // Crashes Windows
-                "StrCatChainW",                            // Crashes Windows
-                "PathCchRemoveBackslashEx",                // Crashes Windows
-                "Shell_GetCachedImageIndex",               // Crashes Windows
-                "SHRegSetPathA",                           // Crashes Windows
+                ("RegisterScaleChangeEvent", InvalidNumberOfArguments),
+                ("SHGetDriveMedia", InvalidNumberOfArguments),
+                ("SHIsFileAvailableOffline", InvalidNumberOfArguments),
+                ("SHStrDupW", InvalidNumberOfArguments),
+                ("SHStrDupA", InvalidNumberOfArguments),
+                ("PathCchSkipRoot", InvalidNumberOfArguments),
+                ("PathCchFindExtension", InvalidNumberOfArguments),
+                ("PathAllocCombine", InvalidNumberOfArguments),
+                ("PathAllocCanonicalize", InvalidNumberOfArguments),
+                ("HlinkTranslateURL", InvalidNumberOfArguments),
+                ("HlinkGetValueFromParams", InvalidNumberOfArguments),
+                ("HlinkGetSpecialReference", InvalidNumberOfArguments),
+                ("GetCurrentProcessExplicitAppUserModelID", InvalidNumberOfArguments),
+                ("SHCLSIDFromString", InvalidNumberOfArguments),
+                ("PathCchCanonicalizeEx", CrashesWindows),
+                ("SHSimpleIDListFromPath", CrashesWindows),
+                ("SHAnsiToAnsi", CrashesWindows),
+                ("RestartDialogEx", Other), // Restart Windows(without dialog)
+                ("StrCmpICW", CrashesWindows),
+                ("wnsprintfW", CrashesWindows),
+                ("SHGetNewLinkInfoW", CrashesWindows),
+                ("StrCmpNICA", CrashesWindows),
+                ("PathCchAddBackslash", CrashesWindows),
+                ("SHRegGetBoolUSValueW", CrashesWindows),
+                ("SHRegCreateUSKeyW", CrashesWindows),
+                ("SHUnicodeToUnicode", CrashesWindows),
+                ("ExtractAssociatedIconW", CrashesWindows),
+                ("SHFind_InitMenuPopup", CrashesWindows),
+                ("PathCchCanonicalize", CrashesWindows),
+                ("UrlFixupW", CrashesWindows),
+                ("StrCmpNCW", CrashesWindows),
+                ("SetCurrentProcessExplicitAppUserModelID", CrashesWindows),
+                ("StrCpyNW", CrashesWindows),
+                ("SHRegCloseUSKey", CrashesWindows),
+                ("DoEnvironmentSubstA", CrashesWindows),
+                ("CommandLineToArgvW", CrashesWindows),
+                ("SHEvaluateSystemCommandTemplate", CrashesWindows),
+                ("PathBuildRootW", CrashesWindows),
+                ("PathCchRemoveBackslash", CrashesWindows),
+                ("SHRegSetPathW", CrashesWindows),
+                ("FindExecutableW", CrashesWindows),
+                ("SHMessageBoxCheckW", ShowsDialogWindows),
+                ("SHMessageBoxCheckA", ShowsDialogWindows),
+                ("PathQualify", CrashesWindows),
+                ("StrCmpNICW", CrashesWindows),
+                ("StrCmpCW", CrashesWindows),
+                ("PathCleanupSpec", CrashesWindows),
+                ("SHMessageBoxCheckW", ShowsDialogWindows),
+                ("StrCmpCA", CrashesWindows),
+                ("PathIsUNCEx", CrashesWindows),
+                ("SHEmptyRecycleBinA", ShowsDialogWindows),
+                ("SHEmptyRecycleBinW", CrashesWindows),
+                ("WinHelpW", ShowsDialogWindows),
+                ("WinHelpA", ShowsDialogWindows),
+                ("SHRegOpenUSKeyW", CrashesWindows),
+                ("ExtractAssociatedIconExW", CrashesWindows),
+                ("SHGetNewLinkInfoA", CrashesWindows),
+                ("PathCchAddBackslashEx", CrashesWindows),
+                ("DoEnvironmentSubstW", CrashesWindows),
+                ("SHStripMneumonicW", CrashesWindows),
+                ("StrCmpNCA", CrashesWindows),
+                ("Shell_GetCachedImageIndexW", CrashesWindows),
+                ("wnsprintfA", CrashesWindows),
+                ("SHStripMneumonicA", CrashesWindows),
+                ("RestartDialog", ShowsDialogWindows),
+                ("StrCmpICA", CrashesWindows),
+                ("FindExecutableA", CrashesWindows),
+                ("StrCatChainW", CrashesWindows),
+                ("PathCchRemoveBackslashEx", CrashesWindows),
+                ("Shell_GetCachedImageIndex", CrashesWindows),
+                ("SHRegSetPathA", CrashesWindows),
             ],
         ),
         (
             "Threading",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"),
             vec![
-                "ExitProcess",                      // Just crashes app
-                "ExitThread",                       // Just crashes app
-                "GetThreadDescription",             //
-                "Sleep",                            // Sleep threads
-                "SleepEx",                          // Sleep threads
-                "AvSetMmMaxThreadCharacteristicsW", // Crashes Windows
-                "AvSetMmThreadCharacteristicsA",    // Crashes Windows
-                "AvSetMmThreadCharacteristicsW",    // Crashes Windows
-                "AvSetMmMaxThreadCharacteristicsA", // Crashes Windows
-                "CloseThreadpoolCleanupGroup",      // Crashes Windows
+                ("ExitProcess", CrashAutomatic),
+                ("ExitThread", CrashAutomatic),
+                ("GetThreadDescription", InvalidNumberOfArguments),
+                ("Sleep", Freeze),
+                ("SleepEx", Freeze),
+                ("AvSetMmMaxThreadCharacteristicsW", CrashesWindows),
+                ("AvSetMmThreadCharacteristicsA", CrashesWindows),
+                ("AvSetMmThreadCharacteristicsW", CrashesWindows),
+                ("AvSetMmMaxThreadCharacteristicsA", CrashesWindows),
+                ("CloseThreadpoolCleanupGroup", CrashesWindows),
             ],
         ),
         (
             "Urlmon",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"),
             vec![
-                "IEInstallScope",       //
-                "FindMediaType",        //
-                "GetClassURL",          //
-                "CoInternetCompareUrl", // Crashes Windows
+                ("IEInstallScope", InvalidNumberOfArguments),
+                ("FindMediaType", InvalidNumberOfArguments),
+                ("GetClassURL", InvalidNumberOfArguments),
+                ("CoInternetCompareUrl", CrashesWindows),
             ],
         ),
         (
             "WinRT",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/mod.rs"),
             vec![
-                "RoGetApartmentIdentifier",            //
-                "RoGetErrorReportingFlags",            //
-                "WindowsCompareStringOrdinal",         //
-                "WindowsConcatString",                 //
-                "WindowsCreateString",                 //
-                "WindowsDuplicateString",              //
-                "WindowsReplaceString",                //
-                "WindowsStringHasEmbeddedNull",        //
-                "WindowsSubstring",                    //
-                "WindowsSubstringWithSpecifiedLength", //
-                "WindowsTrimStringEnd",                //
-                "WindowsTrimStringStart",              //
+                ("RoGetApartmentIdentifier", InvalidNumberOfArguments),
+                ("RoGetErrorReportingFlags", InvalidNumberOfArguments),
+                ("WindowsCompareStringOrdinal", InvalidNumberOfArguments),
+                ("WindowsConcatString", InvalidNumberOfArguments),
+                ("WindowsCreateString", InvalidNumberOfArguments),
+                ("WindowsDuplicateString", InvalidNumberOfArguments),
+                ("WindowsReplaceString", InvalidNumberOfArguments),
+                ("WindowsStringHasEmbeddedNull", InvalidNumberOfArguments),
+                ("WindowsSubstring", InvalidNumberOfArguments),
+                ("WindowsSubstringWithSpecifiedLength", InvalidNumberOfArguments),
+                ("WindowsTrimStringEnd", InvalidNumberOfArguments),
+                ("WindowsTrimStringStart", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -881,9 +877,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/WindowsAndMessaging/mod.rs"
             ),
-            vec![
-                "MrmGetPriFileContentChecksum", //
-            ],
+            vec![("MrmGetPriFileContentChecksum", InvalidNumberOfArguments)],
         ),
         (
             "WindowsConnectionManager",
@@ -891,9 +885,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsConnectionManager/mod.rs"
             ),
-            vec![
-                "OnDemandGetRoutingHint", //
-            ],
+            vec![("OnDemandGetRoutingHint", InvalidNumberOfArguments)],
         ),
         (
             "WindowsProgramming",
@@ -902,8 +894,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WindowsProgramming/mod.rs"
             ),
             vec![
-                "QueryAuxiliaryCounterFrequency", //
-                "WldpIsDynamicCodePolicyEnabled", //
+                ("QueryAuxiliaryCounterFrequency", InvalidNumberOfArguments),
+                ("WldpIsDynamicCodePolicyEnabled", InvalidNumberOfArguments),
             ],
         ),
         // ////////////////////////
@@ -971,11 +963,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Packaging/Appx/mod.rs"
             ),
             vec![
-                "GetResolvedPackageFullNameForPackageDependency", //
-                "CheckIsMSIXPackage",                             //
-                "DeactivatePackageVirtualizationContext", // Not runs on Windows - Nie znaleziono punktu wejścia procedury DeactivatePackageVirtualizationContext w bibliotece
-                "DeletePackageDependency",                // Not runs on Windows
-                "GetCurrentPackageVirtualizationContext", // Not runs on Windows
+                ("GetResolvedPackageFullNameForPackageDependency", InvalidNumberOfArguments),
+                ("CheckIsMSIXPackage", InvalidNumberOfArguments),
+                ("DeactivatePackageVirtualizationContext", NotImplementedWindows),
+                ("DeletePackageDependency", NotImplementedWindows),
+                ("GetCurrentPackageVirtualizationContext", NotImplementedWindows),
             ],
         ),
         (
@@ -995,10 +987,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Bluetooth",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Bluetooth/mod.rs"),
             vec![
-                "BluetoothFindRadioClose",           // Crashes Windows
-                "BluetoothFindDeviceClose",          // Crashes Windows
-                "BluetoothFindNextRadio",            // Crashes Windows
-                "BluetoothUnregisterAuthentication", // Crashes Windows
+                ("BluetoothFindRadioClose", CrashesWindows),
+                ("BluetoothFindDeviceClose", CrashesWindows),
+                ("BluetoothFindNextRadio", CrashesWindows),
+                ("BluetoothUnregisterAuthentication", CrashesWindows),
             ],
         ),
         (
@@ -1018,10 +1010,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Catalog/mod.rs"
             ),
             vec![
-                "CryptCATAdminReleaseContext",          // Crashes Windows
-                "CryptCATAdminReleaseCatalogContext",   // Crashes Windows
-                "CryptCATAdminAddCatalog",              // Crashes Windows
-                "CryptCATAdminCalcHashFromFileHandle2", // Crashes Windows
+                ("CryptCATAdminReleaseContext", CrashesWindows),
+                ("CryptCATAdminReleaseCatalogContext", CrashesWindows),
+                ("CryptCATAdminAddCatalog", CrashesWindows),
+                ("CryptCATAdminCalcHashFromFileHandle2", CrashesWindows),
             ],
         ),
         (
@@ -1080,32 +1072,27 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Compression",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Compression/mod.rs"),
-            vec![
-                "CloseDecompressor", // Crashes Windows
-                "ResetDecompressor", // Crashes Windows
-            ],
+            vec![("CloseDecompressor", CrashesWindows), ("ResetDecompressor", CrashesWindows)],
         ),
         (
             "Console",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Console/mod.rs"),
-            vec![
-                "FreeConsole", // Crashes Windows
-            ],
+            vec![("FreeConsole", CrashesWindows)],
         ),
         (
             "Controls",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Controls/mod.rs"),
             vec![
-                "GetThemeTransitionDuration", //
-                "GetThemeSysInt",             //
-                "GetThemeInt",                //
-                "GetThemeEnumValue",          //
-                "GetThemeColor",              //
-                "GetBufferedPaintTargetRect", //
-                "GetThemeRect",               //
-                "GetThemePosition",           //
-                "DlgDirSelectComboBoxExA",    // Crashes Windows
-                "DlgDirSelectExA",            // Crashes Windows
+                ("GetThemeTransitionDuration", InvalidNumberOfArguments),
+                ("GetThemeSysInt", InvalidNumberOfArguments),
+                ("GetThemeInt", InvalidNumberOfArguments),
+                ("GetThemeEnumValue", InvalidNumberOfArguments),
+                ("GetThemeColor", InvalidNumberOfArguments),
+                ("GetBufferedPaintTargetRect", InvalidNumberOfArguments),
+                ("GetThemeRect", InvalidNumberOfArguments),
+                ("GetThemePosition", InvalidNumberOfArguments),
+                ("DlgDirSelectComboBoxExA", CrashesWindows),
+                ("DlgDirSelectExA", CrashesWindows),
             ],
         ),
         (
@@ -1119,10 +1106,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Credentials",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Credentials/mod.rs"),
-            vec![
-                "CredUIParseUserNameA", // Crashes Windows
-                "CredGetSessionTypes",  // Crashes Windows
-            ],
+            vec![("CredUIParseUserNameA", CrashesWindows), ("CredGetSessionTypes", CrashesWindows)],
         ),
         (
             "Cryptography",
@@ -1141,10 +1125,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "DataExchange",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DataExchange/mod.rs"),
             vec![
-                "GetAtomNameA",       // Crashes Windows
-                "GlobalGetAtomNameW", // Crashes Windows
-                "GlobalGetAtomNameA", // Crashes Windows
-                "GetAtomNameW",       // Crashes Windows
+                ("GetAtomNameA", CrashesWindows),
+                ("GlobalGetAtomNameW", CrashesWindows),
+                ("GlobalGetAtomNameA", CrashesWindows),
+                ("GetAtomNameW", CrashesWindows),
             ],
         ),
         (
@@ -1167,14 +1151,14 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/DeviceAndDriverInstallation/mod.rs"
             ),
             vec![
-                "SetupBackupErrorW",         // Show Error
-                "SetupDeleteErrorA",         // Show Error
-                "SetupDeleteErrorW",         // Show Error
-                "InstallHinfSectionW",       // Show Error
-                "SetupBackupErrorA",         // Show Error
-                "SetupRenameErrorW",         // Show Error
-                "SetupRenameErrorA",         // Show Error
-                "SetupDiBuildClassInfoList", // Crashes Windows
+                ("SetupBackupErrorW", ShowsDialogWindows),
+                ("SetupDeleteErrorA", ShowsDialogWindows),
+                ("SetupDeleteErrorW", ShowsDialogWindows),
+                ("InstallHinfSectionW", ShowsDialogWindows),
+                ("SetupBackupErrorA", ShowsDialogWindows),
+                ("SetupRenameErrorW", ShowsDialogWindows),
+                ("SetupRenameErrorA", ShowsDialogWindows),
+                ("SetupDiBuildClassInfoList", CrashesWindows),
             ],
         ),
         (
@@ -1197,8 +1181,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/DiagnosticDataQuery/mod.rs"
             ),
             vec![
-                "DdqGetDiagnosticRecordPayload",          //
-                "DdqGetDiagnosticReportStoreReportCount", //
+                ("DdqGetDiagnosticRecordPayload", InvalidNumberOfArguments),
+                ("DdqGetDiagnosticReportStoreReportCount", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -1266,9 +1250,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DirectComposition/mod.rs"
             ),
-            vec![
-                "DCompositionBoostCompositorClock", // Not run on Windows
-            ],
+            vec![("DCompositionBoostCompositorClock", NotImplementedWindows)],
         ),
         (
             "DirectDraw",
@@ -1312,10 +1294,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Display",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Display/mod.rs"),
-            vec![
-                "EngUnicodeToMultiByteN", // Crashes Windows
-                "EngMultiByteToUnicodeN", // Crashes Windows
-            ],
+            vec![("EngUnicodeToMultiByteN", CrashesWindows), ("EngMultiByteToUnicodeN", CrashesWindows)],
         ),
         (
             "DistributedFileSystem",
@@ -1366,15 +1345,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Environment",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Environment/mod.rs"),
             vec![
-                "ExpandEnvironmentStringsW",        // Crashes Windows
-                "SetEnvironmentStringsW",           // Crashes Windows
-                "NeedCurrentDirectoryForExePathW",  // Crashes Windows
-                "GetCurrentDirectoryA",             // Crashes Windows
-                "NeedCurrentDirectoryForExePathA",  // Crashes Windows
-                "SetEnvironmentVariableW",          // Crashes Windows
-                "GetCurrentDirectoryW",             // Crashes Windows
-                "ExpandEnvironmentStringsA",        // Crashes Windows
-                "ExpandEnvironmentStringsForUserW", // Crashes Windows
+                ("ExpandEnvironmentStringsW", CrashesWindows),
+                ("SetEnvironmentStringsW", CrashesWindows),
+                ("NeedCurrentDirectoryForExePathW", CrashesWindows),
+                ("GetCurrentDirectoryA", CrashesWindows),
+                ("NeedCurrentDirectoryForExePathA", CrashesWindows),
+                ("SetEnvironmentVariableW", CrashesWindows),
+                ("GetCurrentDirectoryW", CrashesWindows),
+                ("ExpandEnvironmentStringsA", CrashesWindows),
+                ("ExpandEnvironmentStringsForUserW", CrashesWindows),
             ],
         ),
         (
@@ -1383,9 +1362,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ErrorReporting/mod.rs"
             ),
-            vec![
-                "WerRegisterAppLocalDump", // Crashes Window
-            ],
+            vec![("WerRegisterAppLocalDump", CrashesWindows)],
         ),
         (
             "Etw",
@@ -1432,9 +1409,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "FileHistory",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileHistory/mod.rs"),
-            vec![
-                "FhServiceOpenPipe", //
-            ],
+            vec![("FhServiceOpenPipe", InvalidNumberOfArguments)],
         ),
         (
             "Foundation",
@@ -1453,23 +1428,21 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Gdi",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Gdi/mod.rs"),
             vec![
-                "TransparentBlt",        // Not runs on Windows
-                "MapWindowPoints",       // Crashes Windows
-                "GetEnhMetaFileW",       // Crashes Windows
-                "GetTextExtentPointW",   // Crashes Windows
-                "AddFontResourceW",      // Crashes Windows
-                "GetTextExtentPoint32W", // Crashes Windows
-                "GetEnhMetaFileA",       // Crashes Windows
-                "GetMetaFileW",          // Crashes Windows
-                "GetMetaFileA",          // Crashes Windows
+                ("TransparentBlt", NotImplementedWindows),
+                ("MapWindowPoints", CrashesWindows),
+                ("GetEnhMetaFileW", CrashesWindows),
+                ("GetTextExtentPointW", CrashesWindows),
+                ("AddFontResourceW", CrashesWindows),
+                ("GetTextExtentPoint32W", CrashesWindows),
+                ("GetEnhMetaFileA", CrashesWindows),
+                ("GetMetaFileW", CrashesWindows),
+                ("GetMetaFileA", CrashesWindows),
             ],
         ),
         (
             "Globalization",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Globalization/mod.rs"),
-            vec![
-                "GetDistanceOfClosestLanguageInList", //
-            ],
+            vec![("GetDistanceOfClosestLanguageInList", InvalidNumberOfArguments)],
         ),
         (
             "GroupPolicy",
@@ -1504,10 +1477,10 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/HostComputeSystem/mod.rs"
             ),
             vec![
-                "HcsModifyServiceSettings",                   //
-                "HcsGetServiceProperties",                    //
-                "HcsGetProcessorCompatibilityFromSavedState", //
-                "HcsGetLayerVhdMountPath",                    //
+                ("HcsModifyServiceSettings", InvalidNumberOfArguments),
+                ("HcsGetServiceProperties", InvalidNumberOfArguments),
+                ("HcsGetProcessorCompatibilityFromSavedState", InvalidNumberOfArguments),
+                ("HcsGetLayerVhdMountPath", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -1524,9 +1497,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/HumanInterfaceDevice/mod.rs"
             ),
-            vec![
-                "HidD_FreePreparsedData", // Crashes Windows
-            ],
+            vec![("HidD_FreePreparsedData", CrashesWindows)],
         ),
         (
             "Hypervisor",
@@ -1546,9 +1517,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Imaging",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Imaging/mod.rs"),
-            vec![
-                "WICMapShortNameToGuid", //
-            ],
+            vec![("WICMapShortNameToGuid", InvalidNumberOfArguments)],
         ),
         (
             "Imapi",
@@ -1558,9 +1527,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Ime",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/Ime/mod.rs"),
-            vec![
-                "ImmInstallIMEA", // Crashes Windows
-            ],
+            vec![("ImmInstallIMEA", CrashesWindows)],
         ),
         (
             "IndexServer",
@@ -1579,16 +1546,16 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/InstallableFileSystems/mod.rs"
             ),
             vec![
-                "FilterAttach",                  // Not in Windows
-                "FilterAttachAtAltitude",        // Not in Windows
-                "FilterDetach",                  // Not in Windows
-                "FilterFindClose",               // Not in Windows
-                "FilterGetDosName",              // Not in Windows
-                "FilterInstanceFindClose",       // Not in Windows
-                "FilterLoad",                    // Not in Windows
-                "FilterUnload",                  // Not in Windows
-                "FilterVolumeFindClose",         // Not in Windows
-                "FilterVolumeInstanceFindClose", // Not in Windows
+                ("FilterAttach", NotImplementedWindows),
+                ("FilterAttachAtAltitude", NotImplementedWindows),
+                ("FilterDetach", NotImplementedWindows),
+                ("FilterFindClose", NotImplementedWindows),
+                ("FilterGetDosName", NotImplementedWindows),
+                ("FilterInstanceFindClose", NotImplementedWindows),
+                ("FilterLoad", NotImplementedWindows),
+                ("FilterUnload", NotImplementedWindows),
+                ("FilterVolumeFindClose", NotImplementedWindows),
+                ("FilterVolumeInstanceFindClose", NotImplementedWindows),
             ],
         ),
         (
@@ -1597,9 +1564,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/InteractionContext/mod.rs"
             ),
-            vec![
-                "CreateInteractionContext", //
-            ],
+            vec![("CreateInteractionContext", InvalidNumberOfArguments)],
         ),
         (
             "IpHelper",
@@ -1607,9 +1572,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/IpHelper/mod.rs"
             ),
-            vec![
-                "GetIpErrorString", // Crashes Windows
-            ],
+            vec![("GetIpErrorString", CrashesWindows)],
         ),
         (
             "IscsiDisc",
@@ -1620,12 +1583,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Isolation",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Isolation/mod.rs"),
             vec![
-                "IsProcessInIsolatedWindowsEnvironment",                               //
-                "IsProcessInIsolatedContainer",                                        //
-                "GetAppContainerFolderPath",                                           //
-                "DeriveAppContainerSidFromAppContainerName",                           //
-                "DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName", //
-                "GetAppContainerRegistryLocation",                                     //
+                ("IsProcessInIsolatedWindowsEnvironment", InvalidNumberOfArguments),
+                ("IsProcessInIsolatedContainer", InvalidNumberOfArguments),
+                ("GetAppContainerFolderPath", InvalidNumberOfArguments),
+                ("DeriveAppContainerSidFromAppContainerName", InvalidNumberOfArguments),
+                (
+                    "DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName",
+                    InvalidNumberOfArguments,
+                ),
+                ("GetAppContainerRegistryLocation", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -1662,42 +1628,39 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/KeyboardAndMouse/mod.rs"
             ),
-            vec![
-                "GetKeyNameTextA",        // Crashes Windows
-                "GetKeyboardLayoutNameA", // Crashes Windows
-            ],
+            vec![("GetKeyNameTextA", CrashesWindows), ("GetKeyboardLayoutNameA", CrashesWindows)],
         ),
         (
             "Ldap",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/Ldap/mod.rs"),
             vec![
-                "ldap_initW",       // Crashes Windows
-                "ldap_err2stringW", // Crashes Windows
-                "ldap_init",        // Crashes Windows
-                "cldap_openW",      // Crashes Windows
-                "ldap_sslinitA",    // Crashes Windows
-                "cldap_open",       // Crashes Windows
-                "ldap_err2stringA", // Crashes Windows
-                "ldap_sslinit",     // Crashes Windows
-                "ldap_openW",       // Crashes Windows
-                "cldap_openA",      // Crashes Windows
-                "ldap_sslinitW",    // Crashes Windows
-                "ldap_openA",       // Crashes Windows
-                "ldap_initA",       // Crashes Windows
-                "ldap_err2string",  // Crashes Windows
-                "ldap_open",        // Crashes Windows
+                ("ldap_initW", CrashesWindows),
+                ("ldap_err2stringW", CrashesWindows),
+                ("ldap_init", CrashesWindows),
+                ("cldap_openW", CrashesWindows),
+                ("ldap_sslinitA", CrashesWindows),
+                ("cldap_open", CrashesWindows),
+                ("ldap_err2stringA", CrashesWindows),
+                ("ldap_sslinit", CrashesWindows),
+                ("ldap_openW", CrashesWindows),
+                ("cldap_openA", CrashesWindows),
+                ("ldap_sslinitW", CrashesWindows),
+                ("ldap_openA", CrashesWindows),
+                ("ldap_initA", CrashesWindows),
+                ("ldap_err2string", CrashesWindows),
+                ("ldap_open", CrashesWindows),
             ],
         ),
         (
             "LibraryLoader",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/LibraryLoader/mod.rs"),
             vec![
-                "FreeLibraryAndExitThread", // Looks that crashes it
-                "GetDllDirectoryA",         // Crashes Windows
-                "GetDllDirectoryW",         // Crashes Windows
-                "GetModuleFileNameA",       // Crashes Windows
-                "AddDllDirectory",          // Crashes Windows
-                "GetModuleFileNameW",       // Crashes Windows
+                ("FreeLibraryAndExitThread", CrashAutomatic),
+                ("GetDllDirectoryA", CrashesWindows),
+                ("GetDllDirectoryW", CrashesWindows),
+                ("GetModuleFileNameA", CrashesWindows),
+                ("AddDllDirectory", CrashesWindows),
+                ("GetModuleFileNameW", CrashesWindows),
             ],
         ),
         (
@@ -1745,18 +1708,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Management/MobileDeviceManagementRegistration/mod.rs"
             ),
             vec![
-                "RegisterDeviceWithLocalManagement", //
-                "IsMdmUxWithoutAadAllowed",          //
-                "IsManagementRegistrationAllowed",   //
-                "ApplyLocalManagementSyncML",        //
+                ("RegisterDeviceWithLocalManagement", InvalidNumberOfArguments),
+                ("IsMdmUxWithoutAadAllowed", InvalidNumberOfArguments),
+                ("IsManagementRegistrationAllowed", InvalidNumberOfArguments),
+                ("ApplyLocalManagementSyncML", InvalidNumberOfArguments),
             ],
         ),
         (
             "MsHtml",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Web/MsHtml/mod.rs"),
             vec![
-                "RatingObtainQueryW", //
-                "RatingObtainQuery",  //
+                ("RatingObtainQueryW", InvalidNumberOfArguments),
+                ("RatingObtainQuery", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -1771,22 +1734,22 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "Multimedia",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Multimedia/mod.rs"),
             vec![
-                "DrawDibStart",                 // Crashes Windows
-                "ICInstall",                    // Crashes Windows
-                "mmioStringToFOURCCW",          // Crashes Windows
-                "mmTaskBlock",                  // Freeze on Windows
-                "AVIBuildFilterW",              // Crashes Windows
-                "mciGetDeviceIDA",              // Crashes Windows
-                "DrawDibGetPalette",            // Crashes Windows
-                "AVIBuildFilterA",              // Crashes Windows
-                "DrawDibStop",                  // Crashes Windows
-                "DrawDibClose",                 // Crashes Windows
-                "DrawDibEnd",                   // Crashes Windows
-                "mciGetDeviceIDFromElementIDA", // Crashes Windows
-                "mciSendStringA",               // Crashes Windows
-                "mciSendStringW",               // Crashes Windows
-                "MCIWndCreateW",                // Spams windows on Windows
-                "MCIWndCreateA",                // Spams windows on Windows
+                ("DrawDibStart", CrashesWindows),
+                ("ICInstall", CrashesWindows),
+                ("mmioStringToFOURCCW", CrashesWindows),
+                ("mmTaskBlock", Freeze),
+                ("AVIBuildFilterW", CrashesWindows),
+                ("mciGetDeviceIDA", CrashesWindows),
+                ("DrawDibGetPalette", CrashesWindows),
+                ("AVIBuildFilterA", CrashesWindows),
+                ("DrawDibStop", CrashesWindows),
+                ("DrawDibClose", CrashesWindows),
+                ("DrawDibEnd", CrashesWindows),
+                ("mciGetDeviceIDFromElementIDA", CrashesWindows),
+                ("mciSendStringA", CrashesWindows),
+                ("mciSendStringW", CrashesWindows),
+                ("MCIWndCreateW", ShowsDialogWindows),
+                ("MCIWndCreateA", ShowsDialogWindows),
             ],
         ),
         (
@@ -1803,10 +1766,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetManagement/mod.rs"
             ),
-            vec![
-                "RouterAssert",      // Crashes Windows
-                "NetScheduleJobAdd", // Crashes Windows
-            ],
+            vec![("RouterAssert", CrashesWindows), ("NetScheduleJobAdd", CrashesWindows)],
         ),
         (
             "NetShell",
@@ -1866,16 +1826,12 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Performance",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Performance/mod.rs"),
-            vec![
-                "PerfEnumerateCounterSet", // Crashes Windows
-            ],
+            vec![("PerfEnumerateCounterSet", CrashesWindows)],
         ),
         (
             "Pipes",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Pipes/mod.rs"),
-            vec![
-                "WaitNamedPipeW", // Crashes Windows
-            ],
+            vec![("WaitNamedPipeW", CrashesWindows)],
         ),
         (
             "Pnp",
@@ -1914,22 +1870,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "ProcessStatus",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ProcessStatus/mod.rs"),
-            vec![
-                "K32EnumProcesses", // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-                "",                 // Crashes Windows
-            ],
+            vec![("K32EnumProcesses", CrashesWindows)],
         ),
         (
             "ProjectedFileSystem",
@@ -1946,12 +1887,12 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/PropertiesSystem/mod.rs"
             ),
             vec![
-                "PSLookupPropertyHandlerCLSID",      //
-                "InitPropVariantFromResource",       //
-                "InitPropVariantFromStringAsVector", //
-                "InitVariantFromResource",           //
-                "ClearPropVariantArray",             // Crashes Windows
-                "ClearVariantArray",                 // Crashes Windows
+                ("PSLookupPropertyHandlerCLSID", InvalidNumberOfArguments),
+                ("InitPropVariantFromResource", InvalidNumberOfArguments),
+                ("InitPropVariantFromStringAsVector", InvalidNumberOfArguments),
+                ("InitVariantFromResource", InvalidNumberOfArguments),
+                ("ClearPropVariantArray", CrashesWindows),
+                ("ClearVariantArray", CrashesWindows),
             ],
         ),
         (
@@ -1965,9 +1906,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Recovery",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Recovery/mod.rs"),
-            vec![
-                "ApplicationRecoveryInProgress", //
-            ],
+            vec![("ApplicationRecoveryInProgress", InvalidNumberOfArguments)],
         ),
         (
             "Registry",
@@ -1977,9 +1916,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "RemoteDesktop",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/RemoteDesktop/mod.rs"),
-            vec![
-                "WTSWaitSystemEvent", // Freeze Windows
-            ],
+            vec![("WTSWaitSystemEvent", Freeze)],
         ),
         (
             "RemoteManagement",
@@ -2008,9 +1945,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Data/RightsManagement/mod.rs"
             ),
-            vec![
-                "DRMCheckSecurity", // Crashes Windows
-            ],
+            vec![("DRMCheckSecurity", CrashesWindows)],
         ),
         (
             "Rpc",
@@ -2028,18 +1963,16 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "Search",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Search/mod.rs"),
-            vec![
-                "SQLCloseEnumServers", // Crashes Windows
-            ],
+            vec![("SQLCloseEnumServers", CrashesWindows)],
         ),
         (
             "Security",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/mod.rs"),
             vec![
-                "GetLengthSid",   // Crashes Windows
-                "EqualPrefixSid", // Crashes Windows
-                "EqualSid",       // Crashes Windows
-                "CopySid",        // Crashes Windows
+                ("GetLengthSid", CrashesWindows),
+                ("EqualPrefixSid", CrashesWindows),
+                ("EqualSid", CrashesWindows),
+                ("CopySid", CrashesWindows),
             ],
         ),
         (
@@ -2048,9 +1981,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SecurityCenter/mod.rs"
             ),
-            vec![
-                "WscGetAntiMalwareUri", //
-            ],
+            vec![("WscGetAntiMalwareUri", InvalidNumberOfArguments)],
         ),
         (
             "Sensors",
@@ -2118,9 +2049,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/StructuredStorage/mod.rs"
             ),
-            vec![
-                "PropStgNameToFmtId", //
-            ],
+            vec![("PropStgNameToFmtId", InvalidNumberOfArguments)],
         ),
         (
             "SubsystemForLinux",
@@ -2129,8 +2058,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SubsystemForLinux/mod.rs"
             ),
             vec![
-                "WslLaunchInteractive", //
-                "WslLaunch",            //
+                ("WslLaunchInteractive", InvalidNumberOfArguments),
+                ("WslLaunch", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -2140,8 +2069,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SystemInformation/mod.rs"
             ),
             vec![
-                "IsWow64GuestMachineSupported", //
-                "GetIntegratedDisplaySize",     //
+                ("IsWow64GuestMachineSupported", InvalidNumberOfArguments),
+                ("GetIntegratedDisplaySize", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -2191,9 +2120,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/TpmBaseServices/mod.rs"
             ),
-            vec![
-                "GetDeviceIDString", // Crashes Windows
-            ],
+            vec![("GetDeviceIDString", CrashesWindows)],
         ),
         (
             "UI",
@@ -2280,22 +2207,22 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
             "WinInet",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WinInet/mod.rs"),
             vec![
-                "ExportCookieFileA",              // Not runs on windows
-                "ExportCookieFileW",              // Not runs on windows
-                "FindP3PPolicySymbol",            // Not runs on windows
-                "GetDiskInfoA",                   // Not runs on windows
-                "ImportCookieFileA",              // Not runs on windows
-                "ImportCookieFileW",              // Not runs on windows
-                "InternalInternetGetCookie",      // Not runs on windows
-                "IsDomainLegalCookieDomainA",     // Not runs on windows
-                "IsDomainLegalCookieDomainW",     // Not runs on windows
-                "FwpmDynamicKeywordUnsubscribe0", // Not runs on windows
-                "DoConnectoidsExist",             // Not runs on windows
-                "IsProfilesEnabled",              // Not in Windows
-                "InternetUnlockRequestFile",      // Crashes Windows
-                "InternetShowSecurityInfoByURLA", // Crashes Windows
-                "InternetShowSecurityInfoByURLW", // Crashes Windows
-                "InternetShowSecurityInfoByURL",  // Crashes Windows
+                ("ExportCookieFileA", NotImplementedWindows),
+                ("ExportCookieFileW", NotImplementedWindows),
+                ("FindP3PPolicySymbol", NotImplementedWindows),
+                ("GetDiskInfoA", NotImplementedWindows),
+                ("ImportCookieFileA", NotImplementedWindows),
+                ("ImportCookieFileW", NotImplementedWindows),
+                ("InternalInternetGetCookie", NotImplementedWindows),
+                ("IsDomainLegalCookieDomainA", NotImplementedWindows),
+                ("IsDomainLegalCookieDomainW", NotImplementedWindows),
+                ("FwpmDynamicKeywordUnsubscribe0", NotImplementedWindows),
+                ("DoConnectoidsExist", NotImplementedWindows),
+                ("IsProfilesEnabled", NotImplementedWindows),
+                ("InternetUnlockRequestFile", CrashesWindows),
+                ("InternetShowSecurityInfoByURLA", CrashesWindows),
+                ("InternetShowSecurityInfoByURLW", CrashesWindows),
+                ("InternetShowSecurityInfoByURL", CrashesWindows),
             ],
         ),
         (
@@ -2314,9 +2241,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
         (
             "WinTrust",
             format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/WinTrust/mod.rs"),
-            vec![
-                "OpenPersonalTrustDBDialog", // Opens Windows trust dialog
-            ],
+            vec![("OpenPersonalTrustDBDialog", ShowsDialogWindows)],
         ),
         (
             "WindowsFilteringPlatform",
@@ -2324,9 +2249,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFilteringPlatform/mod.rs"
             ),
-            vec![
-                "FwpmDynamicKeywordUnsubscribe0", // Not runs on Windows
-            ],
+            vec![("FwpmDynamicKeywordUnsubscribe0", NotImplementedWindows)],
         ),
         (
             "WindowsFirewall",
@@ -2358,9 +2281,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<&'static str>)> {
                 "{}{}",
                 WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WindowsWebServices/mod.rs"
             ),
-            vec![
-                "WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable", //
-            ],
+            vec![("WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable", InvalidNumberOfArguments)],
         ),
         (
             "Wmi",

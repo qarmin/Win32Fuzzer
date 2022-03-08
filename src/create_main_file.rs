@@ -1,10 +1,10 @@
-use crate::DISABLED_CLASSES;
+use crate::{TypeOfProblem, DISABLED_CLASSES};
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::io::Write;
 
-pub fn create_main_file(things: &[(&str, String, Vec<&str>)]) {
+pub fn create_main_file(things: &[(&str, String, Vec<(&str, TypeOfProblem)>)]) {
     let file_name = "WinProject/src/main.rs";
 
     let _ = fs::remove_file(&file_name);
