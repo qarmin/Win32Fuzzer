@@ -9,6 +9,7 @@ pub fn create_project_file(
     file_data: &FileData,
     file_path: &str,
     create_renames: &HashMap<&str, &str>,
+    automatic_renames: &HashMap<&str, String>,
     ignored_functions: &HashSet<String>,
     ignored_arguments: &mut BTreeMap<String, u32>,
 ) {
@@ -275,13 +276,12 @@ pub fn a_<<function_name>>(file : &mut File)  {
 
         let mut function_info = FunctionInfo::new();
 
-        if ignored_functions.contains(function_name) {
-            continue;
-        }
-
         for arg in arguments {
             let mut add_arg = ArgumentAdditional::new();
             add_arg.original_argument = arg.clone();
+
+            let spl: Vec<_> = add_arg.argument_type.split("::").collect();
+            add_arg.constant_value = spl[spl.len() - 1].to_string();
 
             if let Some(right_space) = arg.rfind(' ') {
                 add_arg.argument_before = arg[..right_space].to_string();
@@ -303,9 +303,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
             } else {
-                let splits: Vec<_> = arg.split("::").collect();
-                let end_arg = splits[splits.len() - 1];
-                if end_arg.starts_with('I') {
+                if add_arg.argument_type.starts_with('I') {
                     // e.g. IMFAttributes
                     // or
                     // super::super::super::System::Com::StructuredStorage::IPropertyBag
@@ -313,13 +311,29 @@ pub fn a_<<function_name>>(file : &mut File)  {
                     is_supported = false;
                     continue;
                 } else {
-                    // println!("Not supported '''{}''' due missing function", arg);
-                    add_to_ignore_arguments(ignored_arguments, arg);
-                    is_supported = false;
+                    println!("TESTING {}", add_arg.argument_type);
+                    if let Some(function_name) = automatic_renames.get(add_arg.argument_type.as_str()) {
+                        println!(
+                            "AUTOMATIC SUPPORTED: {} --- {}",
+                            add_arg.argument_type,
+                            automatic_renames.get(add_arg.argument_type.as_str()).unwrap()
+                        );
+                        add_arg.function_name = function_name.clone();
+                        function_info.arguments.push(add_arg);
+                    } else {
+                        // println!("Not supported '''{}''' due missing function", arg);
+                        add_to_ignore_arguments(ignored_arguments, &add_arg.argument_type);
+                        is_supported = false;
+                    }
                 }
             }
         }
         if !is_supported {
+            continue;
+        }
+
+        // Check this after checking every argument
+        if ignored_functions.contains(function_name) {
             continue;
         }
 
@@ -355,7 +369,11 @@ pub fn a_<<function_name>>(file : &mut File)  {
             function_name, file_path
         );
         let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
-        let print_executed_arguments = format!("print_and_save(file,format!(\"{}({});\"));", function_name, execute_arguments);
+        let print_executed_arguments = format!(
+            "print_and_save(file,format!(\"{}({});\"));",
+            function_name,
+            execute_arguments.replace(".0", "")
+        );
 
         each_function_body.push(
             single_function
@@ -407,6 +425,7 @@ struct ArgumentAdditional {
     pub original_argument: String, // E.g. "*mut AABB"
     pub argument_type: String,     // Like "AABB" from "*AABB"
     pub argument_before: String,   // Like "*mut" from "*mut AABB"
+    pub constant_value: String,    // "POINT" from "roman::POINT"
 }
 impl ArgumentAdditional {
     pub fn new() -> Self {
@@ -415,6 +434,7 @@ impl ArgumentAdditional {
             original_argument: "".to_string(),
             argument_type: "".to_string(),
             argument_before: "".to_string(),
+            constant_value: "".to_string(),
         }
     }
 }

@@ -1,16 +1,18 @@
 #![allow(clippy::type_complexity)]
 mod create_main_file;
 mod create_project_file;
+mod find_things;
 mod parse_file;
 mod settings;
 
+use crate::find_things::*;
 use crate::parse_file::*;
 use crate::settings::*;
 use crate::TypeOfProblem::InvalidNumberOfArguments;
 use create_main_file::*;
 use create_project_file::*;
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::path::Path;
 use walkdir::WalkDir;
@@ -36,9 +38,7 @@ fn main() {
     }
 
     set_windows_rs_folder(path);
-    println!("{}", get_windows_rs_folder());
 
-    // print_excluded_things(&things);
     let things = load_settings();
 
     let create_renames2 = [
@@ -67,7 +67,7 @@ fn main() {
         ("super::super::Foundation::BSTR", "get_strange_BSTR"),
         ("super::super::Foundation::CHAR", "get_strange_CHAR"),
         ("super::super::super::Foundation::CHAR", "get_strange_CHAR"),
-        ("COORD", "get_strange_COORD"),
+        // ("COORD", "get_strange_COORD"),
         ("super::super::Foundation::FILETIME", "get_strange_FILETIME"),
         ("::windows_sys::core::GUID", "get_strange_GUID"),
         ("super::Foundation::HANDLE", "get_strange_HANDLE"),
@@ -151,13 +151,19 @@ fn main() {
         ("super::WindowsAndMessaging::POINTER_INPUT_TYPE", "get_strange_POINTER_INPUT_TYPE"),
         ("MrmPlatformVersion", "get_strange_MrmPlatformVersion"),
     ];
+    let advanced_renames2 = ["CHAR_INFO", "COORD"];
 
     let mut create_renames: HashMap<&str, &str> = HashMap::new();
     for i in create_renames2 {
         create_renames.insert(i.0, i.1);
     }
 
-    // find_things();
+    let mut advanced_renames: HashMap<&str, String> = Default::default();
+    for i in advanced_renames2 {
+        advanced_renames.insert(i, format!("get_strange_{}", i));
+    }
+
+    find_things(&things);
     create_main_file(&things);
 
     let mut ignored_arguments: BTreeMap<String, u32> = Default::default(); // List of ignored arguments
@@ -188,7 +194,14 @@ fn main() {
                 number_of_arguments += arguments.len();
             }
         }
-        create_project_file(&file_data, class_name, &create_renames, &exceptions, &mut ignored_arguments);
+        create_project_file(
+            &file_data,
+            class_name,
+            &create_renames,
+            &advanced_renames,
+            &exceptions,
+            &mut ignored_arguments,
+        );
     }
 
     println!(
@@ -197,11 +210,12 @@ fn main() {
     );
 
     {
-        let mut new_btreemap: BTreeMap<u32, String> = Default::default();
+        let mut new_vec: Vec<(u32, String)> = Default::default();
         for (key, value) in ignored_arguments {
-            new_btreemap.insert(value, key);
+            new_vec.push((value, key));
         }
-        for (key, value) in new_btreemap {
+        new_vec.sort_by(|e, f| if e.0 > f.0 { Ordering::Greater } else { Ordering::Less });
+        for (key, value) in new_vec {
             println!("Not supported '''{}''', found {} occurences", value, key);
         }
     }
@@ -236,64 +250,4 @@ pub fn print_excluded_things(things: &[(&'static str, String, Vec<(&'static str,
             println!("\t{}   -   {}", function, pro);
         }
     }
-}
-
-pub fn find_things() {
-    let base_path = format!("{}crates/libs/sys/src/Windows/Win32/", get_windows_rs_folder());
-
-    let mut idx = 0;
-
-    let mut btreeset: BTreeSet<String> = Default::default();
-    let mut used_names: HashSet<String> = Default::default();
-
-    for entry in WalkDir::new(&base_path).into_iter().flatten() {
-        let path = entry.path().to_string_lossy().to_string();
-        if path.ends_with("mod.rs") {
-            // println!("{}", path);
-            let without_prefix = path.strip_prefix(&get_windows_rs_folder()).unwrap();
-            // println!("WP - {}", without_prefix);
-
-            let file_content = match fs::read_to_string(&path) {
-                Ok(t) => t,
-                Err(e) => {
-                    println!("Failed to read file {}", e);
-                    continue;
-                }
-            };
-            if file_content.contains("\nextern \"system\" {") {
-                idx += 1;
-                let mut end;
-                {
-                    let split: Vec<_> = path.split('/').collect();
-                    end = split[split.len() - 2].to_string();
-
-                    // println!("Checking {}", end);
-                    if used_names.contains(&end) {
-                        // println!("DUPLICATED {}", end);
-                        end.push('2');
-                    }
-                    used_names.insert(end.clone());
-                    // println!("END {}", end);
-                }
-                // Manually generated list of classes which have already exceptions
-                if MANUAL_CLASSES.contains(&end.as_str()) {
-                    // println!("Manually handled {}", end);
-                    continue;
-                }
-
-                btreeset.insert(format!(
-                    "(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),",
-                    end, without_prefix
-                ));
-                // println!("(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),", end, without_prefix);
-                // println!("CONTAINS! {}", path);
-            }
-        }
-    }
-
-    for i in btreeset {
-        println!("{}", i);
-    }
-
-    println!("Found {}", idx);
 }
