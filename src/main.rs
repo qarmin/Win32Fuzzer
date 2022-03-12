@@ -1,3 +1,4 @@
+#![allow(clippy::type_complexity)]
 mod create_main_file;
 mod create_project_file;
 mod parse_file;
@@ -5,14 +6,18 @@ mod settings;
 
 use crate::parse_file::*;
 use crate::settings::*;
+use crate::TypeOfProblem::InvalidNumberOfArguments;
 use create_main_file::*;
 use create_project_file::*;
+use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use walkdir::WalkDir;
 
 fn main() {
     let things = load_settings();
+
+    // print_excluded_things(&things);
 
     let create_renames2 = [
         // Basic
@@ -39,6 +44,7 @@ fn main() {
         ("super::super::super::Foundation::BOOLEAN", "get_strange_BOOLEAN"),
         ("super::super::Foundation::BSTR", "get_strange_BSTR"),
         ("super::super::Foundation::CHAR", "get_strange_CHAR"),
+        ("super::super::super::Foundation::CHAR", "get_strange_CHAR"),
         ("COORD", "get_strange_COORD"),
         ("super::super::Foundation::FILETIME", "get_strange_FILETIME"),
         ("::windows_sys::core::GUID", "get_strange_GUID"),
@@ -98,6 +104,7 @@ fn main() {
         ),
         ("WINDOW_LONG_PTR_INDEX", "get_strange_WINDOW_LONG_PTR_INDEX"),
         ("super::super::Foundation::POINT", "get_strange_POINT"),
+        ("super::super::super::Foundation::POINT", "get_strange_POINT"),
         ("HWAVEOUT", "get_strange_HWAVEOUT"),
         ("HACMDRIVER", "get_strange_HACMDRIVER"),
         ("SP_DEVINFO_DATA", "get_strange_SP_DEVINFO_DATA"),
@@ -174,6 +181,37 @@ fn main() {
         }
         for (key, value) in new_btreemap {
             println!("Not supported '''{}''', found {} occurences", value, key);
+        }
+    }
+}
+
+pub fn print_excluded_things(things: &[(&'static str, String, Vec<(&'static str, TypeOfProblem)>)]) {
+    let mut things = things.to_vec();
+    things.sort_by(|e, f| if e.0 > f.0 { Ordering::Greater } else { Ordering::Less });
+    for (class, _path, disallowed_functions) in things {
+        if disallowed_functions.iter().filter(|e| e.1 != InvalidNumberOfArguments).count() == 0 {
+            continue;
+        }
+        println!("{}", class);
+
+        let mut disallowed_functions = disallowed_functions.clone();
+        disallowed_functions.sort_by(|e, f| if e.1 > f.1 { Ordering::Less } else { Ordering::Greater });
+        for (function, problem) in disallowed_functions {
+            let pro = match problem {
+                TypeOfProblem::CrashesLinux => "Crashes in Linux",
+                TypeOfProblem::CrashesWindows => "Crashes in Windows",
+                TypeOfProblem::NotImplementedLinux => "Not implemented in Wine Staging 7.3",
+                TypeOfProblem::NotImplementedWindows => "Not implemented in Windows 10 20H2",
+                TypeOfProblem::ShowsDialogWindows => "Shows dialog in Windows(stop execution until user close it)",
+                TypeOfProblem::ShowsDialogLinux => "Shows dialog in Linux(stop execution until user close it)",
+                TypeOfProblem::CrashAutomatic => "Functions which close app(this is expected behaviour)",
+                TypeOfProblem::Freeze => "Freeze app",
+                TypeOfProblem::Other => "Other",
+                TypeOfProblem::InvalidNumberOfArguments => {
+                    continue; //"Not checked function(not Wine bug, just problem with parsing)"
+                }
+            };
+            println!("\t{}   -   {}", function, pro);
         }
     }
 }

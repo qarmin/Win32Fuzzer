@@ -24,7 +24,7 @@ dependencies = [
 
 [[package]]
 name = "win32_fuzzer"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "walkdir",
 ]

@@ -172,6 +172,15 @@ use windows::Win32::Security::Cryptography::Certificates::*;
 use windows::Win32::UI::InteractionContext::*;
 use windows::Win32::Storage::FileHistory::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
+use windows::Win32::Graphics::Direct3D10::*;
+use windows::Win32::System::WinRT::Direct3D11::*;
+use windows::Win32::Graphics::Direct3D::Fxc::*;
+use windows::Win32::System::Com::Marshal::*;
+use windows::Win32::Security::Authorization::UI::*;
+use windows::Win32::Media::Audio::XAudio2::*;
+use windows::Win32::Data::Xml::XmlLite::*;
+
+
 
 use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
@@ -294,9 +303,20 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
             } else {
-                // println!("Not supported '''{}''' due missing function", arg);
-                add_to_ignore_arguments(ignored_arguments, arg);
-                is_supported = false;
+                let splits: Vec<_> = arg.split("::").collect();
+                let end_arg = splits[splits.len() - 1];
+                if end_arg.starts_with('I') {
+                    // e.g. IMFAttributes
+                    // or
+                    // super::super::super::System::Com::StructuredStorage::IPropertyBag
+                    // are not supported
+                    is_supported = false;
+                    continue;
+                } else {
+                    // println!("Not supported '''{}''' due missing function", arg);
+                    add_to_ignore_arguments(ignored_arguments, arg);
+                    is_supported = false;
+                }
             }
         }
         if !is_supported {
@@ -383,10 +403,10 @@ impl FunctionInfo {
 }
 
 struct ArgumentAdditional {
-    pub function_name: String,     // e.g. take_AABB
-    pub original_argument: String, // E.g. *mut AABB
-    pub argument_type: String,     // Like AABB from *AABB
-    pub argument_before: String,   // Like *mut from *mut AABB
+    pub function_name: String,     // e.g. "take_AABB"
+    pub original_argument: String, // E.g. "*mut AABB"
+    pub argument_type: String,     // Like "AABB" from "*AABB"
+    pub argument_before: String,   // Like "*mut" from "*mut AABB"
 }
 impl ArgumentAdditional {
     pub fn new() -> Self {
