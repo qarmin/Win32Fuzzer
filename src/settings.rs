@@ -1,7 +1,19 @@
 use self::TypeOfProblem::*;
+use once_cell::sync::Lazy;
 use std::collections::BTreeMap;
+use std::sync::Mutex;
 
-pub const WINDOWS_RS_FOLDER: &str = "/home/rafal/test/windows-rs/";
+static WINDOWS_RS_FOLDER: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new(String::new()));
+
+pub fn get_windows_rs_folder() -> String {
+    WINDOWS_RS_FOLDER.lock().unwrap().clone()
+}
+
+pub fn set_windows_rs_folder(folder: String) {
+    *WINDOWS_RS_FOLDER.lock().unwrap() = folder;
+}
+
+// thread_local!(pub static WINDOWS_RS_FOLDER: String = "/home/rafal/test/windows-rs/".to_string());
 pub const DISABLED_CLASSES: &[&str] = &[
     "AddressBook", // Shows message box when os doesn't have any mail app inside
     "Imapi",       // Shows message box when os doesn't have any mail app inside
@@ -320,7 +332,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
     vec![
         (
             "Printer",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"
+            ),
             vec![
                 ("GdiPlayPageEMF", NotImplementedLinux),
                 ("EnumPrintersW", CrashesLinux),     // Stack Overflow
@@ -376,7 +392,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Dwm",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dwm/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Graphics/Dwm/mod.rs"),
             vec![
                 ("DwmModifyPreviousDxFrameDuration", NotImplementedLinux),
                 ("DwmTetherContact", NotImplementedLinux),
@@ -389,25 +405,26 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Gaming",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Gaming/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Gaming/mod.rs"),
             vec![("GetExpandedResourceExclusiveCpuCount", InvalidNumberOfArguments)],
         ),
         (
             "Dxgi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Dxgi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Graphics/Dxgi/mod.rs"),
             vec![("DXGIDeclareAdapterRemovalSupport", NotImplementedLinux)],
         ),
         (
             "BiometricFramework",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/BiometricFramework/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/BiometricFramework/mod.rs"
             ),
             vec![("WinBioEnrollCapture", CrashesWindows), ("WinBioLocateSensor", CrashesWindows)],
         ),
         (
             "Com",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Com/mod.rs"),
             vec![
                 ("CoCancelCall", NotImplementedLinux),
                 ("CoDisconnectContext", NotImplementedLinux),
@@ -427,14 +444,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "CloudFilters",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/CloudFilters/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/CloudFilters/mod.rs"
+            ),
             vec![("CfGetTransferKey", CrashesWindows)],
         ),
         (
             "Debug",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Debug/mod.rs"
             ),
             vec![
                 ("FatalExit", CrashAutomatic),
@@ -487,7 +509,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DeploymentServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DeploymentServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/DeploymentServices/mod.rs"
             ),
             vec![
                 ("WdsCliGetEnumerationFlags", CrashesWindows),
@@ -510,14 +533,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "FileSystem",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileSystem/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/FileSystem/mod.rs"
+            ),
             vec![("WofGetDriverVersion", CrashesWindows), ("WofWimAddEntry", CrashesWindows)],
         ),
         (
             "Identity",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authentication/Identity/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Authentication/Identity/mod.rs"
             ),
             vec![("SLGetWindowsInformationDWORD", CrashesWindows)],
         ),
@@ -525,7 +553,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "MediaFoundation",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/MediaFoundation/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/MediaFoundation/mod.rs"
             ),
             vec![
                 ("MFAllocateSerialWorkQueue", InvalidNumberOfArguments),
@@ -540,7 +569,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Ole",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Ole/mod.rs"),
             vec![
                 ("OaEnablePerUserTLibRegistration", NotImplementedLinux),
                 ("", NotImplementedLinux),
@@ -764,7 +793,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "P2P",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/P2P/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/P2P/mod.rs"
             ),
             vec![
                 ("PeerIdentityGetCryptKey", InvalidNumberOfArguments),
@@ -786,13 +816,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "PrintTicket",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/PrintTicket/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Printing/PrintTicket/mod.rs"
             ),
             vec![("PTQuerySchemaVersionSupport", InvalidNumberOfArguments)],
         ),
         (
             "Printing",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Printing/mod.rs"
+            ),
             vec![
                 ("CloseSpoolFileHandle", NotImplementedLinux),
                 ("CommitSpoolData", NotImplementedLinux),
@@ -847,12 +882,16 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Printing2",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Xps/Printing/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/Xps/Printing/mod.rs"
+            ),
             vec![],
         ),
         (
             "Shell",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/Shell/mod.rs"),
             vec![
                 ("RegisterScaleChangeEvent", InvalidNumberOfArguments),
                 ("SHGetDriveMedia", InvalidNumberOfArguments),
@@ -964,7 +1003,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Threading",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Threading/mod.rs"
+            ),
             vec![
                 ("ExitProcess", CrashAutomatic),
                 ("ExitThread", CrashAutomatic),
@@ -996,7 +1039,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Urlmon",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Com/Urlmon/mod.rs"
+            ),
             vec![
                 ("IEInstallScope", InvalidNumberOfArguments),
                 ("FindMediaType", InvalidNumberOfArguments),
@@ -1010,7 +1057,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "WinRT",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/WinRT/mod.rs"),
             vec![
                 ("RoGetApartmentIdentifier", InvalidNumberOfArguments),
                 ("RoGetErrorReportingFlags", InvalidNumberOfArguments),
@@ -1034,7 +1081,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsAndMessaging",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/WindowsAndMessaging/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/WindowsAndMessaging/mod.rs"
             ),
             vec![("MrmGetPriFileContentChecksum", InvalidNumberOfArguments)],
         ),
@@ -1042,7 +1090,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsConnectionManager",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsConnectionManager/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsConnectionManager/mod.rs"
             ),
             vec![("OnDemandGetRoutingHint", InvalidNumberOfArguments)],
         ),
@@ -1050,7 +1099,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsProgramming",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WindowsProgramming/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/WindowsProgramming/mod.rs"
             ),
             vec![
                 ("QueryAuxiliaryCounterFrequency", InvalidNumberOfArguments),
@@ -1068,7 +1118,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         // ////////////////////////
         (
             "Accessibility",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Accessibility/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Accessibility/mod.rs"
+            ),
             vec![
                 ("AccNotifyTouchInteraction", NotImplementedLinux),
                 ("ExpandCollapsePattern_Collapse", NotImplementedLinux),
@@ -1109,35 +1163,53 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ActiveDirectory",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/ActiveDirectory/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/ActiveDirectory/mod.rs"
             ),
             vec![],
         ),
         (
             "AddressBook",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/AddressBook/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/AddressBook/mod.rs"
+            ),
             vec![],
         ),
         (
             "AllJoyn",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/AllJoyn/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/AllJoyn/mod.rs"
+            ),
             vec![],
         ),
         (
             "Antimalware",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Antimalware/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Antimalware/mod.rs"
+            ),
             vec![("InstallELAMCertificateInfo", NotImplementedLinux)],
         ),
         (
             "AppLocker",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/AppLocker/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/AppLocker/mod.rs"
+            ),
             vec![("SaferiIsExecutableFileType", NotImplementedLinux)],
         ),
         (
             "ApplicationInstallationAndServicing",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ApplicationInstallationAndServicing/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/ApplicationInstallationAndServicing/mod.rs"
             ),
             vec![],
         ),
@@ -1145,7 +1217,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ApplicationVerifier",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ApplicationVerifier/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/ApplicationVerifier/mod.rs"
             ),
             vec![],
         ),
@@ -1153,7 +1226,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Appx",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Packaging/Appx/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/Packaging/Appx/mod.rs"
             ),
             vec![
                 ("GetResolvedPackageFullNameForPackageDependency", InvalidNumberOfArguments),
@@ -1184,14 +1258,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Audio",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Audio/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Media/Audio/mod.rs"),
             vec![],
         ),
         (
             "Authorization",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authorization/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Authorization/mod.rs"
             ),
             vec![
                 ("AuthzFreeCentralAccessPolicyCache", NotImplementedLinux),
@@ -1202,7 +1277,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Bluetooth",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Bluetooth/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/Bluetooth/mod.rs"
+            ),
             vec![
                 ("BluetoothFindRadioClose", CrashesWindows),
                 ("BluetoothFindDeviceClose", CrashesWindows),
@@ -1217,19 +1296,28 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Cabinets",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Cabinets/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/Cabinets/mod.rs"
+            ),
             vec![],
         ),
         (
             "CallObj",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/CallObj/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Com/CallObj/mod.rs"
+            ),
             vec![],
         ),
         (
             "Catalog",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Catalog/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Catalog/mod.rs"
             ),
             vec![
                 ("CryptCATAdminReleaseContext", CrashesWindows),
@@ -1246,7 +1334,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Ceip",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Ceip/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Ceip/mod.rs"
             ),
             vec![("CryptCATStoreFromHandle", NotImplementedLinux), ("CeipIsOptedIn", NotImplementedLinux)],
         ),
@@ -1254,7 +1343,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Certificates",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Certificates/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Certificates/mod.rs"
             ),
             vec![],
         ),
@@ -1262,20 +1352,22 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Clustering",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/Clustering/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/Clustering/mod.rs"
             ),
             vec![],
         ),
         (
             "ColorSystem",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/ColorSystem/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/ColorSystem/mod.rs"),
             vec![],
         ),
         (
             "Communication",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Communication/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/Communication/mod.rs"
             ),
             vec![],
         ),
@@ -1283,7 +1375,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ComponentServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ComponentServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/ComponentServices/mod.rs"
             ),
             vec![("GetManagedExtensions", NotImplementedLinux), ("RecycleSurrogate", NotImplementedLinux)],
         ),
@@ -1291,18 +1384,23 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "CompositionSwapchain",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/CompositionSwapchain/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/CompositionSwapchain/mod.rs"
             ),
             vec![],
         ),
         (
             "Compression",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Compression/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/Compression/mod.rs"
+            ),
             vec![("CloseDecompressor", CrashesWindows), ("ResetDecompressor", CrashesWindows)],
         ),
         (
             "Console",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Console/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Console/mod.rs"),
             vec![
                 ("FreeConsole", CrashesWindows),
                 ("GetConsoleAliasExesA", NotImplementedLinux),
@@ -1319,7 +1417,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Controls",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Controls/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/Controls/mod.rs"),
             vec![
                 ("GetThemeTransitionDuration", InvalidNumberOfArguments),
                 ("GetThemeSysInt", InvalidNumberOfArguments),
@@ -1348,13 +1446,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "CorrelationVector",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/CorrelationVector/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/CorrelationVector/mod.rs"
             ),
             vec![],
         ),
         (
             "Credentials",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Credentials/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Credentials/mod.rs"
+            ),
             vec![
                 ("CredUIParseUserNameA", CrashesWindows),
                 ("CredGetSessionTypes", CrashesWindows),
@@ -1410,18 +1513,27 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Cryptography",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Cryptography/mod.rs"
             ),
             vec![],
         ),
         (
             "DXCore",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DXCore/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/DXCore/mod.rs"
+            ),
             vec![],
         ),
         (
             "DataExchange",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DataExchange/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/DataExchange/mod.rs"
+            ),
             vec![
                 ("GetAtomNameA", CrashesWindows),
                 ("GlobalGetAtomNameW", CrashesWindows),
@@ -1435,20 +1547,26 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DeveloperLicensing",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DeveloperLicensing/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/DeveloperLicensing/mod.rs"
             ),
             vec![],
         ),
         (
             "DeviceAccess",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/DeviceAccess/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/DeviceAccess/mod.rs"
+            ),
             vec![],
         ),
         (
             "DeviceAndDriverInstallation",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/DeviceAndDriverInstallation/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/DeviceAndDriverInstallation/mod.rs"
             ),
             vec![
                 ("SetupBackupErrorW", ShowsDialogWindows),
@@ -1581,14 +1699,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "DeviceQuery",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/DeviceQuery/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/DeviceQuery/mod.rs"
+            ),
             vec![],
         ),
         (
             "Dhcp",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/Dhcp/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/Dhcp/mod.rs"
             ),
             vec![],
         ),
@@ -1596,7 +1719,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DiagnosticDataQuery",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/DiagnosticDataQuery/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/DiagnosticDataQuery/mod.rs"
             ),
             vec![
                 ("DdqGetDiagnosticRecordPayload", InvalidNumberOfArguments),
@@ -1605,60 +1729,91 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Diagnostics",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Xaml/Diagnostics/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Xaml/Diagnostics/mod.rs"
+            ),
             vec![],
         ),
         (
             "Dialogs",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Controls/Dialogs/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Controls/Dialogs/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct2D",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct2D/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct2D/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct3D10",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D10/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D10/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct3D11",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/Direct3D11/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/WinRT/Direct3D11/mod.rs"
             ),
             vec![],
         ),
         (
             "Direct3D112",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D11/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D11/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct3D11on12",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D11on12/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D11on12/mod.rs"
             ),
             vec![],
         ),
         (
             "Direct3D12",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D12/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D12/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct3D9",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D9/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D9/mod.rs"
+            ),
             vec![],
         ),
         (
             "Direct3D9on12",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D9on12/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D9on12/mod.rs"
             ),
             vec![],
         ),
@@ -1666,52 +1821,72 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DirectComposition",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DirectComposition/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/DirectComposition/mod.rs"
             ),
             vec![("DCompositionBoostCompositorClock", NotImplementedWindows)],
         ),
         (
             "DirectDraw",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DirectDraw/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/DirectDraw/mod.rs"
+            ),
             vec![],
         ),
         (
             "DirectML",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/AI/MachineLearning/DirectML/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/AI/MachineLearning/DirectML/mod.rs"
             ),
             vec![],
         ),
         (
             "DirectShow",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/DirectShow/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/DirectShow/mod.rs"
+            ),
             vec![],
         ),
         (
             "DirectSound",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Audio/DirectSound/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/Audio/DirectSound/mod.rs"
             ),
             vec![],
         ),
         (
             "DirectWrite",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/DirectWrite/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/DirectWrite/mod.rs"
+            ),
             vec![],
         ),
         (
             "DirectoryServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/DirectoryServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/DirectoryServices/mod.rs"
             ),
             vec![],
         ),
         (
             "Display",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Display/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/Display/mod.rs"
+            ),
             vec![
                 ("EngUnicodeToMultiByteN", CrashesWindows),
                 ("EngMultiByteToUnicodeN", CrashesWindows),
@@ -1733,7 +1908,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DistributedFileSystem",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/DistributedFileSystem/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/DistributedFileSystem/mod.rs"
             ),
             vec![
                 ("NetDfsRemove", NotImplementedLinux),
@@ -1752,7 +1928,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "DistributedTransactionCoordinator",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/DistributedTransactionCoordinator/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/DistributedTransactionCoordinator/mod.rs"
             ),
             vec![],
         ),
@@ -1760,20 +1937,26 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Dns",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/Dns/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/Dns/mod.rs"
             ),
             vec![("DnsFreeProxyName", NotImplementedLinux)],
         ),
         (
             "DxMediaObjects",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/DxMediaObjects/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/DxMediaObjects/mod.rs"
+            ),
             vec![],
         ),
         (
             "Dxc",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D/Dxc/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D/Dxc/mod.rs"
             ),
             vec![],
         ),
@@ -1781,13 +1964,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "EnterpriseData",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/EnterpriseData/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/EnterpriseData/mod.rs"
             ),
             vec![],
         ),
         (
             "Environment",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Environment/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Environment/mod.rs"
+            ),
             vec![
                 ("ExpandEnvironmentStringsW", CrashesWindows),
                 ("SetEnvironmentStringsW", CrashesWindows),
@@ -1805,7 +1993,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ErrorReporting",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ErrorReporting/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/ErrorReporting/mod.rs"
             ),
             vec![
                 ("WerRegisterAppLocalDump", CrashesWindows),
@@ -1824,7 +2013,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Etw",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Etw/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Diagnostics/Etw/mod.rs"
             ),
             vec![("CveEventWrite", NotImplementedLinux), ("TdhUnloadManifest", NotImplementedLinux)],
         ),
@@ -1832,13 +2022,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "EventCollector",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/EventCollector/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/EventCollector/mod.rs"
             ),
             vec![],
         ),
         (
             "EventLog",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/EventLog/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/EventLog/mod.rs"
+            ),
             vec![
                 ("EvtCreateBookmark", NotImplementedLinux),
                 ("EvtArchiveExportedLog", NotImplementedLinux),
@@ -1859,7 +2054,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "EventNotificationService",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/EventNotificationService/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/EventNotificationService/mod.rs"
             ),
             vec![],
         ),
@@ -1867,36 +2063,42 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ExtensibleAuthenticationProtocol",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/ExtensibleAuthenticationProtocol/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/ExtensibleAuthenticationProtocol/mod.rs"
             ),
             vec![],
         ),
         (
             "Fax",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Fax/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Devices/Fax/mod.rs"),
             vec![],
         ),
         (
             "FileHistory",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/FileHistory/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/FileHistory/mod.rs"
+            ),
             vec![("FhServiceOpenPipe", InvalidNumberOfArguments)],
         ),
         (
             "Foundation",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Foundation/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Foundation/mod.rs"),
             vec![],
         ),
         (
             "Fxc",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D/Fxc/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Direct3D/Fxc/mod.rs"
             ),
             vec![],
         ),
         (
             "Gdi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Gdi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Graphics/Gdi/mod.rs"),
             vec![
                 ("GetTextExtentExPointA", CrashesLinux),
                 ("TTEnableEmbeddingForFacename", CrashesLinux),
@@ -1913,19 +2115,24 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Globalization",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Globalization/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Globalization/mod.rs"),
             vec![("GetDistanceOfClosestLanguageInList", InvalidNumberOfArguments)],
         ),
         (
             "GroupPolicy",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/GroupPolicy/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/GroupPolicy/mod.rs"
+            ),
             vec![],
         ),
         (
             "HardwareCounterProfiling",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Performance/HardwareCounterProfiling/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Performance/HardwareCounterProfiling/mod.rs"
             ),
             vec![
                 ("DisableThreadProfiling", NotImplementedLinux),
@@ -1935,7 +2142,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "HiDpi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/HiDpi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/HiDpi/mod.rs"),
             vec![
                 ("GetDialogControlDpiChangeBehavior", NotImplementedLinux),
                 ("GetDialogDpiChangeBehavior", NotImplementedLinux),
@@ -1949,7 +2156,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "HostComputeNetwork",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/HostComputeNetwork/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/HostComputeNetwork/mod.rs"
             ),
             vec![],
         ),
@@ -1957,7 +2165,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "HostComputeSystem",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/HostComputeSystem/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/HostComputeSystem/mod.rs"
             ),
             vec![
                 ("HcsModifyServiceSettings", InvalidNumberOfArguments),
@@ -1970,7 +2179,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "HttpServer",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/HttpServer/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/HttpServer/mod.rs"
             ),
             vec![
                 ("HttpAddUrlToUrlGroup", NotImplementedLinux),
@@ -1983,38 +2193,47 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "HumanInterfaceDevice",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/HumanInterfaceDevice/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/HumanInterfaceDevice/mod.rs"
             ),
             vec![("HidD_FreePreparsedData", CrashesWindows)],
         ),
         (
             "Hypervisor",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Hypervisor/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Hypervisor/mod.rs"
+            ),
             vec![],
         ),
         (
             "IO",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/IO/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/IO/mod.rs"),
             vec![],
         ),
         (
             "Iis",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Iis/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Iis/mod.rs"),
             vec![],
         ),
         (
             "Imaging",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/Imaging/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/Imaging/mod.rs"
+            ),
             vec![("WICMapShortNameToGuid", InvalidNumberOfArguments)],
         ),
         (
             "Imapi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Imapi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Storage/Imapi/mod.rs"),
             vec![],
         ),
         (
             "Ime",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/Ime/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/Input/Ime/mod.rs"),
             vec![
                 ("ImmInstallIMEA", CrashesWindows),
                 ("ImmInstallIMEW", NotImplementedLinux),
@@ -2023,19 +2242,24 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "IndexServer",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/IndexServer/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/IndexServer/mod.rs"
+            ),
             vec![],
         ),
         (
             "Input",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/Input/mod.rs"),
             vec![],
         ),
         (
             "InstallableFileSystems",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/InstallableFileSystems/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/InstallableFileSystems/mod.rs"
             ),
             vec![
                 ("FilterAttach", NotImplementedWindows),
@@ -2054,7 +2278,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "InteractionContext",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/InteractionContext/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/InteractionContext/mod.rs"
             ),
             vec![
                 ("CreateInteractionContext", InvalidNumberOfArguments),
@@ -2070,7 +2295,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "IpHelper",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/IpHelper/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/IpHelper/mod.rs"
             ),
             vec![
                 ("GetIpErrorString", CrashesWindows),
@@ -2103,12 +2329,20 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "IscsiDisc",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/IscsiDisc/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/IscsiDisc/mod.rs"
+            ),
             vec![],
         ),
         (
             "Isolation",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Isolation/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Isolation/mod.rs"
+            ),
             vec![
                 ("IsProcessInIsolatedWindowsEnvironment", InvalidNumberOfArguments),
                 ("IsProcessInIsolatedContainer", InvalidNumberOfArguments),
@@ -2125,7 +2359,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Jet",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Jet/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Storage/Jet/mod.rs"),
             vec![
                 ("JetBeginExternalBackup", NotImplementedLinux),
                 ("JetBeginExternalBackupInstance", NotImplementedLinux),
@@ -2185,24 +2419,29 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "JobObjects",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/JobObjects/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/JobObjects/mod.rs"
+            ),
             vec![],
         ),
         (
             "Js",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Js/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Js/mod.rs"),
             vec![],
         ),
         (
             "Kernel",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Kernel/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Kernel/mod.rs"),
             vec![],
         ),
         (
             "KernelStreaming",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/KernelStreaming/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/KernelStreaming/mod.rs"
             ),
             vec![],
         ),
@@ -2210,13 +2449,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "KeyboardAndMouse",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/KeyboardAndMouse/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Input/KeyboardAndMouse/mod.rs"
             ),
             vec![("GetKeyNameTextA", CrashesWindows), ("GetKeyboardLayoutNameA", CrashesWindows)],
         ),
         (
             "Ldap",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/Ldap/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/Ldap/mod.rs"
+            ),
             vec![
                 ("ldap_initW", CrashesWindows),
                 ("ldap_err2stringW", CrashesWindows),
@@ -2257,7 +2501,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "LibraryLoader",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/LibraryLoader/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/LibraryLoader/mod.rs"
+            ),
             vec![
                 ("FreeLibraryAndExitThread", CrashAutomatic),
                 ("GetDllDirectoryA", CrashesWindows),
@@ -2272,45 +2520,59 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "LicenseProtection",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/LicenseProtection/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/LicenseProtection/mod.rs"
             ),
             vec![],
         ),
         (
             "Magnification",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Magnification/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Magnification/mod.rs"
+            ),
             vec![],
         ),
         (
             "Mailslots",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Mailslots/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Mailslots/mod.rs"
+            ),
             vec![],
         ),
         (
             "Mapi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Mapi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Mapi/mod.rs"),
             vec![],
         ),
         (
             "Marshal",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/Marshal/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Com/Marshal/mod.rs"
+            ),
             vec![],
         ),
         (
             "Media",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Media/mod.rs"),
             vec![],
         ),
         (
             "Memory",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Memory/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Memory/mod.rs"),
             vec![],
         ),
         (
             "MobileDeviceManagementRegistration",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Management/MobileDeviceManagementRegistration/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Management/MobileDeviceManagementRegistration/mod.rs"
             ),
             vec![
                 ("RegisterDeviceWithLocalManagement", InvalidNumberOfArguments),
@@ -2321,7 +2583,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "MsHtml",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Web/MsHtml/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Web/MsHtml/mod.rs"),
             vec![
                 ("RatingObtainQueryW", InvalidNumberOfArguments),
                 ("RatingObtainQuery", InvalidNumberOfArguments),
@@ -2331,13 +2593,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Multicast",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/Multicast/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/Multicast/mod.rs"
             ),
             vec![("McastApiStartup", NotImplementedLinux), ("McastApiCleanup", NotImplementedLinux)],
         ),
         (
             "Multimedia",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Multimedia/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/Multimedia/mod.rs"
+            ),
             vec![
                 ("DrawDibStart", CrashesWindows),
                 ("ICInstall", CrashesWindows),
@@ -2365,7 +2632,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "NetBios",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetBios/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetBios/mod.rs"
             ),
             vec![],
         ),
@@ -2373,7 +2641,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "NetManagement",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetManagement/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetManagement/mod.rs"
             ),
             vec![
                 ("RouterAssert", CrashesWindows),
@@ -2444,7 +2713,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "NetShell",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetShell/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetShell/mod.rs"
             ),
             vec![],
         ),
@@ -2452,7 +2722,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "NetworkDiagnosticsFramework",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetworkDiagnosticsFramework/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/NetworkDiagnosticsFramework/mod.rs"
             ),
             vec![],
         ),
@@ -2460,25 +2731,35 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "NonVolatile",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Memory/NonVolatile/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Memory/NonVolatile/mod.rs"
             ),
             vec![],
         ),
         (
             "OfflineFiles",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/OfflineFiles/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/OfflineFiles/mod.rs"
+            ),
             vec![],
         ),
         (
             "OpenGL",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Graphics/OpenGL/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Graphics/OpenGL/mod.rs"
+            ),
             vec![],
         ),
         (
             "OperationRecorder",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/OperationRecorder/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/OperationRecorder/mod.rs"
             ),
             vec![],
         ),
@@ -2486,18 +2767,27 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "PasswordManagement",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/PasswordManagement/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/PasswordManagement/mod.rs"
             ),
             vec![],
         ),
         (
             "Pdf",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/WinRT/Pdf/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/WinRT/Pdf/mod.rs"
+            ),
             vec![],
         ),
         (
             "Performance",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Performance/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Performance/mod.rs"
+            ),
             vec![
                 ("PerfEnumerateCounterSet", CrashesWindows),
                 ("UpdatePerfNameFilesW", NotImplementedLinux),
@@ -2557,7 +2847,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Pipes",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Pipes/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Pipes/mod.rs"),
             vec![
                 ("WaitNamedPipeW", CrashesWindows),
                 ("GetNamedPipeClientComputerNameW", NotImplementedLinux),
@@ -2568,13 +2858,18 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Pnp",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Enumeration/Pnp/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/Enumeration/Pnp/mod.rs"
             ),
             vec![],
         ),
         (
             "Pointer",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/Pointer/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Input/Pointer/mod.rs"
+            ),
             vec![
                 ("SkipPointerFrameMessages", NotImplementedLinux),
                 ("IsMouseInPointerEnabled", NotImplementedLinux),
@@ -2586,13 +2881,14 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "PortableDevices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/PortableDevices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/PortableDevices/mod.rs"
             ),
             vec![],
         ),
         (
             "Power",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Power/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Power/mod.rs"),
             vec![
                 ("PowerRestoreDefaultPowerSchemes", NotImplementedLinux),
                 ("RegisterSuspendResumeNotification", NotImplementedLinux),
@@ -2608,20 +2904,26 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "ProcessSnapshotting",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/ProcessSnapshotting/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Diagnostics/ProcessSnapshotting/mod.rs"
             ),
             vec![],
         ),
         (
             "ProcessStatus",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/ProcessStatus/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/ProcessStatus/mod.rs"
+            ),
             vec![("K32EnumProcesses", CrashesWindows)],
         ),
         (
             "ProjectedFileSystem",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/ProjectedFileSystem/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Storage/ProjectedFileSystem/mod.rs"
             ),
             vec![],
         ),
@@ -2629,7 +2931,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "PropertiesSystem",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Shell/PropertiesSystem/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Shell/PropertiesSystem/mod.rs"
             ),
             vec![
                 ("PSLookupPropertyHandlerCLSID", InvalidNumberOfArguments),
@@ -2646,7 +2949,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "QoS",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/QoS/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/QoS/mod.rs"
             ),
             vec![
                 ("TcOpenInterfaceW", NotImplementedLinux),
@@ -2661,7 +2965,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Recovery",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Recovery/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Recovery/mod.rs"
+            ),
             vec![
                 ("ApplicationRecoveryInProgress", InvalidNumberOfArguments),
                 ("UnregisterApplicationRecoveryCallback", NotImplementedLinux),
@@ -2669,7 +2977,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Registry",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Registry/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Registry/mod.rs"
+            ),
             vec![
                 ("RegDisablePredefinedCacheEx", NotImplementedLinux),
                 ("RegConnectRegistryExW", NotImplementedLinux),
@@ -2678,7 +2990,11 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "RemoteDesktop",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/RemoteDesktop/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/RemoteDesktop/mod.rs"
+            ),
             vec![
                 ("WTSWaitSystemEvent", Freeze),
                 ("WTSIsChildSessionsEnabled", NotImplementedLinux),
@@ -2689,7 +3005,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "RemoteManagement",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/RemoteManagement/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/RemoteManagement/mod.rs"
             ),
             vec![
                 ("RmJoinSession", NotImplementedLinux),
@@ -2701,7 +3018,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "RestartManager",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/RestartManager/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/RestartManager/mod.rs"
             ),
             vec![
                 ("RmJoinSession", NotImplementedLinux),
@@ -2711,14 +3029,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Restore",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Restore/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Restore/mod.rs"),
             vec![],
         ),
         (
             "RightsManagement",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Data/RightsManagement/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Data/RightsManagement/mod.rs"
             ),
             vec![
                 ("DRMCheckSecurity", CrashesWindows),
@@ -2777,20 +3096,21 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Rpc",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Rpc/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Rpc/mod.rs"),
             vec![],
         ),
         (
             "Rras",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/Rras/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/Rras/mod.rs"
             ),
             vec![],
         ),
         (
             "Search",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Search/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Search/mod.rs"),
             vec![
                 ("SQLCloseEnumServers", CrashesWindows),
                 ("ODBCGetTryWaitValue", NotImplementedLinux),
@@ -2803,7 +3123,7 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Security",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Security/mod.rs"),
             vec![
                 ("GetLengthSid", CrashesWindows),
                 ("EqualPrefixSid", CrashesWindows),
@@ -2820,46 +3140,62 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "SecurityCenter",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SecurityCenter/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/SecurityCenter/mod.rs"
             ),
             vec![("WscGetAntiMalwareUri", InvalidNumberOfArguments)],
         ),
         (
             "Sensors",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Sensors/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/Sensors/mod.rs"
+            ),
             vec![],
         ),
         (
             "SerialCommunication",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/SerialCommunication/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/SerialCommunication/mod.rs"
             ),
             vec![("ComDBOpen", NotImplementedLinux)],
         ),
         (
             "Services",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Services/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Services/mod.rs"
+            ),
             vec![("WaitServiceState", NotImplementedLinux)],
         ),
         (
             "SetupAndMigration",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SetupAndMigration/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/SetupAndMigration/mod.rs"
             ),
             vec![("OOBEComplete", NotImplementedLinux)],
         ),
         (
             "Shutdown",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Shutdown/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Shutdown/mod.rs"
+            ),
             vec![],
         ),
         (
             "Sip",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Sip/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Cryptography/Sip/mod.rs"
             ),
             vec![],
         ),
@@ -2867,7 +3203,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "Snmp",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/Snmp/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/Snmp/mod.rs"
             ),
             vec![
                 ("SnmpEntityToStr", NotImplementedLinux),
@@ -2899,14 +3236,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "SqlLite",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SqlLite/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/SqlLite/mod.rs"),
             vec![],
         ),
         (
             "StationsAndDesktops",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/StationsAndDesktops/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/StationsAndDesktops/mod.rs"
             ),
             vec![],
         ),
@@ -2914,7 +3252,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "StructuredStorage",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Com/StructuredStorage/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Com/StructuredStorage/mod.rs"
             ),
             vec![("PropStgNameToFmtId", InvalidNumberOfArguments)],
         ),
@@ -2922,7 +3261,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "SubsystemForLinux",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SubsystemForLinux/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/SubsystemForLinux/mod.rs"
             ),
             vec![
                 ("WslLaunchInteractive", InvalidNumberOfArguments),
@@ -2933,7 +3273,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "SystemInformation",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SystemInformation/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/SystemInformation/mod.rs"
             ),
             vec![
                 ("IsWow64GuestMachineSupported", InvalidNumberOfArguments),
@@ -2944,18 +3285,19 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "SystemServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/SystemServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/SystemServices/mod.rs"
             ),
             vec![],
         ),
         (
             "TabletPC",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/TabletPC/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/TabletPC/mod.rs"),
             vec![],
         ),
         (
             "Tapi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Tapi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Devices/Tapi/mod.rs"),
             vec![
                 ("lineGenerateDigitsW", NotImplementedLinux),
                 ("lineGatherDigitsW", NotImplementedLinux),
@@ -2994,32 +3336,38 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "TextServices",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/TextServices/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/TextServices/mod.rs"
+            ),
             vec![("DoMsCtfMonitor", NotImplementedLinux), ("UninitLocalMsCtfMonitor", NotImplementedLinux)],
         ),
         (
             "Time",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Time/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Time/mod.rs"),
             vec![],
         ),
         (
             "ToolHelp",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Diagnostics/ToolHelp/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/Diagnostics/ToolHelp/mod.rs"
             ),
             vec![],
         ),
         (
             "Touch",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/Touch/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/UI/Input/Touch/mod.rs"),
             vec![],
         ),
         (
             "TpmBaseServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/TpmBaseServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/TpmBaseServices/mod.rs"
             ),
             vec![
                 ("GetDeviceIDString", CrashesWindows),
@@ -3033,7 +3381,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "UI",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Cryptography/UI/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Cryptography/UI/mod.rs"
             ),
             vec![],
         ),
@@ -3041,26 +3390,28 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "UI2",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/Authorization/UI/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/Authorization/UI/mod.rs"
             ),
             vec![],
         ),
         (
             "Usb",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/Usb/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Devices/Usb/mod.rs"),
             vec![("WinUsb_GetAdjustedFrameNumber", NotImplementedLinux)],
         ),
         (
             "UserAccessLogging",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/UserAccessLogging/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/System/UserAccessLogging/mod.rs"
             ),
             vec![],
         ),
         (
             "Vhd",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Vhd/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Storage/Vhd/mod.rs"),
             vec![
                 ("GetVirtualDiskPhysicalPath", NotImplementedLinux),
                 ("GetAllAttachedVirtualDiskPhysicalPaths", NotImplementedLinux),
@@ -3072,14 +3423,15 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "Vss",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Vss/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Storage/Vss/mod.rs"),
             vec![],
         ),
         (
             "WNet",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WNet/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WNet/mod.rs"
             ),
             vec![],
         ),
@@ -3087,7 +3439,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WebDav",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WebDav/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WebDav/mod.rs"
             ),
             vec![
                 ("DavInvalidateCache", NotImplementedLinux),
@@ -3104,20 +3457,26 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WebServicesOnDevices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Devices/WebServicesOnDevices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Devices/WebServicesOnDevices/mod.rs"
             ),
             vec![("WSDUriEncode", NotImplementedLinux), ("WSDUriDecode", NotImplementedLinux)],
         ),
         (
             "WebSocket",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WebSocket/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/WebSocket/mod.rs"
+            ),
             vec![],
         ),
         (
             "WiFi",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WiFi/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WiFi/mod.rs"
             ),
             vec![
                 ("WFDCancelOpenSession", NotImplementedLinux),
@@ -3128,12 +3487,20 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
         ),
         (
             "WinHttp",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WinHttp/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/WinHttp/mod.rs"
+            ),
             vec![("WinHttpSetProxySettingsPerUser", NotImplementedLinux)],
         ),
         (
             "WinInet",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WinInet/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/WinInet/mod.rs"
+            ),
             vec![
                 ("ExportCookieFileA", NotImplementedWindows),
                 ("ExportCookieFileW", NotImplementedWindows),
@@ -3182,18 +3549,27 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WinML",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/AI/MachineLearning/WinML/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/AI/MachineLearning/WinML/mod.rs"
             ),
             vec![],
         ),
         (
             "WinSock",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WinSock/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/WinSock/mod.rs"
+            ),
             vec![],
         ),
         (
             "WinTrust",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Security/WinTrust/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Security/WinTrust/mod.rs"
+            ),
             vec![
                 ("OpenPersonalTrustDBDialog", ShowsDialogWindows),
                 ("WintrustSetDefaultIncludePEPageHashes", NotImplementedLinux),
@@ -3203,7 +3579,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsFilteringPlatform",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFilteringPlatform/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFilteringPlatform/mod.rs"
             ),
             vec![
                 ("FwpmDynamicKeywordUnsubscribe0", NotImplementedWindows),
@@ -3245,7 +3622,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsFirewall",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFirewall/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsFirewall/mod.rs"
             ),
             vec![],
         ),
@@ -3253,7 +3631,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsMediaFormat",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/WindowsMediaFormat/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/WindowsMediaFormat/mod.rs"
             ),
             vec![],
         ),
@@ -3261,7 +3640,8 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsNetworkVirtualization",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsNetworkVirtualization/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/NetworkManagement/WindowsNetworkVirtualization/mod.rs"
             ),
             vec![],
         ),
@@ -3269,36 +3649,46 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
             "WindowsWebServices",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Networking/WindowsWebServices/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Networking/WindowsWebServices/mod.rs"
             ),
             vec![("WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable", InvalidNumberOfArguments)],
         ),
         (
             "Wmi",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/System/Wmi/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/System/Wmi/mod.rs"),
             vec![],
         ),
         (
             "XAudio2",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Media/Audio/XAudio2/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Media/Audio/XAudio2/mod.rs"
+            ),
             vec![],
         ),
         (
             "XboxController",
             format!(
                 "{}{}",
-                WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/UI/Input/XboxController/mod.rs"
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/UI/Input/XboxController/mod.rs"
             ),
             vec![],
         ),
         (
             "XmlLite",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Data/Xml/XmlLite/mod.rs"),
+            format!(
+                "{}{}",
+                get_windows_rs_folder(),
+                "crates/libs/sys/src/Windows/Win32/Data/Xml/XmlLite/mod.rs"
+            ),
             vec![],
         ),
         (
             "Xps",
-            format!("{}{}", WINDOWS_RS_FOLDER, "crates/libs/sys/src/Windows/Win32/Storage/Xps/mod.rs"),
+            format!("{}{}", get_windows_rs_folder(), "crates/libs/sys/src/Windows/Win32/Storage/Xps/mod.rs"),
             vec![],
         ),
     ]

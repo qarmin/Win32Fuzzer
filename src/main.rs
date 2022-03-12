@@ -12,12 +12,34 @@ use create_project_file::*;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
+use std::path::Path;
 use walkdir::WalkDir;
 
 fn main() {
-    let things = load_settings();
+    let args: Vec<_> = std::env::args().collect();
+    if args.len() < 2 {
+        println!(
+            "You need to set path to windows-rs library(https://github.com/microsoft/windows-rs) - 0.33.0 is supported at this moment(example run)"
+        );
+        return;
+    }
+    let mut path = args[1].clone();
+    if !path.ends_with('/') {
+        path.push('/');
+    }
+
+    if !Path::new(&path).exists() {
+        println!(
+            "Provided path {} not exists, please provide proper path to windows-rs library(https://github.com/microsoft/windows-rs)",
+            path
+        );
+    }
+
+    set_windows_rs_folder(path);
+    println!("{}", get_windows_rs_folder());
 
     // print_excluded_things(&things);
+    let things = load_settings();
 
     let create_renames2 = [
         // Basic
@@ -217,7 +239,7 @@ pub fn print_excluded_things(things: &[(&'static str, String, Vec<(&'static str,
 }
 
 pub fn find_things() {
-    let base_path = format!("{}crates/libs/sys/src/Windows/Win32/", WINDOWS_RS_FOLDER);
+    let base_path = format!("{}crates/libs/sys/src/Windows/Win32/", get_windows_rs_folder());
 
     let mut idx = 0;
 
@@ -228,7 +250,7 @@ pub fn find_things() {
         let path = entry.path().to_string_lossy().to_string();
         if path.ends_with("mod.rs") {
             // println!("{}", path);
-            let without_prefix = path.strip_prefix(WINDOWS_RS_FOLDER).unwrap();
+            let without_prefix = path.strip_prefix(&get_windows_rs_folder()).unwrap();
             // println!("WP - {}", without_prefix);
 
             let file_content = match fs::read_to_string(&path) {
@@ -260,10 +282,10 @@ pub fn find_things() {
                 }
 
                 btreeset.insert(format!(
-                    "(\"{}\",format!(\"{{}}{{}}\",WINDOWS_RS_FOLDER,\"{}\"),vec![],),",
+                    "(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),",
                     end, without_prefix
                 ));
-                // println!("(\"{}\",format!(\"{{}}{{}}\",WINDOWS_RS_FOLDER,\"{}\"),vec![],),", end, without_prefix);
+                // println!("(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),", end, without_prefix);
                 // println!("CONTAINS! {}", path);
             }
         }
