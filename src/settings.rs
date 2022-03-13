@@ -19,33 +19,35 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "Imapi",       // Shows message box when os doesn't have any mail app inside
     "Shutdown",    // Shutdown computer
     //
-    "Gaming",                              // api-ms-win-gaming-expandedresources-l1-1-0.dll
-    "P2P",                                 // p2p.dll
-    "BiometricFramework",                  // winbio.dll
-    "DeploymentServices",                  // wdstptc.dll
-    "FileSystem",                          // clfsw32.dll, txfw32.dll, wofutil.dll
-    "CloudFilters",                        // cldapi.dll
-    "Identity",                            // tokenbinding.dll
-    "WindowsConnectionManager",            // ondemandconnroutehelper.dll
-    "WindowsProgramming",                  // wldp.dll, api-ms-win-core-realtime-l1-1-2.dll, api-ms-win-core-apiquery-l2-1-0.dll
     "ActiveDirectory",                     // dsparse.dll, dsprop.dll
     "AllJoyn",                             // msajapi.dll
     "ApplicationInstallationAndServicing", // mspatchc.dll
+    "BiometricFramework",                  // winbio.dll
+    "Certificates",                        // certadm.dll
+    "CloudFilters",                        // cldapi.dll
+    "Clustering",                          // ntlanman.dll
+    "ColorSystem",                         // icm32.dll
     "Communication",                       // api-ms-win-core-comm-l1-1-1.dll, api-ms-win-core-comm-l1-1-2.dll
+    "Cryptography",                        // infocardapi.dll
+    "DeploymentServices",                  // wdstptc.dll
+    "DeveloperLicensing",                  // wsclient.dll
+    "Dhcp",                                // dhcpsapi.dll
+    "DiagnosticDataQuery",                 // diagnosticdataquery.dll
+    "Diagnostics",                         // windows.ui.xaml
     "EnterpriseData",                      // srpapi.dll, efswrt.dll
     "EventCollector",                      // wecapi.dll
     "ExtensibleAuthenticationProtocol",    // eappprxy.dll, eappcfg.dll
     "Fax",                                 // fxsutility.dll, winfax.dll
+    "FileHistory",                         // fhsvcctl.dll
+    "FileSystem",                          // clfsw32.dll, txfw32.dll, wofutil.dll
+    "Gaming",                              // api-ms-win-gaming-expandedresources-l1-1-0.dll
     "Globalization",                       // bcp47mrm.dll, icu.dll
     "GroupPolicy",                         // gpedit.dll
     "HostComputeNetwork",                  // computenetwork.dll
     "HostComputeSystem",                   // computecore.dll, computestorage.dll
     "Hypervisor",                          // vmsavedstatedumpprovider.dll
-    "Clustering",                          // ntlanman.dll
-    "ColorSystem",                         // icm32.dll
-    "Cryptography",                        // infocardapi.dll
-    "DeveloperLicensing",                  // wsclient.dll
-    "Dhcp",                                // dhcpsapi.dll
+    "Identity",                            // tokenbinding.dll
+    "IscsiDisc",                           // iscsidsc.dll
     "Js",                                  // chakra.dll
     "Magnification",                       // magnification.dll
     "Memory",                              // api-ms-win-core-memory-l1-1-8.dll
@@ -53,6 +55,7 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "MsHtml",                              // imgutil.dll, msrating.dll
     "NetShell",                            // netsh.dll
     "OfflineFiles",                        // cscapi.dll
+    "P2P",                                 // p2p.dll
     "ProjectedFileSystem",                 // projectedfslib.dll
     "Rpc",                                 // rpcns4.dll
     "Rras",                                // rtm.dll
@@ -64,41 +67,15 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "UserAccessLogging",                   // ualapi.dll
     "WNet",                                // ntlanman.dll
     "WinSock",                             // windows.networking
+    "WindowsAndMessaging",                 // mrmsupport.dll
+    "WindowsConnectionManager",            // ondemandconnroutehelper.dll
     "WindowsFirewall",                     // api-ms-win-net-isolation-l1-1-0.dll
     "WindowsNetworkVirtualization",        // wnvapi.dll
+    "WindowsProgramming",                  // wldp.dll, api-ms-win-core-realtime-l1-1-2.dll, api-ms-win-core-apiquery-l2-1-0.dll
     "WindowsWebServices",                  // webauthn.dll
     "XboxController",                      // xinputuap.dll
-    "IscsiDisc",                           // iscsidsc.dll
-    "DiagnosticDataQuery",                 // diagnosticdataquery.dll
-    "Diagnostics",                         // windows.ui.xaml
-    "Certificates",                        // certadm.dll
-    "WindowsAndMessaging",                 // mrmsupport.dll
-    "FileHistory",                         // fhsvcctl.dll
     /////////////////////////
-    "Printer",
-    "Dwm",
-    "Gaming",
-    "Dxgi",
-    "BiometricFramework",
-    "Com",
-    "CloudFilters",
-    "Debug",
-    "DeploymentServices",
-    "FileSystem",
-    "Identity",
-    "MediaFoundation",
-    "Ole",
-    "P2P",
-    "PrintTicket",
-    "Printing",
-    "Printing2",
-    "Shell",
-    "Threading",
-    "Urlmon",
-    "WinRT",
-    "WindowsConnectionManager",
-    "WindowsProgramming",
-    "Accessibility",
+    // "Accessibility",
     "ActiveDirectory",
     "AddressBook",
     "AllJoyn",
@@ -109,24 +86,29 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "Appx",
     "Audio",
     "Authorization",
+    "BiometricFramework",
     "Bluetooth",
     "Cabinets",
     "CallObj",
     "Catalog",
     "Ceip",
+    "CloudFilters",
     "Clustering",
     "ColorSystem",
+    "Com",
     "Communication",
     "ComponentServices",
     "CompositionSwapchain",
     "Compression",
-    // "Console",
+    "Console",
     "Controls",
     "CorrelationVector",
     "Credentials",
     "Cryptography",
     "DXCore",
     "DataExchange",
+    "Debug",
+    "DeploymentServices",
     "DeveloperLicensing",
     "DeviceAccess",
     "DeviceAndDriverInstallation",
@@ -152,8 +134,10 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "DistributedFileSystem",
     "DistributedTransactionCoordinator",
     "Dns",
+    "Dwm",
     "DxMediaObjects",
     "Dxc",
+    "Dxgi",
     "EnterpriseData",
     "Environment",
     "ErrorReporting",
@@ -163,8 +147,10 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "EventNotificationService",
     "ExtensibleAuthenticationProtocol",
     "Fax",
+    "FileSystem",
     "Foundation",
     "Fxc",
+    "Gaming",
     "Gdi",
     "Globalization",
     "GroupPolicy",
@@ -176,6 +162,7 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "HumanInterfaceDevice",
     "Hypervisor",
     "IO",
+    "Identity",
     "Iis",
     "Imaging",
     "Imapi",
@@ -201,6 +188,7 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "Mapi",
     "Marshal",
     "Media",
+    "MediaFoundation",
     "Memory",
     "MobileDeviceManagementRegistration",
     "MsHtml",
@@ -212,8 +200,10 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "NetworkDiagnosticsFramework",
     "NonVolatile",
     "OfflineFiles",
+    "Ole",
     "OpenGL",
     "OperationRecorder",
+    "P2P",
     "PasswordManagement",
     "Pdf",
     "Performance",
@@ -222,6 +212,10 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "Pointer",
     "PortableDevices",
     "Power",
+    "PrintTicket",
+    "Printer",
+    "Printing",
+    "Printing2",
     "ProcessSnapshotting",
     "ProcessStatus",
     "ProjectedFileSystem",
@@ -243,6 +237,7 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "SerialCommunication",
     "Services",
     "SetupAndMigration",
+    "Shell",
     "Shutdown",
     "Sip",
     "Snmp",
@@ -255,12 +250,14 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "TabletPC",
     "Tapi",
     "TextServices",
+    "Threading",
     "Time",
     "ToolHelp",
     "Touch",
     "TpmBaseServices",
     "UI",
     "UI2",
+    "Urlmon",
     "Usb",
     "UserAccessLogging",
     "Vhd",
@@ -273,12 +270,15 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "WinHttp",
     "WinInet",
     "WinML",
+    "WinRT",
     "WinSock",
     "WinTrust",
+    "WindowsConnectionManager",
     "WindowsFilteringPlatform",
     "WindowsFirewall",
     "WindowsMediaFormat",
     "WindowsNetworkVirtualization",
+    "WindowsProgramming",
     "WindowsWebServices",
     "Wmi",
     "XAudio2",
@@ -478,6 +478,9 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
                 ("MFGetTimerPeriodicity", InvalidNumberOfArguments),
                 ("MFGetWorkQueueMMCSSPriority", InvalidNumberOfArguments),
                 ("MFGetWorkQueueMMCSSTaskId", InvalidNumberOfArguments),
+                ("MFCreateSequencerSegmentOffset", InvalidNumberOfArguments),
+                ("MFGetSupportedMimeTypes", InvalidNumberOfArguments),
+                ("MFGetSupportedSchemes", InvalidNumberOfArguments),
             ],
         ),
         (
@@ -1050,6 +1053,46 @@ pub fn load_settings() -> Vec<(&'static str, String, Vec<(&'static str, TypeOfPr
                 ("VirtualizedItemPattern_Realize", NotImplementedLinux),
                 ("WindowPattern_Close", NotImplementedLinux),
                 ("WindowPattern_WaitForInputIdle", NotImplementedLinux),
+                ("AccSetRunningUtilityState", NotImplementedLinux),
+                ("DockPattern_SetDockPosition", NotImplementedLinux),
+                ("GridPattern_GetItem", NotImplementedLinux),
+                ("ItemContainerPattern_FindItemByProperty", NotImplementedLinux),
+                ("ScrollPattern_Scroll", NotImplementedLinux),
+                ("TextPattern_RangeFromChild", NotImplementedLinux),
+                ("SynchronizedInputPattern_StartListening", NotImplementedLinux),
+                ("TextPattern_RangeFromPoint", NotImplementedLinux),
+                ("TextPattern_get_DocumentRange", NotImplementedLinux),
+                ("TextPattern_get_SupportedTextSelection", NotImplementedLinux),
+                ("TextRange_AddToSelection", NotImplementedLinux),
+                ("TextRange_Clone", NotImplementedLinux),
+                ("TextRange_Compare", NotImplementedLinux),
+                ("TextRange_CompareEndpoints", NotImplementedLinux),
+                ("TextRange_ExpandToEnclosingUnit", NotImplementedLinux),
+                ("TextRange_FindAttribute", NotImplementedLinux),
+                ("TextRange_FindText", NotImplementedLinux),
+                ("TextRange_GetAttributeValue", NotImplementedLinux),
+                ("TextRange_GetEnclosingElement", NotImplementedLinux),
+                ("TextRange_GetText", NotImplementedLinux),
+                ("TextRange_Move", NotImplementedLinux),
+                ("TextRange_MoveEndpointByRange", NotImplementedLinux),
+                ("TextRange_MoveEndpointByUnit", NotImplementedLinux),
+                ("TextRange_RemoveFromSelection", NotImplementedLinux),
+                ("TextRange_ScrollIntoView", NotImplementedLinux),
+                ("TextRange_Select", NotImplementedLinux),
+                ("UiaAddEvent", NotImplementedLinux),
+                ("UiaEventAddWindow", NotImplementedLinux),
+                ("UiaEventRemoveWindow", NotImplementedLinux),
+                ("UiaGetPatternProvider", NotImplementedLinux),
+                ("UiaGetPropertyValue", NotImplementedLinux),
+                ("UiaGetRootNode", NotImplementedLinux),
+                ("UiaHTextRangeFromVariant", NotImplementedLinux),
+                ("UiaHUiaNodeFromVariant", NotImplementedLinux),
+                ("UiaNodeFromHandle", NotImplementedLinux),
+                ("UiaNodeRelease", NotImplementedLinux),
+                ("UiaRemoveEvent", NotImplementedLinux),
+                ("UiaSetFocus", NotImplementedLinux),
+                ("UiaTextRangeRelease", NotImplementedLinux),
+                ("WindowPattern_SetWindowVisualState", NotImplementedLinux),
             ],
         ),
         (

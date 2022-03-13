@@ -280,15 +280,14 @@ pub fn a_<<function_name>>(file : &mut File)  {
             let mut add_arg = ArgumentAdditional::new();
             add_arg.original_argument = arg.clone();
 
-            let spl: Vec<_> = add_arg.argument_type.split("::").collect();
-            add_arg.constant_value = spl[spl.len() - 1].to_string();
-
             if let Some(right_space) = arg.rfind(' ') {
                 add_arg.argument_before = arg[..right_space].to_string();
                 add_arg.argument_type = arg[right_space + 1..].to_string();
             } else {
                 add_arg.argument_type = arg.clone();
             }
+            let spl: Vec<_> = add_arg.argument_type.split("::").collect();
+            add_arg.latest_value = spl[spl.len() - 1].to_string();
 
             if arg.contains("*const") || arg.contains("ffi::c_void") || arg.contains("*mut *mut ") {
                 // println!("Not supported '''{}'''", arg); // Maybe TODO
@@ -303,7 +302,11 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
             } else {
-                if add_arg.argument_type.starts_with('I') {
+                if add_arg.latest_value.starts_with('I')
+                    && add_arg.latest_value.chars().count() >= 3
+                    && add_arg.latest_value.chars().nth(1).unwrap().is_uppercase()
+                    && add_arg.latest_value.chars().nth(2).unwrap().is_lowercase()
+                {
                     // e.g. IMFAttributes
                     // or
                     // super::super::super::System::Com::StructuredStorage::IPropertyBag
@@ -311,13 +314,8 @@ pub fn a_<<function_name>>(file : &mut File)  {
                     is_supported = false;
                     continue;
                 } else {
-                    println!("TESTING {}", add_arg.argument_type);
-                    if let Some(function_name) = automatic_renames.get(add_arg.argument_type.as_str()) {
-                        println!(
-                            "AUTOMATIC SUPPORTED: {} --- {}",
-                            add_arg.argument_type,
-                            automatic_renames.get(add_arg.argument_type.as_str()).unwrap()
-                        );
+                    if let Some(function_name) = automatic_renames.get(add_arg.latest_value.as_str()) {
+                        // println!("AUTOMATIC SUPPORTED: {} --- {}", add_arg.latest_value, function_name);
                         add_arg.function_name = function_name.clone();
                         function_info.arguments.push(add_arg);
                     } else {
@@ -425,7 +423,7 @@ struct ArgumentAdditional {
     pub original_argument: String, // E.g. "*mut AABB"
     pub argument_type: String,     // Like "AABB" from "*AABB"
     pub argument_before: String,   // Like "*mut" from "*mut AABB"
-    pub constant_value: String,    // "POINT" from "roman::POINT"
+    pub latest_value: String,      // "POINT" from "roman::POINT"
 }
 impl ArgumentAdditional {
     pub fn new() -> Self {
@@ -434,7 +432,7 @@ impl ArgumentAdditional {
             original_argument: "".to_string(),
             argument_type: "".to_string(),
             argument_before: "".to_string(),
-            constant_value: "".to_string(),
+            latest_value: "".to_string(),
         }
     }
 }
