@@ -180,7 +180,23 @@ use windows::Win32::System::Com::Marshal::*;
 use windows::Win32::Security::Authorization::UI::*;
 use windows::Win32::Media::Audio::XAudio2::*;
 use windows::Win32::Data::Xml::XmlLite::*;
-
+use windows::Win32::Storage::Cabinets::*;
+use windows::Win32::System::CorrelationVector::*;
+use windows::Win32::Graphics::Direct3D9on12::*;
+use windows::Win32::Media::DirectShow::*;
+use windows::Win32::Security::DirectoryServices::*;
+use windows::Win32::Media::DxMediaObjects::*;
+use windows::Win32::System::Iis::*;
+use windows::Win32::UI::Input::*;
+use windows::Win32::System::Kernel::*;
+use windows::Win32::Security::LicenseProtection::*;
+use windows::Win32::NetworkManagement::NetBios::*;
+use windows::Win32::Devices::Enumeration::Pnp::*;
+use windows::Win32::System::Diagnostics::ProcessSnapshotting::*;
+use windows::Win32::UI::TabletPC::*;
+use windows::Win32::System::Time::*;
+use windows::Win32::System::Diagnostics::ToolHelp::*;
+use windows::Win32::Networking::WebSocket::*;
 
 
 use windows::core::{GUID, PCSTR, PCWSTR};
