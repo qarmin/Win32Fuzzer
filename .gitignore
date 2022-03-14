@@ -12,3 +12,8 @@ WinProject/.idea/
 WinProject/src/main.rs
 WinProject/src/z_*.rs
 WinProject/Cargo.lock
+
+Reproducer/target
+Reproducer/.idea/
+Reproducer/src/classes_origin.rs
+Reproducer/Cargo.lock

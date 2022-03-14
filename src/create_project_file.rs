@@ -7,12 +7,12 @@ use std::io::Write;
 
 pub fn create_project_file(
     file_data: &FileData,
-    file_path: &str,
+    class_name: &str,
     create_renames: &HashMap<&str, &str>,
     automatic_renames: &HashMap<&str, String>,
     ignored_functions: &HashSet<String>,
     ignored_arguments: &mut BTreeMap<String, u32>,
-) {
+) -> Vec<String> {
     let header = r###"use windows::{Win32::Foundation::*, Win32::Graphics::Printing::*};
 use windows::Win32::Data::RightsManagement::*;
 use windows::Win32::Devices::AllJoyn::*;
@@ -273,14 +273,16 @@ pub fn a_<<function_name>>(file : &mut File)  {
 	    <<execution_code>>  }
 }"###;
 
-    let file_name = format!("WinProject/src/z_{}.rs", file_path.to_lowercase());
+    let file_name = format!("WinProject/src/z_{}.rs", class_name.to_lowercase());
 
     let _ = fs::remove_file(&file_name);
 
     let file = OpenOptions::new().write(true).truncate(true).create(true).open(file_name).unwrap();
     let mut file = BufWriter::new(file);
 
-    writeln!(file, "{}", header.replace("<<<function_name>>>", &file_path.to_lowercase())).unwrap();
+    writeln!(file, "{}", header.replace("<<<function_name>>>", &class_name.to_lowercase())).unwrap();
+
+    let mut used_functions: Vec<_> = Vec::new();
 
     let mut function_list: String = Default::default();
     let mut number_of_functions = 0;
@@ -351,6 +353,8 @@ pub fn a_<<function_name>>(file : &mut File)  {
             continue;
         }
 
+        used_functions.push(function_name.clone());
+
         let mut execute_arguments = "".to_string();
         let mut creation_of_arguments = "".to_string();
         function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
@@ -380,7 +384,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
 
         let print = format!(
             "print_and_save(file, \"// Executing function \\\"{}\\\" from class \\\"{}\\\"\".to_string());",
-            function_name, file_path
+            function_name, class_name
         );
         let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
         let print_executed_arguments = format!(
@@ -409,12 +413,13 @@ pub fn a_<<function_name>>(file : &mut File)  {
         base_function
             .replace("<<functions>>", &function_list)
             .replace("<<number_of_functions>>", &number_of_functions.to_string())
-            .replace("<<class_lowercase>>", &file_path.to_lowercase())
-            .replace("<<class>>", file_path),
+            .replace("<<class_lowercase>>", &class_name.to_lowercase())
+            .replace("<<class>>", class_name),
     )
     .unwrap();
 
     // writeln!(file, "{}", footer).unwrap();
+    used_functions
 }
 pub fn add_to_ignore_arguments(btreemap: &mut BTreeMap<String, u32>, key: &str) {
     if btreemap.contains_key(key) {

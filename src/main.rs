@@ -1,8 +1,11 @@
 #![allow(clippy::type_complexity)]
+#![allow(unused_imports)]
+#![allow(dead_code)]
 mod automatic_type_renames;
 mod create_main_file;
 mod create_project_file;
 mod find_things;
+mod generate_reproducer_file;
 mod parse_file;
 mod settings;
 mod sort_settings;
@@ -15,6 +18,7 @@ use crate::sort_settings::*;
 use crate::TypeOfProblem::InvalidNumberOfArguments;
 use create_main_file::*;
 use create_project_file::*;
+use generate_reproducer_file::*;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
@@ -44,7 +48,7 @@ fn main() {
     set_windows_rs_folder(path);
 
     let things = load_settings();
-    sort_settings(&things);
+    // sort_settings(&things);
 
     let create_renames2 = [
         // Basic
@@ -91,6 +95,7 @@ fn main() {
     let mut number_of_classes = 0;
     let mut number_of_functions = 0;
     let mut number_of_arguments = 0;
+    let mut functions_classes: BTreeMap<String, Vec<String>> = Default::default();
     for (class_name, path, exceptions) in things {
         if DISABLED_CLASSES.contains(&class_name) {
             continue;
@@ -105,7 +110,7 @@ fn main() {
                 number_of_arguments += arguments.len();
             }
         }
-        create_project_file(
+        let used_functions = create_project_file(
             &file_data,
             class_name,
             &create_renames,
@@ -113,7 +118,10 @@ fn main() {
             &exceptions,
             &mut ignored_arguments,
         );
+        functions_classes.insert(class_name.to_string(), used_functions);
     }
+
+    generate_reproducer_file(functions_classes);
 
     println!(
         "Classes: \"{}\", Functions: \"{}\", Arguments: \"{}\"",

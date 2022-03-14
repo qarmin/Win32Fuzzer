@@ -3,6 +3,9 @@ use rand::{thread_rng, Rng};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static IGNORE_RESULT_PRINTING: AtomicBool = AtomicBool::new(false);
 
 pub struct SettingsTaker {
     pub(crate) ignored_functions: Vec<String>,
@@ -16,8 +19,10 @@ pub struct SettingsTaker {
 }
 
 pub fn print_and_save(file: &mut File, text: String) {
-    println!("{}", text);
-    writeln!(file, "{}", text).unwrap();
+    if !IGNORE_RESULT_PRINTING.load(Ordering::Relaxed) {
+        println!("{}", text);
+        writeln!(file, "{}", text).unwrap();
+    }
 }
 
 pub fn take_string() -> (String, String) {
@@ -114,16 +119,62 @@ pub fn take_bool() -> (bool, String) {
 }
 
 pub fn read_from_file() -> SettingsTaker {
-    let string: String = match fs::read_to_string("settings.txt") {
+    let args : Vec<_>= std::env::args().collect();
+
+    let mut file_location = "settings.txt".to_string();
+    let mut used_class = vec![];
+    let mut used_function = vec![];
+    let mut disable_printing = false;
+    let mut repeating_number = 3;
+
+    for i in args{
+        if let Some(st) =  i.strip_prefix("AAA"){
+            file_location = st.to_string();
+        }
+        else if let Some(st) =  i.strip_prefix("BBB"){
+            used_class.push( st.to_string());
+        }
+        else if let Some(st) =  i.strip_prefix("CCC"){
+            used_function.push( st.to_string());
+        }
+        else if let Some(st) =  i.strip_prefix("DDD"){
+            if let Ok(t) = st.parse::<u32>(){
+                repeating_number = t;
+            }
+        }
+        else if i == "DISABLE_PRINTING"{
+            disable_printing = true;
+        }
+    }
+
+
+    let string: String = match fs::read_to_string(&file_location) {
         Ok(t) => t,
         Err(_) => {
-            println!("Missing settings.txt file");
+            println!("Missing {} file",file_location);
+            if !used_class.is_empty() {
+                println!("Allowed classes:");
+                for i in &used_class {
+                    println!("{}", i);
+                }
+            }
+            if !used_function.is_empty() {
+                println!("Allowed functions:");
+                for i in &used_function {
+                    println!("{}", i);
+                }
+            }
+            if disable_printing {
+                IGNORE_RESULT_PRINTING.store(true,Ordering::Relaxed);
+            }
+            println!("Repeating - {}", repeating_number);
+            println!("Ignore pringing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
             return SettingsTaker {
                 ignored_functions: vec![],
-                allowed_functions: vec![],
+                allowed_functions: used_function,
                 ignored_classes: vec![],
-                allowed_classes: vec![],
-                repeating_number: 3,
+                allowed_classes: used_class,
+                repeating_number,
                 all_repeating_number: 1,
                 number_of_max_executed_function: -1,
                 random: false,
@@ -177,6 +228,8 @@ pub fn read_from_file() -> SettingsTaker {
             current_mode = MODES::MaxExecutedFunction;
         } else if new_line == "number_of_max_executed_function:" {
             current_mode = MODES::Random;
+        } else if new_line == "disable_printing:" {
+            IGNORE_RESULT_PRINTING.store(true,Ordering::Relaxed);
         } else {
             if !new_line.is_empty() {
                 match current_mode {
@@ -241,6 +294,7 @@ pub fn read_from_file() -> SettingsTaker {
         println!("All Repeating - {}", st.all_repeating_number);
         println!("Max Executed Functions - {}", st.number_of_max_executed_function);
         println!("Randoms - {}", st.random);
+        println!("Ignore pringing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
         println!("End settings loading");
     }
 
