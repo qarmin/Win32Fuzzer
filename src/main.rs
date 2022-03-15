@@ -92,9 +92,10 @@ fn main() {
         }
     }
 
-    let mut number_of_classes = 0;
-    let mut number_of_functions = 0;
-    let mut number_of_arguments = 0;
+    let mut number_of_parsed_classes = 0;
+    let mut number_of_parsed_functions = 0;
+    let mut number_of_parsed_arguments = 0;
+    let mut using_functions = 0;
     let mut functions_classes: BTreeMap<String, Vec<String>> = Default::default();
     for (class_name, path, exceptions) in things {
         if DISABLED_CLASSES.contains(&class_name) {
@@ -104,10 +105,10 @@ fn main() {
         let mut file_data = FileData::new();
         parse_file(&mut file_data, &path);
         {
-            number_of_classes += 1;
-            number_of_functions += file_data.functions.len();
+            number_of_parsed_classes += 1;
+            number_of_parsed_functions += file_data.functions.len();
             for arguments in file_data.functions.values() {
-                number_of_arguments += arguments.len();
+                number_of_parsed_arguments += arguments.len();
             }
         }
         let used_functions = create_project_file(
@@ -118,15 +119,17 @@ fn main() {
             &exceptions,
             &mut ignored_arguments,
         );
+        using_functions += used_functions.len();
         functions_classes.insert(class_name.to_string(), used_functions);
     }
 
     generate_reproducer_file(functions_classes);
 
     println!(
-        "Classes: \"{}\", Functions: \"{}\", Arguments: \"{}\"",
-        number_of_classes, number_of_functions, number_of_arguments
+        "Parsed - Classes: \"{}\", Functions: \"{}\", Arguments: \"{}\"",
+        number_of_parsed_classes, number_of_parsed_functions, number_of_parsed_arguments
     );
+    println!("Using - Functions: \"{}\"", using_functions);
 
     {
         let mut new_vec: Vec<(u32, String)> = Default::default();

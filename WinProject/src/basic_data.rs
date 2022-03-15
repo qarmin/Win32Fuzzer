@@ -6,6 +6,7 @@ use std::io::Write;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 static IGNORE_RESULT_PRINTING: AtomicBool = AtomicBool::new(false);
+static REPRODUCIBLE : AtomicBool = AtomicBool::new(false);
 
 pub struct SettingsTaker {
     pub(crate) ignored_functions: Vec<String>,
@@ -28,6 +29,11 @@ pub fn print_and_save(file: &mut File, text: String) {
 pub fn take_string() -> (String, String) {
     let to_return;
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = "10000".to_string();
+        return (s.clone(),s);
+    }
+
     if rand::random::<bool>() {
         to_return = "".to_string();
     } else {
@@ -39,6 +45,11 @@ pub fn take_string() -> (String, String) {
 pub fn take_vec_string() -> (Vec<String>, String) {
     let mut to_return = Vec::new();
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = Vec::new();
+        return (s,"Vec::new()".to_string());
+    }
+
     for _i in 0..thread_rng().gen_range(0..10) {
         to_return.push(take_string().0);
     }
@@ -49,65 +60,130 @@ pub fn take_vec_string() -> (Vec<String>, String) {
 pub fn take_i32() -> (i32, String) {
     let to_return: i32 = thread_rng().gen_range(-100000..100000);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_i16() -> (i16, String) {
     let to_return: i16 = thread_rng().gen_range(-32767..=32767);
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
 pub fn take_i64() -> (i64, String) {
     let to_return: i64 = thread_rng().gen_range(-100000..100000);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_u16() -> (u16, String) {
     let to_return: u16 = thread_rng().gen_range(0..=65535);
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
 pub fn take_u8() -> (u8, String) {
     let to_return: u8 = thread_rng().gen_range(0..=255);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 100;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_i8() -> (i8, String) {
     let to_return: i8 = thread_rng().gen_range(-127..=127);
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 100;
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
 pub fn take_u32() -> (u32, String) {
     let to_return: u32 = thread_rng().gen_range(0..100000);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_u64() -> (u64, String) {
     let to_return: u64 = thread_rng().gen_range(0..100000);
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
 pub fn take_f64() -> (f64, String) {
     let to_return: f64 = thread_rng().gen_range(-100000.0..100000.0);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000.0;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_f32() -> (f32, String) {
     let to_return: f32 = thread_rng().gen_range(-100000.0..100000.0);
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000.0;
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
 pub fn take_usize() -> (usize, String) {
     let to_return: usize = thread_rng().gen_range(0..100000);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_isize() -> (isize, String) {
     let to_return: isize = thread_rng().gen_range(-100000..100000);
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 10000;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 pub fn take_char() -> (char, String) {
     let to_return: char = thread_rng().gen_range(0..127) as u8 as char;
+
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = 'c';
+        return (s,s.to_string());
+    }
 
     (to_return, to_return.to_string())
 }
@@ -115,66 +191,103 @@ pub fn take_char() -> (char, String) {
 pub fn take_bool() -> (bool, String) {
     let to_return: bool = rand::random::<bool>();
 
+    if REPRODUCIBLE.load(Ordering::Relaxed){
+        let s = false;
+        return (s,s.to_string());
+    }
+
     (to_return, to_return.to_string())
 }
 
 pub fn read_from_file() -> SettingsTaker {
-    let args : Vec<_>= std::env::args().collect();
+    let args: Vec<_> = std::env::args().collect();
 
     let mut file_location = "settings.txt".to_string();
     let mut used_class = vec![];
     let mut used_function = vec![];
     let mut disable_printing = false;
     let mut repeating_number = 3;
+    let mut reproducible = false;
 
-    for i in args{
-        if let Some(st) =  i.strip_prefix("AAA"){
+    let print_things : bool = false;
+
+    if print_things{
+        println!("ARGS {:?}", args);
+    }
+
+    for i in args {
+        if let Some(st) = i.strip_prefix("AAA") {
             file_location = st.to_string();
-        }
-        else if let Some(st) =  i.strip_prefix("BBB"){
-            used_class.push( st.to_string());
-        }
-        else if let Some(st) =  i.strip_prefix("CCC"){
-            used_function.push( st.to_string());
-        }
-        else if let Some(st) =  i.strip_prefix("DDD"){
-            if let Ok(t) = st.parse::<u32>(){
+            if print_things {
+                println!("AAA loading file_location {},", file_location);
+            }
+        } else if let Some(st) = i.strip_prefix("BBB") {
+            used_class.push(st.to_string());
+            if print_things {
+                println!("BBB loading used class {:?},", used_class);
+            }
+        } else if let Some(st) = i.strip_prefix("CCC") {
+            used_function.push(st.to_string());
+            if print_things {
+                println!("CCC loading used function {:?},", used_function);
+            }
+        } else if let Some(st) = i.strip_prefix("DDD") {
+            if let Ok(t) = st.parse::<u32>() {
                 repeating_number = t;
             }
-        }
-        else if i == "DISABLE_PRINTING"{
+            if print_things {
+                println!("DDD loading repeating {},", repeating_number);
+            }
+        } else if i == "DISABLE_PRINTING" {
             disable_printing = true;
+        }else if i == "REPRODUCIBLE" {
+            reproducible = true;
         }
     }
 
+    if !used_function.is_empty() || !used_class.is_empty() {
+        if !used_class.is_empty() {
+            if print_things {
+                println!("Allowed classes: {:?}", used_class);
+            }
+        }
+        if !used_function.is_empty() {
+            if print_things {
+                println!("Allowed functions: {:?}", used_function);
+            }
+        }
+        if disable_printing {
+            IGNORE_RESULT_PRINTING.store(true, Ordering::Relaxed);
+        }
+        if reproducible{
+            REPRODUCIBLE.store(true,Ordering::Relaxed);
+        }
+        if print_things {
+            println!("Repeating - {}", repeating_number);
+            println!("Ignore printing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
+            println!("Reproducible - {}", REPRODUCIBLE.load(Ordering::Relaxed));
+        }
+        return SettingsTaker {
+            ignored_functions: vec![],
+            allowed_functions: used_function,
+            ignored_classes: vec![],
+            allowed_classes: used_class,
+            repeating_number,
+            all_repeating_number: 1,
+            number_of_max_executed_function: -1,
+            random: false,
+        };
+    }
 
     let string: String = match fs::read_to_string(&file_location) {
         Ok(t) => t,
         Err(_) => {
-            println!("Missing {} file",file_location);
-            if !used_class.is_empty() {
-                println!("Allowed classes:");
-                for i in &used_class {
-                    println!("{}", i);
-                }
-            }
-            if !used_function.is_empty() {
-                println!("Allowed functions:");
-                for i in &used_function {
-                    println!("{}", i);
-                }
-            }
-            if disable_printing {
-                IGNORE_RESULT_PRINTING.store(true,Ordering::Relaxed);
-            }
-            println!("Repeating - {}", repeating_number);
-            println!("Ignore pringing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
             return SettingsTaker {
                 ignored_functions: vec![],
-                allowed_functions: used_function,
+                allowed_functions: vec![],
                 ignored_classes: vec![],
-                allowed_classes: used_class,
-                repeating_number,
+                allowed_classes: vec![],
+                repeating_number: 3,
                 all_repeating_number: 1,
                 number_of_max_executed_function: -1,
                 random: false,
@@ -229,7 +342,9 @@ pub fn read_from_file() -> SettingsTaker {
         } else if new_line == "number_of_max_executed_function:" {
             current_mode = MODES::Random;
         } else if new_line == "disable_printing:" {
-            IGNORE_RESULT_PRINTING.store(true,Ordering::Relaxed);
+            IGNORE_RESULT_PRINTING.store(true, Ordering::Relaxed);
+        } else if new_line == "reproducible:" {
+            REPRODUCIBLE.store(true, Ordering::Relaxed);
         } else {
             if !new_line.is_empty() {
                 match current_mode {
@@ -294,7 +409,8 @@ pub fn read_from_file() -> SettingsTaker {
         println!("All Repeating - {}", st.all_repeating_number);
         println!("Max Executed Functions - {}", st.number_of_max_executed_function);
         println!("Randoms - {}", st.random);
-        println!("Ignore pringing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
+        println!("Ignore printing - {}", IGNORE_RESULT_PRINTING.load(Ordering::Relaxed));
+        println!("Reproducible - {}", REPRODUCIBLE.load(Ordering::Relaxed));
         println!("End settings loading");
     }
 
