@@ -4,7 +4,7 @@ use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::io::Write;
 
-pub fn create_main_file(things: &[(&str, String, Vec<(&str, TypeOfProblem)>)]) {
+pub fn create_main_file(things: &[(&str, &str)]) {
     let file_name = "WinProject/src/main.rs";
 
     let _ = fs::remove_file(&file_name);
@@ -62,7 +62,7 @@ fn main() {
     let mut use_crate_to_add = "".to_string();
     let mut function_execution = "".to_string();
     let mut number_of_functions = 0;
-    for (class_name, _, _) in things {
+    for (class_name, _) in things {
         if DISABLED_CLASSES.contains(class_name) {
             continue;
         }

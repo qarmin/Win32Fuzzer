@@ -1,11 +1,13 @@
 mod classes_origin;
 
 use classes_origin::*;
-use std::collections::BTreeMap;
-// use std::fs;
 use rayon::prelude::*;
+use std::collections::BTreeMap;
+use std::fs::{File, OpenOptions};
+use std::io::Write;
 use std::process::Command;
 use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::SystemTime;
 
 // Needs to execute - winetricks nocrashdialog - to hide crash dialog
@@ -13,17 +15,21 @@ use std::time::SystemTime;
 #[derive(Ord, PartialOrd, Eq, PartialEq, Hash)]
 enum TypeOfProblem {
     CrashesLinux,        // Crashes Linux
+    CrashesLinux0Info,   // Crashes Linux, but without any message
     NotImplementedLinux, // not implemented
     Other,               // This error should not exists, so when it happen, needs to
+    MissingError,        //
     NoProblem,           // No error,
 }
 impl TypeOfProblem {
     pub fn to_string(&self) -> &'static str {
         match self {
             TypeOfProblem::CrashesLinux => "CrashesLinux",
+            TypeOfProblem::CrashesLinux0Info => "CrashesLinux0Info",
             TypeOfProblem::NotImplementedLinux => "NotImplementedLinux",
             TypeOfProblem::Other => "Other",
             TypeOfProblem::NoProblem => "NoProblem",
+            TypeOfProblem::MissingError => "MissingError",
         }
     }
 }
@@ -59,6 +65,8 @@ fn main() {
 
     // for (index, (class_name, function_name)) in functions_classes.iter().enumerate() {
 
+    let beginning_file = Arc::new(Mutex::new(File::create("used.txt").unwrap()));
+
     let atomic_uint: AtomicU32 = AtomicU32::new(0);
     let function_infos: Vec<_> = functions_classes
         .par_iter()
@@ -76,6 +84,11 @@ fn main() {
                 class_name,
                 function_name
             );
+
+            {
+                let mut file = beginning_file.lock().unwrap();
+                writeln!(file, "{} START", function_info.function_name).unwrap();
+            }
 
             // let status_file_name = format!("{}_{}.txt", class_name, function_name);
             // .arg(&status_file_name)
@@ -98,11 +111,15 @@ fn main() {
             // println!("STATUS {:?}", &handler.status);
 
             let command_output = String::from_utf8_lossy(&handler.stdout).to_string();
+            let command_error = String::from_utf8_lossy(&handler.stderr).to_string();
             let status = handler.status.code().unwrap();
             println!("Output {}", command_output);
 
             match status {
                 0 => {
+                    if !command_output.contains("Ending fuzzing.") {
+                        function_info.type_of_problem = TypeOfProblem::CrashesLinux0Info;
+                    }
                     // println!("Just fine");
                 }
                 _ => {
@@ -110,12 +127,27 @@ fn main() {
 
                     if command_output.contains("unimplemented function") {
                         function_info.type_of_problem = TypeOfProblem::NotImplementedLinux;
-                    } else if command_output.contains("crashes") || command_output.contains("page fault on read access") {
+                    } else if command_output.contains("crashes")
+                        || command_output.contains("page fault on read access")
+                        || command_output.contains("page fault on write access")
+                        || command_output.contains("Unhandled exception")
+                    {
+                        function_info.type_of_problem = TypeOfProblem::CrashesLinux;
+                    } else if command_error.contains("Assertion") {
                         function_info.type_of_problem = TypeOfProblem::CrashesLinux;
                     } else {
+                        println!(
+                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n {}\n, {}",
+                            command_output, command_error
+                        );
                         function_info.type_of_problem = TypeOfProblem::Other;
                     }
                 }
+            }
+
+            {
+                let mut file = beginning_file.lock().unwrap();
+                writeln!(file, "{} END", function_info.function_name).unwrap();
             }
 
             // function_infos.push(function_info);
@@ -127,15 +159,24 @@ fn main() {
     println!("ENDING CHECKING");
 
     // Consider to save this to file, because output may be polluted by wine messages
+    let mut file_csv = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open("csv_results.csv")
+        .unwrap();
 
     let mut btreemap: BTreeMap<TypeOfProblem, u32> = Default::default();
     for function_info in function_infos {
-        println!(
-            "{}.{} ___ result {}",
+        let to_print = format!(
+            "{},{},{}",
             function_info.class_name,
             function_info.function_name,
             function_info.type_of_problem.to_string()
         );
+
+        println!("{}", to_print);
+        writeln!(file_csv, "{}", to_print).unwrap();
 
         if let Some(key) = btreemap.get_mut(&function_info.type_of_problem) {
             *key += 1;

@@ -47,7 +47,12 @@ fn main() {
 
     set_windows_rs_folder(path);
 
-    let things = load_settings();
+    let place_of_mod_rs = load_place_of_mod_rs();
+    // for (class, _FF, vec) in things.clone() {
+    //     for (function_name, type_of_problem) in vec {
+    //         println!("(\"{}\",\"{}\",{}),", class, function_name, type_of_problem.to_string());
+    //     }
+    // }
     // sort_settings(&things);
 
     let create_renames2 = [
@@ -78,8 +83,8 @@ fn main() {
         advanced_renames.insert(*i, format!("get_strange_{}", i));
     }
 
-    find_things(&things);
-    create_main_file(&things);
+    find_things(&place_of_mod_rs);
+    create_main_file(&place_of_mod_rs);
 
     let mut ignored_arguments: BTreeMap<String, u32> = Default::default(); // List of ignored arguments
 
@@ -97,13 +102,19 @@ fn main() {
     let mut number_of_parsed_arguments = 0;
     let mut using_functions = 0;
     let mut functions_classes: BTreeMap<String, Vec<String>> = Default::default();
-    for (class_name, path, exceptions) in things {
+    for (class_name, path) in place_of_mod_rs {
         if DISABLED_CLASSES.contains(&class_name) {
             continue;
         }
-        let exceptions: HashSet<_> = exceptions.iter().map(|e| e.0.to_string()).collect();
+        let mut exceptions: HashMap<_, _> = Default::default();
+        EXCEPTIONS
+            .iter()
+            .filter_map(|(cla, fun, problem)| if *cla == class_name { Some((fun, problem)) } else { None })
+            .for_each(|(e, problem)| {
+                exceptions.insert(e.to_string(), problem.clone());
+            });
         let mut file_data = FileData::new();
-        parse_file(&mut file_data, &path);
+        parse_file(&mut file_data, &format!("{}{}", get_windows_rs_folder(), path));
         {
             number_of_parsed_classes += 1;
             number_of_parsed_functions += file_data.functions.len();

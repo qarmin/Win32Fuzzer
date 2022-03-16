@@ -4,7 +4,7 @@ use std::collections::{BTreeSet, HashSet};
 use std::fs;
 use walkdir::WalkDir;
 
-pub fn find_things(things: &[(&str, String, Vec<(&str, TypeOfProblem)>)]) {
+pub fn find_things(things: &[(&str, &str)]) {
     let base_path = format!("{}crates/libs/sys/src/Windows/Win32/", get_windows_rs_folder());
 
     let mut _idx = 0;
@@ -13,11 +13,12 @@ pub fn find_things(things: &[(&str, String, Vec<(&str, TypeOfProblem)>)]) {
     let mut used_names: HashSet<String> = Default::default();
 
     let mut used_path: HashSet<String> = Default::default();
-    for (_name, path, _vec) in things {
-        if used_path.contains(path) {
-            panic!("Found duplicated path {}", path);
+    for (_name, path) in things {
+        let full_path = format!("{}{}", get_windows_rs_folder(), path);
+        if used_path.contains(&full_path) {
+            panic!("Found duplicated path {}", full_path);
         }
-        used_path.insert(path.clone());
+        used_path.insert(full_path);
     }
 
     for entry in WalkDir::new(&base_path).into_iter().flatten() {
@@ -36,7 +37,7 @@ pub fn find_things(things: &[(&str, String, Vec<(&str, TypeOfProblem)>)]) {
             };
             if file_content.contains("\nextern \"system\" {") {
                 if !used_path.contains(&path) {
-                    println!("Missing file to parse used to parse {}", path);
+                    println!("Missing file used to parse {}", path);
                     continue;
                 }
 

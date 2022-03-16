@@ -17,3 +17,4 @@ Reproducer/target
 Reproducer/.idea/
 Reproducer/src/classes_origin.rs
 Reproducer/Cargo.lock
+Reproducer/csv_results.csv

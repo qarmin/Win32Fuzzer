@@ -1,4 +1,5 @@
-use crate::FileData;
+use crate::TypeOfProblem::{CrashesLinux, CrashesWindows, NotImplementedLinux};
+use crate::{FileData, TypeOfProblem, IGNORE_INVALID};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::fs::OpenOptions;
@@ -10,7 +11,7 @@ pub fn create_project_file(
     class_name: &str,
     create_renames: &HashMap<&str, &str>,
     automatic_renames: &HashMap<&str, String>,
-    ignored_functions: &HashSet<String>,
+    ignored_functions: &HashMap<String, TypeOfProblem>,
     ignored_arguments: &mut BTreeMap<String, u32>,
 ) -> Vec<String> {
     let header = r###"use windows::{Win32::Foundation::*, Win32::Graphics::Printing::*};
@@ -348,9 +349,10 @@ pub fn a_<<function_name>>(file : &mut File)  {
             continue;
         }
 
-        // Check this after checking every argument
-        if ignored_functions.contains(function_name) {
-            continue;
+        if let Some(f) = ignored_functions.get(function_name) {
+            if IGNORE_INVALID || ![NotImplementedLinux, CrashesLinux, CrashesWindows].contains(f) {
+                continue;
+            }
         }
 
         used_functions.push(function_name.clone());
