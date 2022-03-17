@@ -6,6 +6,7 @@
 *.txt
 *.data
 *.zst
+*.csv
 
 WinProject/target
 WinProject/.idea/
@@ -18,3 +19,7 @@ Reproducer/.idea/
 Reproducer/src/classes_origin.rs
 Reproducer/Cargo.lock
 Reproducer/csv_results.csv
+
+CSVCreator/target
+CSVCreator/.idea/
+CSVCreator/Cargo.lock

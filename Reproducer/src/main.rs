@@ -1,8 +1,10 @@
 mod classes_origin;
 
+use crate::OsThing::{Linux, Windows};
 use classes_origin::*;
 use rayon::prelude::*;
 use std::collections::BTreeMap;
+use std::env;
 use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::process::Command;
@@ -14,12 +16,15 @@ use std::time::SystemTime;
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Hash)]
 enum TypeOfProblem {
-    CrashesLinux,        // Crashes Linux
-    CrashesLinux0Info,   // Crashes Linux, but without any message
-    NotImplementedLinux, // not implemented
-    Other,               // This error should not exists, so when it happen, needs to
-    MissingError,        //
-    NoProblem,           // No error,
+    CrashesLinux,          // Crashes Linux
+    CrashesLinux0Info,     // Crashes Linux, but without any message
+    NotImplementedLinux,   // not implemented
+    CrashesWindows,        // Crashes Linux
+    CrashesWindows0Info,   // Crashes Linux, but without any message
+    NotImplementedWindows, // not implemented
+    Other,                 // This error should not exists, so when it happen, needs to checked
+    NoProblem,             // No error,
+                           // MissingError,          //
 }
 impl TypeOfProblem {
     pub fn to_string(&self) -> &'static str {
@@ -27,9 +32,12 @@ impl TypeOfProblem {
             TypeOfProblem::CrashesLinux => "CrashesLinux",
             TypeOfProblem::CrashesLinux0Info => "CrashesLinux0Info",
             TypeOfProblem::NotImplementedLinux => "NotImplementedLinux",
+            TypeOfProblem::CrashesWindows => "CrashesWindows",
+            TypeOfProblem::CrashesWindows0Info => "CrashesWindows0Info",
+            TypeOfProblem::NotImplementedWindows => "NotImplementedWindows",
             TypeOfProblem::Other => "Other",
             TypeOfProblem::NoProblem => "NoProblem",
-            TypeOfProblem::MissingError => "MissingError",
+            // TypeOfProblem::MissingError => "MissingError",
         }
     }
 }
@@ -50,20 +58,41 @@ impl FunctionInfo {
     }
 }
 
-fn main() {
-    let start_time = SystemTime::now();
+#[derive(Eq, PartialEq)]
+enum OsThing {
+    Windows,
+    Linux,
+}
 
-    // Później dodać to pole konfigurowalne
-    let path_to_fuzzer = "/home/rafal/Projekty/Rust/Win32Fuzzer/WinProject/target/debug/win_project.exe";
+fn main() {
+    let args: Vec<_> = env::args().collect();
+
+    if args.len() < 3 {
+        println!(
+            "Provided too small amount of arguments {}, at least 2 are required - path to fuzzer and system(linux,windows)",
+            args.len() - 1
+        );
+        return;
+    }
+
+    let lowercase = args[2].to_lowercase();
+    let os_thing = match lowercase.as_ref() {
+        "linux" => Linux,
+        "windows" => Windows,
+        _ => {
+            println!("Expected Linux/Windows, found {}", lowercase);
+            return;
+        }
+    };
+
+    let path_to_fuzzer = args[1].clone();
+
+    let start_time = SystemTime::now();
 
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
 
     // Zczytywać te dane z innego
     let functions_classes = DATA_TO_USE;
-
-    // let _max_executed_in_loop; // Będzie to możliwe tylko przy dodaniu ścieżki bezwzględnej do projektu
-
-    // for (index, (class_name, function_name)) in functions_classes.iter().enumerate() {
 
     let beginning_file = Arc::new(Mutex::new(File::create("used.txt").unwrap()));
 
@@ -90,19 +119,29 @@ fn main() {
                 writeln!(file, "{} START", function_info.function_name).unwrap();
             }
 
-            // let status_file_name = format!("{}_{}.txt", class_name, function_name);
-            // .arg(&status_file_name)
-            let handler = Command::new("wine")
-                .arg(path_to_fuzzer)
+            let mut comm;
+            let mut comm2;
+
+            let handler;
+
+            if os_thing == Linux {
+                comm = Command::new("timeout");
+                // comm = Command::new("wine"); // when disabling timeout
+            } else {
+                comm = Command::new(&path_to_fuzzer);
+            }
+            comm2 = &mut comm;
+            if os_thing == Linux {
+                comm2 = comm2.arg("30"); // 30 second timeout
+                comm2 = comm2.arg("wine");
+                comm2 = comm2.arg(&path_to_fuzzer);
+            }
+            handler = comm2
                 .arg(format!("BBB{}", class_name))
                 .arg(format!("CCC{}", function_name))
                 .arg(format!("DDD{}", 10))
                 .arg("DISABLE_PRINTING")
                 .arg("REPRODUCIBLE")
-                // .arg("2>&1")
-                // .arg("|")
-                // .arg("tee")
-                // .arg("/home/rafal/tt.txt")
                 .output()
                 .unwrap();
 
@@ -118,29 +157,49 @@ fn main() {
             match status {
                 0 => {
                     if !command_output.contains("Ending fuzzing.") {
-                        function_info.type_of_problem = TypeOfProblem::CrashesLinux0Info;
+                        if os_thing == Linux {
+                            function_info.type_of_problem = TypeOfProblem::CrashesLinux0Info;
+                        } else {
+                            function_info.type_of_problem = TypeOfProblem::CrashesWindows0Info;
+                        }
                     }
-                    // println!("Just fine");
                 }
                 _ => {
                     // Failed to execute command, bug/crash when running
-
                     if command_output.contains("unimplemented function") {
-                        function_info.type_of_problem = TypeOfProblem::NotImplementedLinux;
+                        if os_thing == Linux {
+                            function_info.type_of_problem = TypeOfProblem::NotImplementedLinux;
+                        } else {
+                            function_info.type_of_problem = TypeOfProblem::NotImplementedWindows;
+                        }
                     } else if command_output.contains("crashes")
                         || command_output.contains("page fault on read access")
                         || command_output.contains("page fault on write access")
                         || command_output.contains("Unhandled exception")
                     {
-                        function_info.type_of_problem = TypeOfProblem::CrashesLinux;
+                        if os_thing == Linux {
+                            function_info.type_of_problem = TypeOfProblem::CrashesLinux;
+                        } else {
+                            function_info.type_of_problem = TypeOfProblem::CrashesWindows;
+                        }
                     } else if command_error.contains("Assertion") {
-                        function_info.type_of_problem = TypeOfProblem::CrashesLinux;
+                        if os_thing == Linux {
+                            function_info.type_of_problem = TypeOfProblem::CrashesLinux;
+                        } else {
+                            function_info.type_of_problem = TypeOfProblem::CrashesWindows;
+                        }
                     } else {
                         println!(
                             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n {}\n, {}",
                             command_output, command_error
                         );
-                        function_info.type_of_problem = TypeOfProblem::Other;
+
+                        if os_thing == Linux {
+                            function_info.type_of_problem = TypeOfProblem::Other;
+                        } else {
+                            function_info.type_of_problem = TypeOfProblem::CrashesWindows;
+                            // On Windows, there is no error messages
+                        }
                     }
                 }
             }
@@ -150,9 +209,7 @@ fn main() {
                 writeln!(file, "{} END", function_info.function_name).unwrap();
             }
 
-            // function_infos.push(function_info);
             function_info
-            // let handler = OS.execute(vec!["wineserver","-k"]); // Should not be used when using multithreading
         })
         .collect();
 
@@ -184,6 +241,9 @@ fn main() {
             btreemap.insert(function_info.type_of_problem, 1);
         }
     }
+
+    println!("Checked {} functions", btreemap.values().sum::<u32>());
+
     for (key, value) in btreemap {
         println!("{} - {}", key.to_string(), value);
     }

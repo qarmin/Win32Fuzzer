@@ -4,12 +4,14 @@ This repository contains fuzzer to test Windows API functions(Win32 API).
 
 I created it to help Wine to better mimic Windows OS and allow running more Windows software on Linux. 
 
-Looks that currently tests - 4469 functions from 10540 parsed.
+I think that 32 bit binaries 
+
+Looks that currently tests - 4466 functions from all 10540 parsed.
 
 This project works fine with `windows-rs 0.33.0`, so it may require rewrite to support newer versions.
 
 ## How to use it
-- Install wine(7.3 works fine, any lower version may cause crashes, any newer may also crash, but this is bug in Wine, not in this project)
+- Install wine(7.4 works fine, any lower version may cause crashes, any newer may also crash, but this is bug in Wine, not in this project)
 - Install GNU Rust inside Wine(I used 1.59.0, but any higher version should work fine) - https://forge.rust-lang.org/infra/other-installation-methods.html#standalone-installers
 - Clone/Download `windows-rs` repository(required to get info about windows api functions) - `git clone https://github.com/microsoft/windows-rs.git`
 - Clone this repository - `git clone https://github.com/qarmin/Win32Fuzzer.git`
