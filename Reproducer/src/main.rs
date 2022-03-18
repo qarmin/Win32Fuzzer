@@ -63,13 +63,18 @@ enum OsThing {
     Windows,
     Linux,
 }
+#[derive(Eq, PartialEq)]
+enum Reproducibility {
+    Fuzzer,
+    Reproducible,
+}
 
 fn main() {
     let args: Vec<_> = env::args().collect();
 
-    if args.len() < 3 {
+    if args.len() < 4 {
         println!(
-            "Provided too small amount of arguments {}, at least 2 are required - path to fuzzer and system(linux,windows)",
+            "Provided too small amount of arguments {}, at least 3 are required - path to fuzzer, system(linux,windows) and reproducibility(reproducible, fuzzer)",
             args.len() - 1
         );
         return;
@@ -85,6 +90,13 @@ fn main() {
         }
     };
 
+    let lowercase = args[3].to_lowercase();
+    let app_mode = if lowercase.starts_with("fuz") {
+        Reproducibility::Fuzzer
+    } else {
+        Reproducibility::Reproducible
+    };
+
     let path_to_fuzzer = args[1].clone();
 
     let start_time = SystemTime::now();
@@ -95,6 +107,7 @@ fn main() {
     let functions_classes = DATA_TO_USE;
 
     let beginning_file = Arc::new(Mutex::new(File::create("used.txt").unwrap()));
+    let temp_file = Arc::new(Mutex::new(File::create("temp.csv").unwrap()));
 
     let atomic_uint: AtomicU32 = AtomicU32::new(0);
     let function_infos: Vec<_> = functions_classes
@@ -120,30 +133,34 @@ fn main() {
             }
 
             let mut comm;
-            let mut comm2;
 
             let handler;
 
+            let text_command;
+            let mut args = Vec::new();
             if os_thing == Linux {
-                comm = Command::new("timeout");
+                text_command = "timeout";
                 // comm = Command::new("wine"); // when disabling timeout
+                args.push("40".to_string()); // 40 second timeout
+                args.push("wine".to_string());
+                args.push(path_to_fuzzer.clone());
             } else {
-                comm = Command::new(&path_to_fuzzer);
+                text_command = &path_to_fuzzer;
             }
-            comm2 = &mut comm;
-            if os_thing == Linux {
-                comm2 = comm2.arg("30"); // 30 second timeout
-                comm2 = comm2.arg("wine");
-                comm2 = comm2.arg(&path_to_fuzzer);
+            args.push(format!("BBB{}", class_name));
+            args.push(format!("CCC{}", function_name));
+            args.push(format!("DDD{}", 20));
+            args.push("DISABLE_PRINTING".to_string());
+            if app_mode == Reproducibility::Reproducible {
+                args.push("REPRODUCIBLE".to_string());
             }
-            handler = comm2
-                .arg(format!("BBB{}", class_name))
-                .arg(format!("CCC{}", function_name))
-                .arg(format!("DDD{}", 10))
-                .arg("DISABLE_PRINTING")
-                .arg("REPRODUCIBLE")
-                .output()
-                .unwrap();
+            // println!("ZZZ {:?}", args);
+
+            comm = Command::new(text_command);
+            let mut comm = &mut comm;
+            comm = comm.args(args);
+
+            handler = comm.output().unwrap();
 
             // println!("Error {}", String::from_utf8_lossy(&handler.stderr));
             // println!("Output {}", String::from_utf8_lossy(&handler.stdout));
@@ -175,6 +192,7 @@ fn main() {
                     } else if command_output.contains("crashes")
                         || command_output.contains("page fault on read access")
                         || command_output.contains("page fault on write access")
+                        || command_output.contains("page fault on execute access")
                         || command_output.contains("Unhandled exception")
                     {
                         if os_thing == Linux {
@@ -207,6 +225,17 @@ fn main() {
             {
                 let mut file = beginning_file.lock().unwrap();
                 writeln!(file, "{} END", function_info.function_name).unwrap();
+            }
+            {
+                let mut file = temp_file.lock().unwrap();
+                let to_print = format!(
+                    "{},{},{}",
+                    function_info.class_name,
+                    function_info.function_name,
+                    function_info.type_of_problem.to_string()
+                );
+
+                writeln!(file, "{}", to_print).unwrap();
             }
 
             function_info

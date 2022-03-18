@@ -17,7 +17,7 @@ This project works fine with `windows-rs 0.33.0`, so it may require rewrite to s
 - Clone this repository - `git clone https://github.com/qarmin/Win32Fuzzer.git`
 - Compile and run project with 1 argument set as path to `windows-rs` repository `cargo run /home/test/windows-rs`
 - Go to WinProject(which is inside this project) `cd WinProject/`
-- Compile this project `wine cargo run`
+- Compile this project `wine cargo build`
 - Generated binaries should be available here `target/debug/wine_project.exe`
 - By default, binary should not crash, because all problematic functions are excluded in `settings.rs` file, so feel free to comment required lines.
 - Setup if needed `settings.txt` file, template is already available in path `WinProject/settings.txt`

@@ -1517,7 +1517,7 @@ pub const EXCEPTIONS: &[(&str, &str, TypeOfProblem)] = &[
     ("Multimedia", "mciSendStringA", CrashesWindows),
     ("Multimedia", "mciSendStringW", CrashesWindows),
     ("Multimedia", "mmTaskBlock", Freeze),
-    ("Multimedia", "mmTaskCreate", CrashesWindows),
+    ("Multimedia", "mmTaskCreate", Freeze), // Sometimes Freeze, sometimes crashes
     ("Multimedia", "mmioOpenA", CrashesWindows),
     ("Multimedia", "mmioStringToFOURCCA", CrashesLinux),
     ("Multimedia", "mmioStringToFOURCCW", CrashesWindows),

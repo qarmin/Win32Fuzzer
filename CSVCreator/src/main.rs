@@ -2,12 +2,12 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::io::Write;
 
-const BAD_MESSAGES: &[&str] = &["CrashesLinux", "NotImplementedLinux", "CrashesLinux0Info", "CrashesWindows"];
+const BAD_MESSAGES: &[&str] = &["CrashesLinux", "NotImplementedLinux", "CrashesLinux0Info", "CrashesWindows", "Other"];
 
 const GOOD_MESSAGES: &[&str] = &["NoProblem"];
 
 struct FunctionDataOverTime {
-    pub maps: BTreeMap<String, &'static str>,
+    pub maps: BTreeMap<String, String>,
     pub class: String,
 }
 impl FunctionDataOverTime {
@@ -24,10 +24,10 @@ fn main() {
 
     let mut things: BTreeMap<String, String> = Default::default();
 
-    let files = ["74_64.csv", "win10.csv"];
+    let files = ["_7_04_64.csv", "_f_7_04.csv", "_win10.csv"];
 
     for name in files {
-        let n = name.split('.').next().unwrap();
+        let n = name.split('.').next().unwrap().strip_prefix('_').unwrap();
         things.insert(name.to_string(), n.to_string());
     }
 
@@ -62,9 +62,9 @@ fn main() {
             let over_time = result_map.get_mut(&function).unwrap();
 
             if GOOD_MESSAGES.contains(&what.as_str()) {
-                over_time.maps.insert(smaller_file.to_string(), "Works");
+                over_time.maps.insert(smaller_file.to_string(), what); //  "Works");
             } else if BAD_MESSAGES.contains(&what.as_str()) {
-                over_time.maps.insert(smaller_file.to_string(), "Not works");
+                over_time.maps.insert(smaller_file.to_string(), what); //"Not works");
             } else {
                 panic!("Not supported {}", what);
             }
