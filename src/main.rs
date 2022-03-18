@@ -10,7 +10,7 @@ mod parse_file;
 mod settings;
 mod sort_settings;
 
-use crate::automatic_type_renames::ADVANCED_RENAMES;
+use crate::automatic_type_renames::{ADVANCED_RENAMES, NON_CREATABLE_ARGUMENTS};
 use crate::find_things::*;
 use crate::parse_file::*;
 use crate::settings::*;
@@ -83,6 +83,11 @@ fn main() {
         advanced_renames.insert(*i, format!("get_strange_{}", i));
     }
 
+    let mut non_creatable_arguments: HashSet<&str> = Default::default();
+    for i in NON_CREATABLE_ARGUMENTS {
+        non_creatable_arguments.insert(*i);
+    }
+
     find_things(&place_of_mod_rs);
     create_main_file(&place_of_mod_rs);
 
@@ -129,6 +134,7 @@ fn main() {
             &advanced_renames,
             &exceptions,
             &mut ignored_arguments,
+            &non_creatable_arguments,
         );
         using_functions += used_functions.len();
         functions_classes.insert(class_name.to_string(), used_functions);

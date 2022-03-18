@@ -13,6 +13,7 @@ pub fn create_project_file(
     automatic_renames: &HashMap<&str, String>,
     ignored_functions: &HashMap<String, TypeOfProblem>,
     ignored_arguments: &mut BTreeMap<String, u32>,
+    non_creatable_arguments: &HashSet<&str>,
 ) -> Vec<String> {
     let header = r###"use windows::{Win32::Foundation::*, Win32::Graphics::Printing::*};
 use windows::Win32::Data::RightsManagement::*;
@@ -321,27 +322,18 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
             } else {
-                if add_arg.latest_value.starts_with('I')
-                    && add_arg.latest_value.chars().count() >= 3
-                    && add_arg.latest_value.chars().nth(1).unwrap().is_uppercase()
-                    && add_arg.latest_value.chars().nth(2).unwrap().is_lowercase()
-                {
-                    // e.g. IMFAttributes
-                    // or
-                    // super::super::super::System::Com::StructuredStorage::IPropertyBag
-                    // are not supported
+                if non_creatable_arguments.contains(add_arg.latest_value.as_str()) {
                     is_supported = false;
                     continue;
+                };
+                if let Some(function_name) = automatic_renames.get(add_arg.latest_value.as_str()) {
+                    // println!("AUTOMATIC SUPPORTED: {} --- {}", add_arg.latest_value, function_name);
+                    add_arg.function_name = function_name.clone();
+                    function_info.arguments.push(add_arg);
                 } else {
-                    if let Some(function_name) = automatic_renames.get(add_arg.latest_value.as_str()) {
-                        // println!("AUTOMATIC SUPPORTED: {} --- {}", add_arg.latest_value, function_name);
-                        add_arg.function_name = function_name.clone();
-                        function_info.arguments.push(add_arg);
-                    } else {
-                        // println!("Not supported '''{}''' due missing function", arg);
-                        add_to_ignore_arguments(ignored_arguments, &add_arg.argument_type);
-                        is_supported = false;
-                    }
+                    // println!("Not supported '''{}''' due missing function", arg);
+                    add_to_ignore_arguments(ignored_arguments, &add_arg.argument_type);
+                    is_supported = false;
                 }
             }
         }

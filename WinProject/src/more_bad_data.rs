@@ -1308,7 +1308,530 @@ use windows::Win32::UI::WindowsAndMessaging::SCROLLINFO;
 use windows::Win32::UI::WindowsAndMessaging::WINDOW_EX_STYLE;
 use windows::Win32::UI::WindowsAndMessaging::WINDOW_STYLE;
 use windows::Win32::UI::WindowsAndMessaging::WNDENUMPROC;
+use windows::Win32::Devices::WebServicesOnDevices::IWSDAddress;
+use windows::Win32::Graphics::Direct3D11::ID3D11FunctionLinkingGraph;
+use windows::Win32::Graphics::Direct3D11::ID3D11Linker;
+use windows::Win32::Graphics::Direct3D11::ID3D11Module;
+use windows::Win32::Graphics::Direct3D11::ID3D11ShaderTrace;
+use windows::Win32::Graphics::Direct3D12::ID3D12Device;
+use windows::Win32::Graphics::Direct3D::ID3DBlob;
+use windows::Win32::Graphics::Direct3D::ID3DInclude;
+use windows::Win32::Graphics::DirectComposition::IDCompositionVisual;
+use windows::Win32::Graphics::Dxgi::IDXGIAdapter;
+use windows::Win32::Graphics::Dxgi::IDXGIDevice;
+use windows::Win32::Graphics::Dxgi::IDXGISurface;
+use windows::Win32::Graphics::Dxgi::IDXGISwapChain;
+use windows::Win32::Graphics::Imaging::IWICMetadataWriter;
+use windows::Win32::Media::DirectShow::AM_MEDIA_TYPE;
+use windows::Win32::Media::MediaFoundation::IMFAsyncCallback;
+use windows::Win32::Media::MediaFoundation::IMFCameraOcclusionStateReportCallback;
+use windows::Win32::Media::MediaFoundation::IMFPMPHostApp;
+use windows::Win32::Media::MediaFoundation::IMFPMediaPlayerCallback;
+use windows::Win32::Media::MediaFoundation::IMFSampleGrabberSinkCallback;
+use windows::Win32::Media::MediaFoundation::IMFSensorActivitiesReportCallback;
+use windows::Win32::Media::MediaFoundation::__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0001;
+use windows::Win32::Media::MediaFoundation::__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0002;
+use windows::Win32::Media::MediaFoundation::__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0003;
+use windows::Win32::NetworkManagement::IpHelper::IcmpHandle;
+use windows::Win32::NetworkManagement::WindowsFilteringPlatform::IPSEC_SA_CONTEXT_CALLBACK0;
+use windows::Win32::Networking::WinHttp::INTERNET_PORT;
+use windows::Win32::Networking::WinInet::INTERNET_AUTODIAL;
+use windows::Win32::Networking::WinInet::INTERNET_COOKIE_FLAGS;
+use windows::Win32::Networking::WinInet::INTERNET_SCHEME;
+use windows::Win32::Storage::InstallableFileSystems::INSTANCE_INFORMATION_CLASS;
+use windows::Win32::System::Com::Urlmon::IEObjectType;
+use windows::Win32::System::Com::Urlmon::INTERNETFEATURELIST;
+use windows::Win32::System::Diagnostics::Debug::CONTEXT;
+use windows::Win32::System::Diagnostics::Debug::DEBUG_EVENT;
+use windows::Win32::System::Diagnostics::Debug::FORMAT_MESSAGE_OPTIONS;
+use windows::Win32::System::Diagnostics::Debug::IMAGEHLP_EXTENDED_OPTIONS;
+use windows::Win32::System::Diagnostics::Debug::IMAGEHLP_HD_TYPE;
+use windows::Win32::System::Diagnostics::Debug::IMAGEHLP_SF_TYPE;
+use windows::Win32::System::Diagnostics::Debug::IMAGEHLP_SYMBOL_TYPE_INFO;
+use windows::Win32::System::Diagnostics::Debug::IMAGE_DIRECTORY_ENTRY;
+use windows::Win32::UI::Controls::IMAGELIST_CREATION_FLAGS;
+use windows::Win32::UI::Controls::IMAGE_LIST_COPY_FLAGS;
+use windows::Win32::UI::Controls::IMAGE_LIST_DRAW_STYLE;
+use windows::Win32::UI::Controls::_LI_METRIC;
+use windows::Win32::UI::Input::Ime::IMCENUMPROC;
+use windows::Win32::UI::InteractionContext::INERTIA_PARAMETER;
+use windows::Win32::UI::InteractionContext::INTERACTION_CONTEXT_OUTPUT_CALLBACK2;
+use windows::Win32::UI::InteractionContext::INTERACTION_CONTEXT_OUTPUT_CALLBACK;
+use windows::Win32::UI::InteractionContext::INTERACTION_CONTEXT_PROPERTY;
+use windows::Win32::UI::Shell::APPBARDATA;
+use windows::Win32::UI::Shell::ASSOCKEY;
+use windows::Win32::UI::Shell::ASSOCSTR;
+use windows::Win32::UI::Shell::ASSOC_FILTER;
+use windows::Win32::UI::Shell::AUTO_SCROLL_DATA;
+use windows::Win32::UI::Shell::CABINETSTATE;
+use windows::Win32::UI::Shell::Common::ITEMIDLIST;
+use windows::Win32::UI::Shell::DATAOBJ_GET_ITEM_FLAGS;
+use windows::Win32::UI::Shell::HDROP;
+use windows::Win32::UI::Shell::HPSXA;
+use windows::Win32::UI::Shell::PropertiesSystem::GETPROPERTYSTOREFLAGS;
+use windows::Win32::UI::Shell::_APPCONSTRAIN_REGISTRATION;
+use windows::Win32::UI::Shell::_APPSTATE_REGISTRATION;
+use windows::Win32::UI::WindowsAndMessaging::IMAGE_FLAGS;
+use windows::Win32::Media::Audio::IActivateAudioInterfaceCompletionHandler;
+use windows::Win32::System::Com::IActivationFilter;
+use windows::Win32::System::AddressBook::IAddrBook;
+use windows::Win32::System::Com::IAdviseSink;
+use windows::Win32::System::WinRT::IApartmentShutdown;
+use windows::Win32::System::Com::IChannelHook;
+use windows::Win32::System::Com::IClassFactory;
+use windows::Win32::System::Com::IConnectionPoint;
+use windows::Win32::System::Com::IDataObject;
+use windows::Win32::System::Diagnostics::Debug::IDebugHost;
+use windows::Win32::UI::Shell::PropertiesSystem::IDelayedPropertyStoreFactory;
+use windows::Win32::Graphics::Direct3D9::IDirect3DDevice9;
+use windows::Win32::Graphics::Direct3D9::IDirect3DDevice9Ex;
+use windows::Win32::System::Com::IDispatch;
+use windows::Win32::System::Ole::IDropSource;
+use windows::Win32::System::Ole::IDropTarget;
+use windows::Win32::System::Com::IEnumFORMATETC;
+use windows::Win32::UI::Shell::IFileOperationProgressSink;
+use windows::Win32::Media::Multimedia::IGetFrame;
+use windows::Win32::UI::Shell::IHlink;
+use windows::Win32::UI::Shell::IHlinkBrowseContext;
+use windows::Win32::UI::Shell::IHlinkFrame;
+use windows::Win32::UI::Shell::IHlinkSite;
+use windows::Win32::System::Com::IInitializeSpy;
+use windows::core::IInspectable;
+use windows::Win32::System::Com::Urlmon::IInternetSecurityManagerEx2;
+use windows::Win32::System::Com::IMallocSpy;
+use windows::Win32::Media::DxMediaObjects::IMediaBuffer;
+use windows::Win32::System::AddressBook::IMessage;
+use windows::Win32::UI::Shell::PropertiesSystem::INamedPropertyStore;
+use windows::Win32::System::Ole::IOleClientSite;
+use windows::Win32::System::Ole::IOleInPlaceActiveObject;
+use windows::Win32::System::Ole::IOleInPlaceFrame;
+use windows::Win32::System::Ole::IOleObject;
+use windows::Win32::System::Ole::IOleUILinkContainerA;
+use windows::Win32::System::Ole::IOleUILinkContainerW;
+use windows::Win32::System::Com::StructuredStorage::IPersistStorage;
+use windows::Win32::System::Com::IPersistStream;
+use windows::Win32::Graphics::Printing::IPrintAsyncNotifyCallback;
+use windows::Win32::UI::Shell::PropertiesSystem::IPropertyDescription;
+use windows::Win32::UI::Shell::PropertiesSystem::IPropertyStore;
+use windows::Win32::System::WinRT::IRoMetaDataLocator;
+use windows::Win32::Security::Authorization::UI::ISecurityInformation;
+use windows::Win32::System::Com::IServiceProvider;
+use windows::Win32::UI::Shell::IShellBrowser;
+use windows::Win32::System::Com::ISurrogate;
+use windows::Win32::UI::Accessibility::ITextRangeProvider;
+use windows::Win32::System::Com::ITypeInfo;
+use windows::Win32::System::Com::ITypeLib;
+use windows::Win32::Storage::Xps::IXpsOMPackageTarget;
 
+
+
+// pub fn get_strange_AM_MEDIA_TYPE() -> (AM_MEDIA_TYPE, String) { (AM_MEDIA_TYPE::default(), "AM_MEDIA_TYPE::default()".to_string()) }
+// pub fn get_strange_IAccessible() -> (IAccessible, String) { (IAccessible::default(), "IAccessible::default()".to_string()) }
+// pub fn get_strange_IActivateAudioInterfaceAsyncOperation() -> (IActivateAudioInterfaceAsyncOperation, String) { (IActivateAudioInterfaceAsyncOperation::default(), "IActivateAudioInterfaceAsyncOperation::default()".to_string()) }
+// pub fn get_strange_IActivateAudioInterfaceCompletionHandler() -> (IActivateAudioInterfaceCompletionHandler, String) { (IActivateAudioInterfaceCompletionHandler::default(), "IActivateAudioInterfaceCompletionHandler::default()".to_string()) }
+// pub fn get_strange_IActivationFilter() -> (IActivationFilter, String) { (IActivationFilter::default(), "IActivationFilter::default()".to_string()) }
+// pub fn get_strange_IAddrBook() -> (IAddrBook, String) { (IAddrBook::default(), "IAddrBook::default()".to_string()) }
+// pub fn get_strange_IAdviseSink() -> (IAdviseSink, String) { (IAdviseSink::default(), "IAdviseSink::default()".to_string()) }
+// pub fn get_strange_IAgileReference() -> (IAgileReference, String) { (IAgileReference::default(), "IAgileReference::default()".to_string()) }
+// pub fn get_strange_IApartmentShutdown() -> (IApartmentShutdown, String) { (IApartmentShutdown::default(), "IApartmentShutdown::default()".to_string()) }
+// pub fn get_strange_IAudioStateMonitor() -> (IAudioStateMonitor, String) { (IAudioStateMonitor::default(), "IAudioStateMonitor::default()".to_string()) }
+// pub fn get_strange_IBindCtx() -> (IBindCtx, String) { (IBindCtx::default(), "IBindCtx::default()".to_string()) }
+// pub fn get_strange_IBindStatusCallback() -> (IBindStatusCallback, String) { (IBindStatusCallback::default(), "IBindStatusCallback::default()".to_string()) }
+// pub fn get_strange_IChannelHook() -> (IChannelHook, String) { (IChannelHook::default(), "IChannelHook::default()".to_string()) }
+// pub fn get_strange_IClassFactory() -> (IClassFactory, String) { (IClassFactory::default(), "IClassFactory::default()".to_string()) }
+// pub fn get_strange_IConnectionPoint() -> (IConnectionPoint, String) { (IConnectionPoint::default(), "IConnectionPoint::default()".to_string()) }
+// pub fn get_strange_IContextMenu() -> (IContextMenu, String) { (IContextMenu::default(), "IContextMenu::default()".to_string()) }
+// pub fn get_strange_ICreateDeviceAccessAsync() -> (ICreateDeviceAccessAsync, String) { (ICreateDeviceAccessAsync::default(), "ICreateDeviceAccessAsync::default()".to_string()) }
+// pub fn get_strange_ICreateErrorInfo() -> (ICreateErrorInfo, String) { (ICreateErrorInfo::default(), "ICreateErrorInfo::default()".to_string()) }
+// pub fn get_strange_ICreateTypeLib() -> (ICreateTypeLib, String) { (ICreateTypeLib::default(), "ICreateTypeLib::default()".to_string()) }
+// pub fn get_strange_ICreateTypeLib2() -> (ICreateTypeLib2, String) { (ICreateTypeLib2::default(), "ICreateTypeLib2::default()".to_string()) }
+// pub fn get_strange_IDataAdviseHolder() -> (IDataAdviseHolder, String) { (IDataAdviseHolder::default(), "IDataAdviseHolder::default()".to_string()) }
+// pub fn get_strange_IDataModelManager() -> (IDataModelManager, String) { (IDataModelManager::default(), "IDataModelManager::default()".to_string()) }
+// pub fn get_strange_IDataObject() -> (IDataObject, String) { (IDataObject::default(), "IDataObject::default()".to_string()) }
+// pub fn get_strange_IDebugHost() -> (IDebugHost, String) { (IDebugHost::default(), "IDebugHost::default()".to_string()) }
+// pub fn get_strange_IDelayedPropertyStoreFactory() -> (IDelayedPropertyStoreFactory, String) { (IDelayedPropertyStoreFactory::default(), "IDelayedPropertyStoreFactory::default()".to_string()) }
+// pub fn get_strange_IDirect3D9Ex() -> (IDirect3D9Ex, String) { (IDirect3D9Ex::default(), "IDirect3D9Ex::default()".to_string()) }
+// pub fn get_strange_IDirect3DDevice9() -> (IDirect3DDevice9, String) { (IDirect3DDevice9::default(), "IDirect3DDevice9::default()".to_string()) }
+// pub fn get_strange_IDirect3DDevice9Ex() -> (IDirect3DDevice9Ex, String) { (IDirect3DDevice9Ex::default(), "IDirect3DDevice9Ex::default()".to_string()) }
+// pub fn get_strange_IDirect3DDeviceManager9() -> (IDirect3DDeviceManager9, String) { (IDirect3DDeviceManager9::default(), "IDirect3DDeviceManager9::default()".to_string()) }
+// pub fn get_strange_IDirectDraw() -> (IDirectDraw, String) { (IDirectDraw::default(), "IDirectDraw::default()".to_string()) }
+// pub fn get_strange_IDirectDrawClipper() -> (IDirectDrawClipper, String) { (IDirectDrawClipper::default(), "IDirectDrawClipper::default()".to_string()) }
+// pub fn get_strange_IDirectSound() -> (IDirectSound, String) { (IDirectSound::default(), "IDirectSound::default()".to_string()) }
+// pub fn get_strange_IDirectSound8() -> (IDirectSound8, String) { (IDirectSound8::default(), "IDirectSound8::default()".to_string()) }
+// pub fn get_strange_IDirectSoundBuffer8() -> (IDirectSoundBuffer8, String) { (IDirectSoundBuffer8::default(), "IDirectSoundBuffer8::default()".to_string()) }
+// pub fn get_strange_IDirectSoundCapture() -> (IDirectSoundCapture, String) { (IDirectSoundCapture::default(), "IDirectSoundCapture::default()".to_string()) }
+// pub fn get_strange_IDirectSoundCaptureBuffer8() -> (IDirectSoundCaptureBuffer8, String) { (IDirectSoundCaptureBuffer8::default(), "IDirectSoundCaptureBuffer8::default()".to_string()) }
+// pub fn get_strange_IDirectSoundFullDuplex() -> (IDirectSoundFullDuplex, String) { (IDirectSoundFullDuplex::default(), "IDirectSoundFullDuplex::default()".to_string()) }
+// pub fn get_strange_IDispatch() -> (IDispatch, String) { (IDispatch::default(), "IDispatch::default()".to_string()) }
+// pub fn get_strange_IDispenserManager() -> (IDispenserManager, String) { (IDispenserManager::default(), "IDispenserManager::default()".to_string()) }
+// pub fn get_strange_IDropSource() -> (IDropSource, String) { (IDropSource::default(), "IDropSource::default()".to_string()) }
+// pub fn get_strange_IDropTarget() -> (IDropTarget, String) { (IDropTarget::default(), "IDropTarget::default()".to_string()) }
+// pub fn get_strange_IEnumAssocHandlers() -> (IEnumAssocHandlers, String) { (IEnumAssocHandlers::default(), "IEnumAssocHandlers::default()".to_string()) }
+// pub fn get_strange_IEnumDMO() -> (IEnumDMO, String) { (IEnumDMO::default(), "IEnumDMO::default()".to_string()) }
+// pub fn get_strange_IEnumFORMATETC() -> (IEnumFORMATETC, String) { (IEnumFORMATETC::default(), "IEnumFORMATETC::default()".to_string()) }
+// pub fn get_strange_IEnumOLEVERB() -> (IEnumOLEVERB, String) { (IEnumOLEVERB::default(), "IEnumOLEVERB::default()".to_string()) }
+// pub fn get_strange_IErrorInfo() -> (IErrorInfo, String) { (IErrorInfo::default(), "IErrorInfo::default()".to_string()) }
+// pub fn get_strange_IFileOperation() -> (IFileOperation, String) { (IFileOperation::default(), "IFileOperation::default()".to_string()) }
+// pub fn get_strange_IFileOperationProgressSink() -> (IFileOperationProgressSink, String) { (IFileOperationProgressSink::default(), "IFileOperationProgressSink::default()".to_string()) }
+// pub fn get_strange_IFillLockBytes() -> (IFillLockBytes, String) { (IFillLockBytes::default(), "IFillLockBytes::default()".to_string()) }
+// pub fn get_strange_IGetFrame() -> (IGetFrame, String) { (IGetFrame::default(), "IGetFrame::default()".to_string()) }
+// pub fn get_strange_IHlink() -> (IHlink, String) { (IHlink::default(), "IHlink::default()".to_string()) }
+// pub fn get_strange_IHlinkBrowseContext() -> (IHlinkBrowseContext, String) { (IHlinkBrowseContext::default(), "IHlinkBrowseContext::default()".to_string()) }
+// pub fn get_strange_IHlinkFrame() -> (IHlinkFrame, String) { (IHlinkFrame::default(), "IHlinkFrame::default()".to_string()) }
+// pub fn get_strange_IHlinkSite() -> (IHlinkSite, String) { (IHlinkSite::default(), "IHlinkSite::default()".to_string()) }
+// pub fn get_strange_IInitializeSpy() -> (IInitializeSpy, String) { (IInitializeSpy::default(), "IInitializeSpy::default()".to_string()) }
+// pub fn get_strange_IInspectable() -> (IInspectable, String) { (IInspectable::default(), "IInspectable::default()".to_string()) }
+// pub fn get_strange_IInternetSecurityManager() -> (IInternetSecurityManager, String) { (IInternetSecurityManager::default(), "IInternetSecurityManager::default()".to_string()) }
+// pub fn get_strange_IInternetSecurityManagerEx2() -> (IInternetSecurityManagerEx2, String) { (IInternetSecurityManagerEx2::default(), "IInternetSecurityManagerEx2::default()".to_string()) }
+// pub fn get_strange_IInternetSession() -> (IInternetSession, String) { (IInternetSession::default(), "IInternetSession::default()".to_string()) }
+// pub fn get_strange_IInternetZoneManager() -> (IInternetZoneManager, String) { (IInternetZoneManager::default(), "IInternetZoneManager::default()".to_string()) }
+// pub fn get_strange_ILockBytes() -> (ILockBytes, String) { (ILockBytes::default(), "ILockBytes::default()".to_string()) }
+// pub fn get_strange_IMalloc() -> (IMalloc, String) { (IMalloc::default(), "IMalloc::default()".to_string()) }
+// pub fn get_strange_IMallocSpy() -> (IMallocSpy, String) { (IMallocSpy::default(), "IMallocSpy::default()".to_string()) }
+// pub fn get_strange_IMarshal() -> (IMarshal, String) { (IMarshal::default(), "IMarshal::default()".to_string()) }
+// pub fn get_strange_IMediaBuffer() -> (IMediaBuffer, String) { (IMediaBuffer::default(), "IMediaBuffer::default()".to_string()) }
+// pub fn get_strange_IMessage() -> (IMessage, String) { (IMessage::default(), "IMessage::default()".to_string()) }
+// pub fn get_strange_IMessageFilter() -> (IMessageFilter, String) { (IMessageFilter::default(), "IMessageFilter::default()".to_string()) }
+// pub fn get_strange_IMoniker() -> (IMoniker, String) { (IMoniker::default(), "IMoniker::default()".to_string()) }
+// pub fn get_strange_INamedPropertyStore() -> (INamedPropertyStore, String) { (INamedPropertyStore::default(), "INamedPropertyStore::default()".to_string()) }
+// pub fn get_strange_IOleAdviseHolder() -> (IOleAdviseHolder, String) { (IOleAdviseHolder::default(), "IOleAdviseHolder::default()".to_string()) }
+// pub fn get_strange_IOleClientSite() -> (IOleClientSite, String) { (IOleClientSite::default(), "IOleClientSite::default()".to_string()) }
+// pub fn get_strange_IOleInPlaceActiveObject() -> (IOleInPlaceActiveObject, String) { (IOleInPlaceActiveObject::default(), "IOleInPlaceActiveObject::default()".to_string()) }
+// pub fn get_strange_IOleInPlaceFrame() -> (IOleInPlaceFrame, String) { (IOleInPlaceFrame::default(), "IOleInPlaceFrame::default()".to_string()) }
+// pub fn get_strange_IOleObject() -> (IOleObject, String) { (IOleObject::default(), "IOleObject::default()".to_string()) }
+// pub fn get_strange_IOleUILinkContainerA() -> (IOleUILinkContainerA, String) { (IOleUILinkContainerA::default(), "IOleUILinkContainerA::default()".to_string()) }
+// pub fn get_strange_IOleUILinkContainerW() -> (IOleUILinkContainerW, String) { (IOleUILinkContainerW::default(), "IOleUILinkContainerW::default()".to_string()) }
+// pub fn get_strange_IPdfRendererNative() -> (IPdfRendererNative, String) { (IPdfRendererNative::default(), "IPdfRendererNative::default()".to_string()) }
+// pub fn get_strange_IPersistStorage() -> (IPersistStorage, String) { (IPersistStorage::default(), "IPersistStorage::default()".to_string()) }
+// pub fn get_strange_IPersistStream() -> (IPersistStream, String) { (IPersistStream::default(), "IPersistStream::default()".to_string()) }
+// pub fn get_strange_IPrintAsyncNotifyCallback() -> (IPrintAsyncNotifyCallback, String) { (IPrintAsyncNotifyCallback::default(), "IPrintAsyncNotifyCallback::default()".to_string()) }
+// pub fn get_strange_IPrintAsyncNotifyChannel() -> (IPrintAsyncNotifyChannel, String) { (IPrintAsyncNotifyChannel::default(), "IPrintAsyncNotifyChannel::default()".to_string()) }
+// pub fn get_strange_IPropertyBag() -> (IPropertyBag, String) { (IPropertyBag::default(), "IPropertyBag::default()".to_string()) }
+// pub fn get_strange_IPropertyDescription() -> (IPropertyDescription, String) { (IPropertyDescription::default(), "IPropertyDescription::default()".to_string()) }
+// pub fn get_strange_IPropertySetStorage() -> (IPropertySetStorage, String) { (IPropertySetStorage::default(), "IPropertySetStorage::default()".to_string()) }
+// pub fn get_strange_IPropertyStorage() -> (IPropertyStorage, String) { (IPropertyStorage::default(), "IPropertyStorage::default()".to_string()) }
+// pub fn get_strange_IPropertyStore() -> (IPropertyStore, String) { (IPropertyStore::default(), "IPropertyStore::default()".to_string()) }
+// pub fn get_strange_IRawElementProviderSimple() -> (IRawElementProviderSimple, String) { (IRawElementProviderSimple::default(), "IRawElementProviderSimple::default()".to_string()) }
+// pub fn get_strange_IRecordInfo() -> (IRecordInfo, String) { (IRecordInfo::default(), "IRecordInfo::default()".to_string()) }
+// pub fn get_strange_IRestrictedErrorInfo() -> (IRestrictedErrorInfo, String) { (IRestrictedErrorInfo::default(), "IRestrictedErrorInfo::default()".to_string()) }
+// pub fn get_strange_IRoMetaDataLocator() -> (IRoMetaDataLocator, String) { (IRoMetaDataLocator::default(), "IRoMetaDataLocator::default()".to_string()) }
+// pub fn get_strange_IRunningObjectTable() -> (IRunningObjectTable, String) { (IRunningObjectTable::default(), "IRunningObjectTable::default()".to_string()) }
+// pub fn get_strange_ISecurityInformation() -> (ISecurityInformation, String) { (ISecurityInformation::default(), "ISecurityInformation::default()".to_string()) }
+// pub fn get_strange_IServiceProvider() -> (IServiceProvider, String) { (IServiceProvider::default(), "IServiceProvider::default()".to_string()) }
+// pub fn get_strange_IShellBrowser() -> (IShellBrowser, String) { (IShellBrowser::default(), "IShellBrowser::default()".to_string()) }
+// pub fn get_strange_IShellFolder() -> (IShellFolder, String) { (IShellFolder::default(), "IShellFolder::default()".to_string()) }
+// pub fn get_strange_IShellItem() -> (IShellItem, String) { (IShellItem::default(), "IShellItem::default()".to_string()) }
+// pub fn get_strange_IShellItemArray() -> (IShellItemArray, String) { (IShellItemArray::default(), "IShellItemArray::default()".to_string()) }
+// pub fn get_strange_IShellView() -> (IShellView, String) { (IShellView::default(), "IShellView::default()".to_string()) }
+// pub fn get_strange_IStorage() -> (IStorage, String) { (IStorage::default(), "IStorage::default()".to_string()) }
+// pub fn get_strange_IStream() -> (IStream, String) { (IStream::default(), "IStream::default()".to_string()) }
+// pub fn get_strange_ISurrogate() -> (ISurrogate, String) { (ISurrogate::default(), "ISurrogate::default()".to_string()) }
+// pub fn get_strange_ITextRangeProvider() -> (ITextRangeProvider, String) { (ITextRangeProvider::default(), "ITextRangeProvider::default()".to_string()) }
+// pub fn get_strange_ITnef() -> (ITnef, String) { (ITnef::default(), "ITnef::default()".to_string()) }
+// pub fn get_strange_ITypeInfo() -> (ITypeInfo, String) { (ITypeInfo::default(), "ITypeInfo::default()".to_string()) }
+// pub fn get_strange_ITypeLib() -> (ITypeLib, String) { (ITypeLib::default(), "ITypeLib::default()".to_string()) }
+// pub fn get_strange_IUnknown() -> (IUnknown, String) { (IUnknown::default(), "IUnknown::default()".to_string()) }
+// pub fn get_strange_IUri() -> (IUri, String) { (IUri::default(), "IUri::default()".to_string()) }
+// pub fn get_strange_IUriBuilder() -> (IUriBuilder, String) { (IUriBuilder::default(), "IUriBuilder::default()".to_string()) }
+// pub fn get_strange_IVssExpressWriter() -> (IVssExpressWriter, String) { (IVssExpressWriter::default(), "IVssExpressWriter::default()".to_string()) }
+// pub fn get_strange_IWinMLRuntime() -> (IWinMLRuntime, String) { (IWinMLRuntime::default(), "IWinMLRuntime::default()".to_string()) }
+// pub fn get_strange_IXpsOMPackageTarget() -> (IXpsOMPackageTarget, String) { (IXpsOMPackageTarget::default(), "IXpsOMPackageTarget::default()".to_string()) }
+// pub fn get_strange_IXpsPrintJob() -> (IXpsPrintJob, String) { (IXpsPrintJob::default(), "IXpsPrintJob::default()".to_string()) }
+// pub fn get_strange_IXpsPrintJobStream() -> (IXpsPrintJobStream, String) { (IXpsPrintJobStream::default(), "IXpsPrintJobStream::default()".to_string()) }
+
+
+
+// pub fn get_strange_AM_MEDIA_TYPE() -> (AM_MEDIA_TYPE, String) { (AM_MEDIA_TYPE::default(), "AM_MEDIA_TYPE::default()".to_string()) }
+// pub fn get_strange_APPBARDATA() -> (APPBARDATA, String) { (APPBARDATA::default(), "APPBARDATA::default()".to_string()) }
+// pub fn get_strange_ASSOCKEY() -> (ASSOCKEY, String) { (ASSOCKEY::default(), "ASSOCKEY::default()".to_string()) }
+// pub fn get_strange_ASSOCSTR() -> (ASSOCSTR, String) { (ASSOCSTR::default(), "ASSOCSTR::default()".to_string()) }
+// pub fn get_strange_ASSOC_FILTER() -> (ASSOC_FILTER, String) { (ASSOC_FILTER::default(), "ASSOC_FILTER::default()".to_string()) }
+// pub fn get_strange_AUTO_SCROLL_DATA() -> (AUTO_SCROLL_DATA, String) { (AUTO_SCROLL_DATA::default(), "AUTO_SCROLL_DATA::default()".to_string()) }
+// pub fn get_strange_CABINETSTATE() -> (CABINETSTATE, String) { (CABINETSTATE::default(), "CABINETSTATE::default()".to_string()) }
+// pub fn get_strange_CONTEXT() -> (CONTEXT, String) { (CONTEXT::default(), "CONTEXT::default()".to_string()) }
+// pub fn get_strange_DATAOBJ_GET_ITEM_FLAGS() -> (DATAOBJ_GET_ITEM_FLAGS, String) { (DATAOBJ_GET_ITEM_FLAGS::default(), "DATAOBJ_GET_ITEM_FLAGS::default()".to_string()) }
+// pub fn get_strange_DEBUG_EVENT() -> (DEBUG_EVENT, String) { (DEBUG_EVENT::default(), "DEBUG_EVENT::default()".to_string()) }
+// pub fn get_strange_DispatcherQueueController() -> (DispatcherQueueController, String) { (DispatcherQueueController::default(), "DispatcherQueueController::default()".to_string()) }
+// pub fn get_strange_FORMAT_MESSAGE_OPTIONS() -> (FORMAT_MESSAGE_OPTIONS, String) { (FORMAT_MESSAGE_OPTIONS::default(), "FORMAT_MESSAGE_OPTIONS::default()".to_string()) }
+// pub fn get_strange_GETPROPERTYSTOREFLAGS() -> (GETPROPERTYSTOREFLAGS, String) { (GETPROPERTYSTOREFLAGS::default(), "GETPROPERTYSTOREFLAGS::default()".to_string()) }
+// pub fn get_strange_GLUnurbs() -> (GLUnurbs, String) { (GLUnurbs::default(), "GLUnurbs::default()".to_string()) }
+// pub fn get_strange_GLUquadric() -> (GLUquadric, String) { (GLUquadric::default(), "GLUquadric::default()".to_string()) }
+// pub fn get_strange_GLUtesselator() -> (GLUtesselator, String) { (GLUtesselator::default(), "GLUtesselator::default()".to_string()) }
+// pub fn get_strange_HDROP() -> (HDROP, String) { (HDROP::default(), "HDROP::default()".to_string()) }
+// pub fn get_strange_HPSXA() -> (HPSXA, String) { (HPSXA::default(), "HPSXA::default()".to_string()) }
+// pub fn get_strange_IAVIFile() -> (IAVIFile, String) { (IAVIFile::default(), "IAVIFile::default()".to_string()) }
+// pub fn get_strange_IAVIStream() -> (IAVIStream, String) { (IAVIStream::default(), "IAVIStream::default()".to_string()) }
+// pub fn get_strange_ID2D1Device() -> (ID2D1Device, String) { (ID2D1Device::default(), "ID2D1Device::default()".to_string()) }
+// pub fn get_strange_ID2D1DeviceContext() -> (ID2D1DeviceContext, String) { (ID2D1DeviceContext::default(), "ID2D1DeviceContext::default()".to_string()) }
+// pub fn get_strange_ID3D10Device() -> (ID3D10Device, String) { (ID3D10Device::default(), "ID3D10Device::default()".to_string()) }
+// pub fn get_strange_ID3D10Device1() -> (ID3D10Device1, String) { (ID3D10Device1::default(), "ID3D10Device1::default()".to_string()) }
+// pub fn get_strange_ID3D10Effect() -> (ID3D10Effect, String) { (ID3D10Effect::default(), "ID3D10Effect::default()".to_string()) }
+// pub fn get_strange_ID3D10EffectPool() -> (ID3D10EffectPool, String) { (ID3D10EffectPool::default(), "ID3D10EffectPool::default()".to_string()) }
+// pub fn get_strange_ID3D10ShaderReflection() -> (ID3D10ShaderReflection, String) { (ID3D10ShaderReflection::default(), "ID3D10ShaderReflection::default()".to_string()) }
+// pub fn get_strange_ID3D10StateBlock() -> (ID3D10StateBlock, String) { (ID3D10StateBlock::default(), "ID3D10StateBlock::default()".to_string()) }
+// pub fn get_strange_ID3D11Device() -> (ID3D11Device, String) { (ID3D11Device::default(), "ID3D11Device::default()".to_string()) }
+// pub fn get_strange_ID3D11DeviceContext() -> (ID3D11DeviceContext, String) { (ID3D11DeviceContext::default(), "ID3D11DeviceContext::default()".to_string()) }
+// pub fn get_strange_ID3D11FunctionLinkingGraph() -> (ID3D11FunctionLinkingGraph, String) { (ID3D11FunctionLinkingGraph::default(), "ID3D11FunctionLinkingGraph::default()".to_string()) }
+// pub fn get_strange_ID3D11Linker() -> (ID3D11Linker, String) { (ID3D11Linker::default(), "ID3D11Linker::default()".to_string()) }
+// pub fn get_strange_ID3D11Module() -> (ID3D11Module, String) { (ID3D11Module::default(), "ID3D11Module::default()".to_string()) }
+// pub fn get_strange_ID3D11ShaderTrace() -> (ID3D11ShaderTrace, String) { (ID3D11ShaderTrace::default(), "ID3D11ShaderTrace::default()".to_string()) }
+// pub fn get_strange_ID3D12Device() -> (ID3D12Device, String) { (ID3D12Device::default(), "ID3D12Device::default()".to_string()) }
+// pub fn get_strange_ID3DBlob() -> (ID3DBlob, String) { (ID3DBlob::default(), "ID3DBlob::default()".to_string()) }
+// pub fn get_strange_ID3DInclude() -> (ID3DInclude, String) { (ID3DInclude::default(), "ID3DInclude::default()".to_string()) }
+// pub fn get_strange_ID3DX11FFT() -> (ID3DX11FFT, String) { (ID3DX11FFT::default(), "ID3DX11FFT::default()".to_string()) }
+// pub fn get_strange_ID3DX11Scan() -> (ID3DX11Scan, String) { (ID3DX11Scan::default(), "ID3DX11Scan::default()".to_string()) }
+// pub fn get_strange_ID3DX11SegmentedScan() -> (ID3DX11SegmentedScan, String) { (ID3DX11SegmentedScan::default(), "ID3DX11SegmentedScan::default()".to_string()) }
+// pub fn get_strange_IDCompositionVisual() -> (IDCompositionVisual, String) { (IDCompositionVisual::default(), "IDCompositionVisual::default()".to_string()) }
+// pub fn get_strange_IDXGIAdapter() -> (IDXGIAdapter, String) { (IDXGIAdapter::default(), "IDXGIAdapter::default()".to_string()) }
+// pub fn get_strange_IDXGIDevice() -> (IDXGIDevice, String) { (IDXGIDevice::default(), "IDXGIDevice::default()".to_string()) }
+// pub fn get_strange_IDXGISurface() -> (IDXGISurface, String) { (IDXGISurface::default(), "IDXGISurface::default()".to_string()) }
+// pub fn get_strange_IDXGISwapChain() -> (IDXGISwapChain, String) { (IDXGISwapChain::default(), "IDXGISwapChain::default()".to_string()) }
+// pub fn get_strange_IDXVAHD_Device() -> (IDXVAHD_Device, String) { (IDXVAHD_Device::default(), "IDXVAHD_Device::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_EXTENDED_OPTIONS() -> (IMAGEHLP_EXTENDED_OPTIONS, String) { (IMAGEHLP_EXTENDED_OPTIONS::default(), "IMAGEHLP_EXTENDED_OPTIONS::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_GET_TYPE_INFO_PARAMS() -> (IMAGEHLP_GET_TYPE_INFO_PARAMS, String) { (IMAGEHLP_GET_TYPE_INFO_PARAMS::default(), "IMAGEHLP_GET_TYPE_INFO_PARAMS::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_HD_TYPE() -> (IMAGEHLP_HD_TYPE, String) { (IMAGEHLP_HD_TYPE::default(), "IMAGEHLP_HD_TYPE::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_LINE() -> (IMAGEHLP_LINE, String) { (IMAGEHLP_LINE::default(), "IMAGEHLP_LINE::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_LINE64() -> (IMAGEHLP_LINE64, String) { (IMAGEHLP_LINE64::default(), "IMAGEHLP_LINE64::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_LINEW64() -> (IMAGEHLP_LINEW64, String) { (IMAGEHLP_LINEW64::default(), "IMAGEHLP_LINEW64::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_MODULE() -> (IMAGEHLP_MODULE, String) { (IMAGEHLP_MODULE::default(), "IMAGEHLP_MODULE::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_MODULE64() -> (IMAGEHLP_MODULE64, String) { (IMAGEHLP_MODULE64::default(), "IMAGEHLP_MODULE64::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_MODULEW() -> (IMAGEHLP_MODULEW, String) { (IMAGEHLP_MODULEW::default(), "IMAGEHLP_MODULEW::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_MODULEW64() -> (IMAGEHLP_MODULEW64, String) { (IMAGEHLP_MODULEW64::default(), "IMAGEHLP_MODULEW64::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_SF_TYPE() -> (IMAGEHLP_SF_TYPE, String) { (IMAGEHLP_SF_TYPE::default(), "IMAGEHLP_SF_TYPE::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_SYMBOL() -> (IMAGEHLP_SYMBOL, String) { (IMAGEHLP_SYMBOL::default(), "IMAGEHLP_SYMBOL::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_SYMBOL64() -> (IMAGEHLP_SYMBOL64, String) { (IMAGEHLP_SYMBOL64::default(), "IMAGEHLP_SYMBOL64::default()".to_string()) }
+// pub fn get_strange_IMAGEHLP_SYMBOL_TYPE_INFO() -> (IMAGEHLP_SYMBOL_TYPE_INFO, String) { (IMAGEHLP_SYMBOL_TYPE_INFO::default(), "IMAGEHLP_SYMBOL_TYPE_INFO::default()".to_string()) }
+// pub fn get_strange_IMAGE_DIRECTORY_ENTRY() -> (IMAGE_DIRECTORY_ENTRY, String) { (IMAGE_DIRECTORY_ENTRY::default(), "IMAGE_DIRECTORY_ENTRY::default()".to_string()) }
+// pub fn get_strange_IMAGE_LOAD_CONFIG_DIRECTORY32() -> (IMAGE_LOAD_CONFIG_DIRECTORY32, String) { (IMAGE_LOAD_CONFIG_DIRECTORY32::default(), "IMAGE_LOAD_CONFIG_DIRECTORY32::default()".to_string()) }
+// pub fn get_strange_IMFASFContentInfo() -> (IMFASFContentInfo, String) { (IMFASFContentInfo::default(), "IMFASFContentInfo::default()".to_string()) }
+// pub fn get_strange_IMFASFIndexer() -> (IMFASFIndexer, String) { (IMFASFIndexer::default(), "IMFASFIndexer::default()".to_string()) }
+// pub fn get_strange_IMFASFMultiplexer() -> (IMFASFMultiplexer, String) { (IMFASFMultiplexer::default(), "IMFASFMultiplexer::default()".to_string()) }
+// pub fn get_strange_IMFASFProfile() -> (IMFASFProfile, String) { (IMFASFProfile::default(), "IMFASFProfile::default()".to_string()) }
+// pub fn get_strange_IMFASFSplitter() -> (IMFASFSplitter, String) { (IMFASFSplitter::default(), "IMFASFSplitter::default()".to_string()) }
+// pub fn get_strange_IMFASFStreamSelector() -> (IMFASFStreamSelector, String) { (IMFASFStreamSelector::default(), "IMFASFStreamSelector::default()".to_string()) }
+// pub fn get_strange_IMFActivate() -> (IMFActivate, String) { (IMFActivate::default(), "IMFActivate::default()".to_string()) }
+// pub fn get_strange_IMFAsyncCallback() -> (IMFAsyncCallback, String) { (IMFAsyncCallback::default(), "IMFAsyncCallback::default()".to_string()) }
+// pub fn get_strange_IMFAsyncResult() -> (IMFAsyncResult, String) { (IMFAsyncResult::default(), "IMFAsyncResult::default()".to_string()) }
+// pub fn get_strange_IMFAttributes() -> (IMFAttributes, String) { (IMFAttributes::default(), "IMFAttributes::default()".to_string()) }
+// pub fn get_strange_IMFAudioMediaType() -> (IMFAudioMediaType, String) { (IMFAudioMediaType::default(), "IMFAudioMediaType::default()".to_string()) }
+// pub fn get_strange_IMFByteStream() -> (IMFByteStream, String) { (IMFByteStream::default(), "IMFByteStream::default()".to_string()) }
+// pub fn get_strange_IMFCameraOcclusionStateMonitor() -> (IMFCameraOcclusionStateMonitor, String) { (IMFCameraOcclusionStateMonitor::default(), "IMFCameraOcclusionStateMonitor::default()".to_string()) }
+// pub fn get_strange_IMFCameraOcclusionStateReportCallback() -> (IMFCameraOcclusionStateReportCallback, String) { (IMFCameraOcclusionStateReportCallback::default(), "IMFCameraOcclusionStateReportCallback::default()".to_string()) }
+// pub fn get_strange_IMFCollection() -> (IMFCollection, String) { (IMFCollection::default(), "IMFCollection::default()".to_string()) }
+// pub fn get_strange_IMFContentDecryptorContext() -> (IMFContentDecryptorContext, String) { (IMFContentDecryptorContext::default(), "IMFContentDecryptorContext::default()".to_string()) }
+// pub fn get_strange_IMFContentProtectionDevice() -> (IMFContentProtectionDevice, String) { (IMFContentProtectionDevice::default(), "IMFContentProtectionDevice::default()".to_string()) }
+// pub fn get_strange_IMFDXGIDeviceManager() -> (IMFDXGIDeviceManager, String) { (IMFDXGIDeviceManager::default(), "IMFDXGIDeviceManager::default()".to_string()) }
+// pub fn get_strange_IMFExtendedCameraIntrinsicModel() -> (IMFExtendedCameraIntrinsicModel, String) { (IMFExtendedCameraIntrinsicModel::default(), "IMFExtendedCameraIntrinsicModel::default()".to_string()) }
+// pub fn get_strange_IMFExtendedCameraIntrinsics() -> (IMFExtendedCameraIntrinsics, String) { (IMFExtendedCameraIntrinsics::default(), "IMFExtendedCameraIntrinsics::default()".to_string()) }
+// pub fn get_strange_IMFMediaBuffer() -> (IMFMediaBuffer, String) { (IMFMediaBuffer::default(), "IMFMediaBuffer::default()".to_string()) }
+// pub fn get_strange_IMFMediaEvent() -> (IMFMediaEvent, String) { (IMFMediaEvent::default(), "IMFMediaEvent::default()".to_string()) }
+// pub fn get_strange_IMFMediaEventQueue() -> (IMFMediaEventQueue, String) { (IMFMediaEventQueue::default(), "IMFMediaEventQueue::default()".to_string()) }
+// pub fn get_strange_IMFMediaSession() -> (IMFMediaSession, String) { (IMFMediaSession::default(), "IMFMediaSession::default()".to_string()) }
+// pub fn get_strange_IMFMediaSink() -> (IMFMediaSink, String) { (IMFMediaSink::default(), "IMFMediaSink::default()".to_string()) }
+// pub fn get_strange_IMFMediaSource() -> (IMFMediaSource, String) { (IMFMediaSource::default(), "IMFMediaSource::default()".to_string()) }
+// pub fn get_strange_IMFMediaType() -> (IMFMediaType, String) { (IMFMediaType::default(), "IMFMediaType::default()".to_string()) }
+// pub fn get_strange_IMFMediaTypeHandler() -> (IMFMediaTypeHandler, String) { (IMFMediaTypeHandler::default(), "IMFMediaTypeHandler::default()".to_string()) }
+// pub fn get_strange_IMFNetCredentialCache() -> (IMFNetCredentialCache, String) { (IMFNetCredentialCache::default(), "IMFNetCredentialCache::default()".to_string()) }
+// pub fn get_strange_IMFNetProxyLocator() -> (IMFNetProxyLocator, String) { (IMFNetProxyLocator::default(), "IMFNetProxyLocator::default()".to_string()) }
+// pub fn get_strange_IMFPMPHostApp() -> (IMFPMPHostApp, String) { (IMFPMPHostApp::default(), "IMFPMPHostApp::default()".to_string()) }
+// pub fn get_strange_IMFPMPServer() -> (IMFPMPServer, String) { (IMFPMPServer::default(), "IMFPMPServer::default()".to_string()) }
+// pub fn get_strange_IMFPMediaPlayer() -> (IMFPMediaPlayer, String) { (IMFPMediaPlayer::default(), "IMFPMediaPlayer::default()".to_string()) }
+// pub fn get_strange_IMFPMediaPlayerCallback() -> (IMFPMediaPlayerCallback, String) { (IMFPMediaPlayerCallback::default(), "IMFPMediaPlayerCallback::default()".to_string()) }
+// pub fn get_strange_IMFPluginControl() -> (IMFPluginControl, String) { (IMFPluginControl::default(), "IMFPluginControl::default()".to_string()) }
+// pub fn get_strange_IMFPresentationClock() -> (IMFPresentationClock, String) { (IMFPresentationClock::default(), "IMFPresentationClock::default()".to_string()) }
+// pub fn get_strange_IMFPresentationDescriptor() -> (IMFPresentationDescriptor, String) { (IMFPresentationDescriptor::default(), "IMFPresentationDescriptor::default()".to_string()) }
+// pub fn get_strange_IMFPresentationTimeSource() -> (IMFPresentationTimeSource, String) { (IMFPresentationTimeSource::default(), "IMFPresentationTimeSource::default()".to_string()) }
+// pub fn get_strange_IMFProtectedEnvironmentAccess() -> (IMFProtectedEnvironmentAccess, String) { (IMFProtectedEnvironmentAccess::default(), "IMFProtectedEnvironmentAccess::default()".to_string()) }
+// pub fn get_strange_IMFQualityManager() -> (IMFQualityManager, String) { (IMFQualityManager::default(), "IMFQualityManager::default()".to_string()) }
+// pub fn get_strange_IMFRelativePanelWatcher() -> (IMFRelativePanelWatcher, String) { (IMFRelativePanelWatcher::default(), "IMFRelativePanelWatcher::default()".to_string()) }
+// pub fn get_strange_IMFRemoteDesktopPlugin() -> (IMFRemoteDesktopPlugin, String) { (IMFRemoteDesktopPlugin::default(), "IMFRemoteDesktopPlugin::default()".to_string()) }
+// pub fn get_strange_IMFSample() -> (IMFSample, String) { (IMFSample::default(), "IMFSample::default()".to_string()) }
+// pub fn get_strange_IMFSampleGrabberSinkCallback() -> (IMFSampleGrabberSinkCallback, String) { (IMFSampleGrabberSinkCallback::default(), "IMFSampleGrabberSinkCallback::default()".to_string()) }
+// pub fn get_strange_IMFSensorActivitiesReportCallback() -> (IMFSensorActivitiesReportCallback, String) { (IMFSensorActivitiesReportCallback::default(), "IMFSensorActivitiesReportCallback::default()".to_string()) }
+// pub fn get_strange_IMFSensorActivityMonitor() -> (IMFSensorActivityMonitor, String) { (IMFSensorActivityMonitor::default(), "IMFSensorActivityMonitor::default()".to_string()) }
+// pub fn get_strange_IMFSensorGroup() -> (IMFSensorGroup, String) { (IMFSensorGroup::default(), "IMFSensorGroup::default()".to_string()) }
+// pub fn get_strange_IMFSensorProfile() -> (IMFSensorProfile, String) { (IMFSensorProfile::default(), "IMFSensorProfile::default()".to_string()) }
+// pub fn get_strange_IMFSensorProfileCollection() -> (IMFSensorProfileCollection, String) { (IMFSensorProfileCollection::default(), "IMFSensorProfileCollection::default()".to_string()) }
+// pub fn get_strange_IMFSensorStream() -> (IMFSensorStream, String) { (IMFSensorStream::default(), "IMFSensorStream::default()".to_string()) }
+// pub fn get_strange_IMFSequencerSource() -> (IMFSequencerSource, String) { (IMFSequencerSource::default(), "IMFSequencerSource::default()".to_string()) }
+// pub fn get_strange_IMFSignedLibrary() -> (IMFSignedLibrary, String) { (IMFSignedLibrary::default(), "IMFSignedLibrary::default()".to_string()) }
+// pub fn get_strange_IMFSinkWriter() -> (IMFSinkWriter, String) { (IMFSinkWriter::default(), "IMFSinkWriter::default()".to_string()) }
+// pub fn get_strange_IMFSourceReader() -> (IMFSourceReader, String) { (IMFSourceReader::default(), "IMFSourceReader::default()".to_string()) }
+// pub fn get_strange_IMFSourceResolver() -> (IMFSourceResolver, String) { (IMFSourceResolver::default(), "IMFSourceResolver::default()".to_string()) }
+// pub fn get_strange_IMFStreamDescriptor() -> (IMFStreamDescriptor, String) { (IMFStreamDescriptor::default(), "IMFStreamDescriptor::default()".to_string()) }
+// pub fn get_strange_IMFSystemId() -> (IMFSystemId, String) { (IMFSystemId::default(), "IMFSystemId::default()".to_string()) }
+// pub fn get_strange_IMFTopoLoader() -> (IMFTopoLoader, String) { (IMFTopoLoader::default(), "IMFTopoLoader::default()".to_string()) }
+// pub fn get_strange_IMFTopology() -> (IMFTopology, String) { (IMFTopology::default(), "IMFTopology::default()".to_string()) }
+// pub fn get_strange_IMFTopologyNode() -> (IMFTopologyNode, String) { (IMFTopologyNode::default(), "IMFTopologyNode::default()".to_string()) }
+// pub fn get_strange_IMFTrackedSample() -> (IMFTrackedSample, String) { (IMFTrackedSample::default(), "IMFTrackedSample::default()".to_string()) }
+// pub fn get_strange_IMFTranscodeProfile() -> (IMFTranscodeProfile, String) { (IMFTranscodeProfile::default(), "IMFTranscodeProfile::default()".to_string()) }
+// pub fn get_strange_IMFTransform() -> (IMFTransform, String) { (IMFTransform::default(), "IMFTransform::default()".to_string()) }
+// pub fn get_strange_IMFVideoMediaType() -> (IMFVideoMediaType, String) { (IMFVideoMediaType::default(), "IMFVideoMediaType::default()".to_string()) }
+// pub fn get_strange_IMFVirtualCamera() -> (IMFVirtualCamera, String) { (IMFVirtualCamera::default(), "IMFVirtualCamera::default()".to_string()) }
+// pub fn get_strange_IMLOperatorRegistry() -> (IMLOperatorRegistry, String) { (IMLOperatorRegistry::default(), "IMLOperatorRegistry::default()".to_string()) }
+// pub fn get_strange_IOPMVideoOutput() -> (IOPMVideoOutput, String) { (IOPMVideoOutput::default(), "IOPMVideoOutput::default()".to_string()) }
+// pub fn get_strange_ITEMIDLIST() -> (ITEMIDLIST, String) { (ITEMIDLIST::default(), "ITEMIDLIST::default()".to_string()) }
+// pub fn get_strange_IWICBitmap() -> (IWICBitmap, String) { (IWICBitmap::default(), "IWICBitmap::default()".to_string()) }
+// pub fn get_strange_IWICBitmapSource() -> (IWICBitmapSource, String) { (IWICBitmapSource::default(), "IWICBitmapSource::default()".to_string()) }
+// pub fn get_strange_IWICMetadataWriter() -> (IWICMetadataWriter, String) { (IWICMetadataWriter::default(), "IWICMetadataWriter::default()".to_string()) }
+// pub fn get_strange_IWMIndexer() -> (IWMIndexer, String) { (IWMIndexer::default(), "IWMIndexer::default()".to_string()) }
+// pub fn get_strange_IWMLicenseBackup() -> (IWMLicenseBackup, String) { (IWMLicenseBackup::default(), "IWMLicenseBackup::default()".to_string()) }
+// pub fn get_strange_IWMMetadataEditor() -> (IWMMetadataEditor, String) { (IWMMetadataEditor::default(), "IWMMetadataEditor::default()".to_string()) }
+// pub fn get_strange_IWMProfileManager() -> (IWMProfileManager, String) { (IWMProfileManager::default(), "IWMProfileManager::default()".to_string()) }
+// pub fn get_strange_IWMReader() -> (IWMReader, String) { (IWMReader::default(), "IWMReader::default()".to_string()) }
+// pub fn get_strange_IWMSyncReader() -> (IWMSyncReader, String) { (IWMSyncReader::default(), "IWMSyncReader::default()".to_string()) }
+// pub fn get_strange_IWMWriter() -> (IWMWriter, String) { (IWMWriter::default(), "IWMWriter::default()".to_string()) }
+// pub fn get_strange_IWMWriterFileSink() -> (IWMWriterFileSink, String) { (IWMWriterFileSink::default(), "IWMWriterFileSink::default()".to_string()) }
+// pub fn get_strange_IWMWriterNetworkSink() -> (IWMWriterNetworkSink, String) { (IWMWriterNetworkSink::default(), "IWMWriterNetworkSink::default()".to_string()) }
+// pub fn get_strange_IWMWriterPushSink() -> (IWMWriterPushSink, String) { (IWMWriterPushSink::default(), "IWMWriterPushSink::default()".to_string()) }
+// pub fn get_strange_IWSDAddress() -> (IWSDAddress, String) { (IWSDAddress::default(), "IWSDAddress::default()".to_string()) }
+// pub fn get_strange_IWSDDeviceHost() -> (IWSDDeviceHost, String) { (IWSDDeviceHost::default(), "IWSDDeviceHost::default()".to_string()) }
+// pub fn get_strange_IWSDDeviceProxy() -> (IWSDDeviceProxy, String) { (IWSDDeviceProxy::default(), "IWSDDeviceProxy::default()".to_string()) }
+// pub fn get_strange_IWSDHttpAddress() -> (IWSDHttpAddress, String) { (IWSDHttpAddress::default(), "IWSDHttpAddress::default()".to_string()) }
+// pub fn get_strange_IWSDHttpMessageParameters() -> (IWSDHttpMessageParameters, String) { (IWSDHttpMessageParameters::default(), "IWSDHttpMessageParameters::default()".to_string()) }
+// pub fn get_strange_IWSDOutboundAttachment() -> (IWSDOutboundAttachment, String) { (IWSDOutboundAttachment::default(), "IWSDOutboundAttachment::default()".to_string()) }
+// pub fn get_strange_IWSDUdpAddress() -> (IWSDUdpAddress, String) { (IWSDUdpAddress::default(), "IWSDUdpAddress::default()".to_string()) }
+// pub fn get_strange_IWSDUdpMessageParameters() -> (IWSDUdpMessageParameters, String) { (IWSDUdpMessageParameters::default(), "IWSDUdpMessageParameters::default()".to_string()) }
+// pub fn get_strange_IWSDXMLContext() -> (IWSDXMLContext, String) { (IWSDXMLContext::default(), "IWSDXMLContext::default()".to_string()) }
+// pub fn get_strange_IWSDiscoveryProvider() -> (IWSDiscoveryProvider, String) { (IWSDiscoveryProvider::default(), "IWSDiscoveryProvider::default()".to_string()) }
+// pub fn get_strange_IWSDiscoveryPublisher() -> (IWSDiscoveryPublisher, String) { (IWSDiscoveryPublisher::default(), "IWSDiscoveryPublisher::default()".to_string()) }
+// pub fn get_strange_IXAPO() -> (IXAPO, String) { (IXAPO::default(), "IXAPO::default()".to_string()) }
+// pub fn get_strange_IXAudio2() -> (IXAudio2, String) { (IXAudio2::default(), "IXAudio2::default()".to_string()) }
+// pub fn get_strange_KNONVOLATILE_CONTEXT_POINTERS() -> (KNONVOLATILE_CONTEXT_POINTERS, String) { (KNONVOLATILE_CONTEXT_POINTERS::default(), "KNONVOLATILE_CONTEXT_POINTERS::default()".to_string()) }
+// pub fn get_strange_KNOWN_FOLDER_FLAG() -> (KNOWN_FOLDER_FLAG, String) { (KNOWN_FOLDER_FLAG::default(), "KNOWN_FOLDER_FLAG::default()".to_string()) }
+// pub fn get_strange_LDT_ENTRY() -> (LDT_ENTRY, String) { (LDT_ENTRY::default(), "LDT_ENTRY::default()".to_string()) }
+// pub fn get_strange_LIBRARYMANAGEDIALOGOPTIONS() -> (LIBRARYMANAGEDIALOGOPTIONS, String) { (LIBRARYMANAGEDIALOGOPTIONS::default(), "LIBRARYMANAGEDIALOGOPTIONS::default()".to_string()) }
+// pub fn get_strange_LPFNDFMCALLBACK() -> (LPFNDFMCALLBACK, String) { (LPFNDFMCALLBACK::default(), "LPFNDFMCALLBACK::default()".to_string()) }
+// pub fn get_strange_MFPERIODICCALLBACK() -> (MFPERIODICCALLBACK, String) { (MFPERIODICCALLBACK::default(), "MFPERIODICCALLBACK::default()".to_string()) }
+// pub fn get_strange_MFP_CREATION_OPTIONS() -> (MFP_CREATION_OPTIONS, String) { (MFP_CREATION_OPTIONS::default(), "MFP_CREATION_OPTIONS::default()".to_string()) }
+// pub fn get_strange_MFStandardVideoFormat() -> (MFStandardVideoFormat, String) { (MFStandardVideoFormat::default(), "MFStandardVideoFormat::default()".to_string()) }
+// pub fn get_strange_MFVIDEOFORMAT() -> (MFVIDEOFORMAT, String) { (MFVIDEOFORMAT::default(), "MFVIDEOFORMAT::default()".to_string()) }
+// pub fn get_strange_MFVideoInterlaceMode() -> (MFVideoInterlaceMode, String) { (MFVideoInterlaceMode::default(), "MFVideoInterlaceMode::default()".to_string()) }
+// pub fn get_strange_MF_FILE_ACCESSMODE() -> (MF_FILE_ACCESSMODE, String) { (MF_FILE_ACCESSMODE::default(), "MF_FILE_ACCESSMODE::default()".to_string()) }
+// pub fn get_strange_MF_FILE_FLAGS() -> (MF_FILE_FLAGS, String) { (MF_FILE_FLAGS::default(), "MF_FILE_FLAGS::default()".to_string()) }
+// pub fn get_strange_MF_FILE_OPENMODE() -> (MF_FILE_OPENMODE, String) { (MF_FILE_OPENMODE::default(), "MF_FILE_OPENMODE::default()".to_string()) }
+// pub fn get_strange_MF_TOPOLOGY_TYPE() -> (MF_TOPOLOGY_TYPE, String) { (MF_TOPOLOGY_TYPE::default(), "MF_TOPOLOGY_TYPE::default()".to_string()) }
+// pub fn get_strange_MM_FLAGS() -> (MM_FLAGS, String) { (MM_FLAGS::default(), "MM_FLAGS::default()".to_string()) }
+// pub fn get_strange_Matrix3x2() -> (Matrix3x2, String) { (Matrix3x2::default(), "Matrix3x2::default()".to_string()) }
+// pub fn get_strange_OPEN_THREAD_WAIT_CHAIN_SESSION_FLAGS() -> (OPEN_THREAD_WAIT_CHAIN_SESSION_FLAGS, String) { (OPEN_THREAD_WAIT_CHAIN_SESSION_FLAGS::default(), "OPEN_THREAD_WAIT_CHAIN_SESSION_FLAGS::default()".to_string()) }
+// pub fn get_strange_OPM_HDCP_STATUS() -> (OPM_HDCP_STATUS, String) { (OPM_HDCP_STATUS::default(), "OPM_HDCP_STATUS::default()".to_string()) }
+// pub fn get_strange_OPM_HDCP_TYPE() -> (OPM_HDCP_TYPE, String) { (OPM_HDCP_TYPE::default(), "OPM_HDCP_TYPE::default()".to_string()) }
+// pub fn get_strange_PAPPCONSTRAIN_CHANGE_ROUTINE() -> (PAPPCONSTRAIN_CHANGE_ROUTINE, String) { (PAPPCONSTRAIN_CHANGE_ROUTINE::default(), "PAPPCONSTRAIN_CHANGE_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PAPPSTATE_CHANGE_ROUTINE() -> (PAPPSTATE_CHANGE_ROUTINE, String) { (PAPPSTATE_CHANGE_ROUTINE::default(), "PAPPSTATE_CHANGE_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PCOGETACTIVATIONSTATE() -> (PCOGETACTIVATIONSTATE, String) { (PCOGETACTIVATIONSTATE::default(), "PCOGETACTIVATIONSTATE::default()".to_string()) }
+// pub fn get_strange_PCOGETCALLSTATE() -> (PCOGETCALLSTATE, String) { (PCOGETCALLSTATE::default(), "PCOGETCALLSTATE::default()".to_string()) }
+// pub fn get_strange_PDBGHELP_CREATE_USER_DUMP_CALLBACK() -> (PDBGHELP_CREATE_USER_DUMP_CALLBACK, String) { (PDBGHELP_CREATE_USER_DUMP_CALLBACK::default(), "PDBGHELP_CREATE_USER_DUMP_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PDXVAHDSW_Plugin() -> (PDXVAHDSW_Plugin, String) { (PDXVAHDSW_Plugin::default(), "PDXVAHDSW_Plugin::default()".to_string()) }
+// pub fn get_strange_PENUMDIRTREE_CALLBACK() -> (PENUMDIRTREE_CALLBACK, String) { (PENUMDIRTREE_CALLBACK::default(), "PENUMDIRTREE_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PENUMDIRTREE_CALLBACKW() -> (PENUMDIRTREE_CALLBACKW, String) { (PENUMDIRTREE_CALLBACKW::default(), "PENUMDIRTREE_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PENUMLOADED_MODULES_CALLBACK() -> (PENUMLOADED_MODULES_CALLBACK, String) { (PENUMLOADED_MODULES_CALLBACK::default(), "PENUMLOADED_MODULES_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PENUMLOADED_MODULES_CALLBACK64() -> (PENUMLOADED_MODULES_CALLBACK64, String) { (PENUMLOADED_MODULES_CALLBACK64::default(), "PENUMLOADED_MODULES_CALLBACK64::default()".to_string()) }
+// pub fn get_strange_PENUMLOADED_MODULES_CALLBACKW64() -> (PENUMLOADED_MODULES_CALLBACKW64, String) { (PENUMLOADED_MODULES_CALLBACKW64::default(), "PENUMLOADED_MODULES_CALLBACKW64::default()".to_string()) }
+// pub fn get_strange_PENUMSOURCEFILETOKENSCALLBACK() -> (PENUMSOURCEFILETOKENSCALLBACK, String) { (PENUMSOURCEFILETOKENSCALLBACK::default(), "PENUMSOURCEFILETOKENSCALLBACK::default()".to_string()) }
+// pub fn get_strange_PFINDFILEINPATHCALLBACK() -> (PFINDFILEINPATHCALLBACK, String) { (PFINDFILEINPATHCALLBACK::default(), "PFINDFILEINPATHCALLBACK::default()".to_string()) }
+// pub fn get_strange_PFINDFILEINPATHCALLBACKW() -> (PFINDFILEINPATHCALLBACKW, String) { (PFINDFILEINPATHCALLBACKW::default(), "PFINDFILEINPATHCALLBACKW::default()".to_string()) }
+// pub fn get_strange_PFIND_DEBUG_FILE_CALLBACK() -> (PFIND_DEBUG_FILE_CALLBACK, String) { (PFIND_DEBUG_FILE_CALLBACK::default(), "PFIND_DEBUG_FILE_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PFIND_DEBUG_FILE_CALLBACKW() -> (PFIND_DEBUG_FILE_CALLBACKW, String) { (PFIND_DEBUG_FILE_CALLBACKW::default(), "PFIND_DEBUG_FILE_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PFIND_EXE_FILE_CALLBACK() -> (PFIND_EXE_FILE_CALLBACK, String) { (PFIND_EXE_FILE_CALLBACK::default(), "PFIND_EXE_FILE_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PFIND_EXE_FILE_CALLBACKW() -> (PFIND_EXE_FILE_CALLBACKW, String) { (PFIND_EXE_FILE_CALLBACKW::default(), "PFIND_EXE_FILE_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PFUNCTION_TABLE_ACCESS_ROUTINE() -> (PFUNCTION_TABLE_ACCESS_ROUTINE, String) { (PFUNCTION_TABLE_ACCESS_ROUTINE::default(), "PFUNCTION_TABLE_ACCESS_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PFUNCTION_TABLE_ACCESS_ROUTINE64() -> (PFUNCTION_TABLE_ACCESS_ROUTINE64, String) { (PFUNCTION_TABLE_ACCESS_ROUTINE64::default(), "PFUNCTION_TABLE_ACCESS_ROUTINE64::default()".to_string()) }
+// pub fn get_strange_PGET_MODULE_BASE_ROUTINE() -> (PGET_MODULE_BASE_ROUTINE, String) { (PGET_MODULE_BASE_ROUTINE::default(), "PGET_MODULE_BASE_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PGET_MODULE_BASE_ROUTINE64() -> (PGET_MODULE_BASE_ROUTINE64, String) { (PGET_MODULE_BASE_ROUTINE64::default(), "PGET_MODULE_BASE_ROUTINE64::default()".to_string()) }
+// pub fn get_strange_PGET_RUNTIME_FUNCTION_CALLBACK() -> (PGET_RUNTIME_FUNCTION_CALLBACK, String) { (PGET_RUNTIME_FUNCTION_CALLBACK::default(), "PGET_RUNTIME_FUNCTION_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PIMAGEHLP_STATUS_ROUTINE() -> (PIMAGEHLP_STATUS_ROUTINE, String) { (PIMAGEHLP_STATUS_ROUTINE::default(), "PIMAGEHLP_STATUS_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PKA_FLAGS() -> (PKA_FLAGS, String) { (PKA_FLAGS::default(), "PKA_FLAGS::default()".to_string()) }
+// pub fn get_strange_PREAD_PROCESS_MEMORY_ROUTINE() -> (PREAD_PROCESS_MEMORY_ROUTINE, String) { (PREAD_PROCESS_MEMORY_ROUTINE::default(), "PREAD_PROCESS_MEMORY_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PREAD_PROCESS_MEMORY_ROUTINE64() -> (PREAD_PROCESS_MEMORY_ROUTINE64, String) { (PREAD_PROCESS_MEMORY_ROUTINE64::default(), "PREAD_PROCESS_MEMORY_ROUTINE64::default()".to_string()) }
+// pub fn get_strange_PRF_FLAGS() -> (PRF_FLAGS, String) { (PRF_FLAGS::default(), "PRF_FLAGS::default()".to_string()) }
+// pub fn get_strange_PROPDESC_ENUMFILTER() -> (PROPDESC_ENUMFILTER, String) { (PROPDESC_ENUMFILTER::default(), "PROPDESC_ENUMFILTER::default()".to_string()) }
+// pub fn get_strange_PROPDESC_FORMAT_FLAGS() -> (PROPDESC_FORMAT_FLAGS, String) { (PROPDESC_FORMAT_FLAGS::default(), "PROPDESC_FORMAT_FLAGS::default()".to_string()) }
+// pub fn get_strange_PROPVAR_CHANGE_FLAGS() -> (PROPVAR_CHANGE_FLAGS, String) { (PROPVAR_CHANGE_FLAGS::default(), "PROPVAR_CHANGE_FLAGS::default()".to_string()) }
+// pub fn get_strange_PROPVAR_COMPARE_FLAGS() -> (PROPVAR_COMPARE_FLAGS, String) { (PROPVAR_COMPARE_FLAGS::default(), "PROPVAR_COMPARE_FLAGS::default()".to_string()) }
+// pub fn get_strange_PROPVAR_COMPARE_UNIT() -> (PROPVAR_COMPARE_UNIT, String) { (PROPVAR_COMPARE_UNIT::default(), "PROPVAR_COMPARE_UNIT::default()".to_string()) }
+// pub fn get_strange_PSYMBOL_FUNCENTRY_CALLBACK() -> (PSYMBOL_FUNCENTRY_CALLBACK, String) { (PSYMBOL_FUNCENTRY_CALLBACK::default(), "PSYMBOL_FUNCENTRY_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYMBOL_FUNCENTRY_CALLBACK64() -> (PSYMBOL_FUNCENTRY_CALLBACK64, String) { (PSYMBOL_FUNCENTRY_CALLBACK64::default(), "PSYMBOL_FUNCENTRY_CALLBACK64::default()".to_string()) }
+// pub fn get_strange_PSYMBOL_REGISTERED_CALLBACK() -> (PSYMBOL_REGISTERED_CALLBACK, String) { (PSYMBOL_REGISTERED_CALLBACK::default(), "PSYMBOL_REGISTERED_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYMBOL_REGISTERED_CALLBACK64() -> (PSYMBOL_REGISTERED_CALLBACK64, String) { (PSYMBOL_REGISTERED_CALLBACK64::default(), "PSYMBOL_REGISTERED_CALLBACK64::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMERATESYMBOLS_CALLBACK() -> (PSYM_ENUMERATESYMBOLS_CALLBACK, String) { (PSYM_ENUMERATESYMBOLS_CALLBACK::default(), "PSYM_ENUMERATESYMBOLS_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMERATESYMBOLS_CALLBACKW() -> (PSYM_ENUMERATESYMBOLS_CALLBACKW, String) { (PSYM_ENUMERATESYMBOLS_CALLBACKW::default(), "PSYM_ENUMERATESYMBOLS_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMLINES_CALLBACK() -> (PSYM_ENUMLINES_CALLBACK, String) { (PSYM_ENUMLINES_CALLBACK::default(), "PSYM_ENUMLINES_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMLINES_CALLBACKW() -> (PSYM_ENUMLINES_CALLBACKW, String) { (PSYM_ENUMLINES_CALLBACKW::default(), "PSYM_ENUMLINES_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMMODULES_CALLBACK() -> (PSYM_ENUMMODULES_CALLBACK, String) { (PSYM_ENUMMODULES_CALLBACK::default(), "PSYM_ENUMMODULES_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMMODULES_CALLBACK64() -> (PSYM_ENUMMODULES_CALLBACK64, String) { (PSYM_ENUMMODULES_CALLBACK64::default(), "PSYM_ENUMMODULES_CALLBACK64::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMMODULES_CALLBACKW64() -> (PSYM_ENUMMODULES_CALLBACKW64, String) { (PSYM_ENUMMODULES_CALLBACKW64::default(), "PSYM_ENUMMODULES_CALLBACKW64::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMPROCESSES_CALLBACK() -> (PSYM_ENUMPROCESSES_CALLBACK, String) { (PSYM_ENUMPROCESSES_CALLBACK::default(), "PSYM_ENUMPROCESSES_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSOURCEFILES_CALLBACK() -> (PSYM_ENUMSOURCEFILES_CALLBACK, String) { (PSYM_ENUMSOURCEFILES_CALLBACK::default(), "PSYM_ENUMSOURCEFILES_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSOURCEFILES_CALLBACKW() -> (PSYM_ENUMSOURCEFILES_CALLBACKW, String) { (PSYM_ENUMSOURCEFILES_CALLBACKW::default(), "PSYM_ENUMSOURCEFILES_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSYMBOLS_CALLBACK() -> (PSYM_ENUMSYMBOLS_CALLBACK, String) { (PSYM_ENUMSYMBOLS_CALLBACK::default(), "PSYM_ENUMSYMBOLS_CALLBACK::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSYMBOLS_CALLBACK64() -> (PSYM_ENUMSYMBOLS_CALLBACK64, String) { (PSYM_ENUMSYMBOLS_CALLBACK64::default(), "PSYM_ENUMSYMBOLS_CALLBACK64::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSYMBOLS_CALLBACK64W() -> (PSYM_ENUMSYMBOLS_CALLBACK64W, String) { (PSYM_ENUMSYMBOLS_CALLBACK64W::default(), "PSYM_ENUMSYMBOLS_CALLBACK64W::default()".to_string()) }
+// pub fn get_strange_PSYM_ENUMSYMBOLS_CALLBACKW() -> (PSYM_ENUMSYMBOLS_CALLBACKW, String) { (PSYM_ENUMSYMBOLS_CALLBACKW::default(), "PSYM_ENUMSYMBOLS_CALLBACKW::default()".to_string()) }
+// pub fn get_strange_PTRANSLATE_ADDRESS_ROUTINE() -> (PTRANSLATE_ADDRESS_ROUTINE, String) { (PTRANSLATE_ADDRESS_ROUTINE::default(), "PTRANSLATE_ADDRESS_ROUTINE::default()".to_string()) }
+// pub fn get_strange_PTRANSLATE_ADDRESS_ROUTINE64() -> (PTRANSLATE_ADDRESS_ROUTINE64, String) { (PTRANSLATE_ADDRESS_ROUTINE64::default(), "PTRANSLATE_ADDRESS_ROUTINE64::default()".to_string()) }
+// pub fn get_strange_PVECTORED_EXCEPTION_HANDLER() -> (PVECTORED_EXCEPTION_HANDLER, String) { (PVECTORED_EXCEPTION_HANDLER::default(), "PVECTORED_EXCEPTION_HANDLER::default()".to_string()) }
+// pub fn get_strange_PWAITCHAINCALLBACK() -> (PWAITCHAINCALLBACK, String) { (PWAITCHAINCALLBACK::default(), "PWAITCHAINCALLBACK::default()".to_string()) }
+// pub fn get_strange_QUERY_USER_NOTIFICATION_STATE() -> (QUERY_USER_NOTIFICATION_STATE, String) { (QUERY_USER_NOTIFICATION_STATE::default(), "QUERY_USER_NOTIFICATION_STATE::default()".to_string()) }
+// pub fn get_strange_RTL_VIRTUAL_UNWIND_HANDLER_TYPE() -> (RTL_VIRTUAL_UNWIND_HANDLER_TYPE, String) { (RTL_VIRTUAL_UNWIND_HANDLER_TYPE::default(), "RTL_VIRTUAL_UNWIND_HANDLER_TYPE::default()".to_string()) }
+// pub fn get_strange_SFBS_FLAGS() -> (SFBS_FLAGS, String) { (SFBS_FLAGS::default(), "SFBS_FLAGS::default()".to_string()) }
+// pub fn get_strange_SHCNE_ID() -> (SHCNE_ID, String) { (SHCNE_ID::default(), "SHCNE_ID::default()".to_string()) }
+// pub fn get_strange_SHCNF_FLAGS() -> (SHCNF_FLAGS, String) { (SHCNF_FLAGS::default(), "SHCNF_FLAGS::default()".to_string()) }
+// pub fn get_strange_SHCNRF_SOURCE() -> (SHCNRF_SOURCE, String) { (SHCNRF_SOURCE::default(), "SHCNRF_SOURCE::default()".to_string()) }
+// pub fn get_strange_SHCREATEPROCESSINFOW() -> (SHCREATEPROCESSINFOW, String) { (SHCREATEPROCESSINFOW::default(), "SHCREATEPROCESSINFOW::default()".to_string()) }
+// pub fn get_strange_SHELLEXECUTEINFOA() -> (SHELLEXECUTEINFOA, String) { (SHELLEXECUTEINFOA::default(), "SHELLEXECUTEINFOA::default()".to_string()) }
+// pub fn get_strange_SHELLEXECUTEINFOW() -> (SHELLEXECUTEINFOW, String) { (SHELLEXECUTEINFOW::default(), "SHELLEXECUTEINFOW::default()".to_string()) }
+// pub fn get_strange_SHELLFLAGSTATE() -> (SHELLFLAGSTATE, String) { (SHELLFLAGSTATE::default(), "SHELLFLAGSTATE::default()".to_string()) }
+// pub fn get_strange_SHELLSTATEA() -> (SHELLSTATEA, String) { (SHELLSTATEA::default(), "SHELLSTATEA::default()".to_string()) }
+// pub fn get_strange_SHELL_UI_COMPONENT() -> (SHELL_UI_COMPONENT, String) { (SHELL_UI_COMPONENT::default(), "SHELL_UI_COMPONENT::default()".to_string()) }
+// pub fn get_strange_SHFILEINFOA() -> (SHFILEINFOA, String) { (SHFILEINFOA::default(), "SHFILEINFOA::default()".to_string()) }
+// pub fn get_strange_SHFILEINFOW() -> (SHFILEINFOW, String) { (SHFILEINFOW::default(), "SHFILEINFOW::default()".to_string()) }
+// pub fn get_strange_SHFILEOPSTRUCTA() -> (SHFILEOPSTRUCTA, String) { (SHFILEOPSTRUCTA::default(), "SHFILEOPSTRUCTA::default()".to_string()) }
+// pub fn get_strange_SHFILEOPSTRUCTW() -> (SHFILEOPSTRUCTW, String) { (SHFILEOPSTRUCTW::default(), "SHFILEOPSTRUCTW::default()".to_string()) }
+// pub fn get_strange_SHFMT_ID() -> (SHFMT_ID, String) { (SHFMT_ID::default(), "SHFMT_ID::default()".to_string()) }
+// pub fn get_strange_SHFMT_OPT() -> (SHFMT_OPT, String) { (SHFMT_OPT::default(), "SHFMT_OPT::default()".to_string()) }
+// pub fn get_strange_SHFOLDERCUSTOMSETTINGS() -> (SHFOLDERCUSTOMSETTINGS, String) { (SHFOLDERCUSTOMSETTINGS::default(), "SHFOLDERCUSTOMSETTINGS::default()".to_string()) }
+// pub fn get_strange_SHGDFIL_FORMAT() -> (SHGDFIL_FORMAT, String) { (SHGDFIL_FORMAT::default(), "SHGDFIL_FORMAT::default()".to_string()) }
+// pub fn get_strange_SHGFI_FLAGS() -> (SHGFI_FLAGS, String) { (SHGFI_FLAGS::default(), "SHGFI_FLAGS::default()".to_string()) }
+// pub fn get_strange_SHGLOBALCOUNTER() -> (SHGLOBALCOUNTER, String) { (SHGLOBALCOUNTER::default(), "SHGLOBALCOUNTER::default()".to_string()) }
+// pub fn get_strange_SHOP_TYPE() -> (SHOP_TYPE, String) { (SHOP_TYPE::default(), "SHOP_TYPE::default()".to_string()) }
+// pub fn get_strange_SHQUERYRBINFO() -> (SHQUERYRBINFO, String) { (SHQUERYRBINFO::default(), "SHQUERYRBINFO::default()".to_string()) }
+// pub fn get_strange_SHREGDEL_FLAGS() -> (SHREGDEL_FLAGS, String) { (SHREGDEL_FLAGS::default(), "SHREGDEL_FLAGS::default()".to_string()) }
+// pub fn get_strange_SHREGENUM_FLAGS() -> (SHREGENUM_FLAGS, String) { (SHREGENUM_FLAGS::default(), "SHREGENUM_FLAGS::default()".to_string()) }
+// pub fn get_strange_SHSTOCKICONID() -> (SHSTOCKICONID, String) { (SHSTOCKICONID::default(), "SHSTOCKICONID::default()".to_string()) }
+// pub fn get_strange_SHSTOCKICONINFO() -> (SHSTOCKICONINFO, String) { (SHSTOCKICONINFO::default(), "SHSTOCKICONINFO::default()".to_string()) }
+// pub fn get_strange_SSF_MASK() -> (SSF_MASK, String) { (SSF_MASK::default(), "SSF_MASK::default()".to_string()) }
+// pub fn get_strange_STACKFRAME() -> (STACKFRAME, String) { (STACKFRAME::default(), "STACKFRAME::default()".to_string()) }
+// pub fn get_strange_STACKFRAME64() -> (STACKFRAME64, String) { (STACKFRAME64::default(), "STACKFRAME64::default()".to_string()) }
+// pub fn get_strange_STACKFRAME_EX() -> (STACKFRAME_EX, String) { (STACKFRAME_EX::default(), "STACKFRAME_EX::default()".to_string()) }
+// pub fn get_strange_SYMBOL_INFO() -> (SYMBOL_INFO, String) { (SYMBOL_INFO::default(), "SYMBOL_INFO::default()".to_string()) }
+// pub fn get_strange_SYMBOL_INFOW() -> (SYMBOL_INFOW, String) { (SYMBOL_INFOW::default(), "SYMBOL_INFOW::default()".to_string()) }
+// pub fn get_strange_SYMSRV_INDEX_INFO() -> (SYMSRV_INDEX_INFO, String) { (SYMSRV_INDEX_INFO::default(), "SYMSRV_INDEX_INFO::default()".to_string()) }
+// pub fn get_strange_SYMSRV_INDEX_INFOW() -> (SYMSRV_INDEX_INFOW, String) { (SYMSRV_INDEX_INFOW::default(), "SYMSRV_INDEX_INFOW::default()".to_string()) }
+// pub fn get_strange_SYM_FIND_ID_OPTION() -> (SYM_FIND_ID_OPTION, String) { (SYM_FIND_ID_OPTION::default(), "SYM_FIND_ID_OPTION::default()".to_string()) }
+// pub fn get_strange_SYM_LOAD_FLAGS() -> (SYM_LOAD_FLAGS, String) { (SYM_LOAD_FLAGS::default(), "SYM_LOAD_FLAGS::default()".to_string()) }
+// pub fn get_strange_SYM_SRV_STORE_FILE_FLAGS() -> (SYM_SRV_STORE_FILE_FLAGS, String) { (SYM_SRV_STORE_FILE_FLAGS::default(), "SYM_SRV_STORE_FILE_FLAGS::default()".to_string()) }
+// pub fn get_strange_TP_CALLBACK_INSTANCE() -> (TP_CALLBACK_INSTANCE, String) { (TP_CALLBACK_INSTANCE::default(), "TP_CALLBACK_INSTANCE::default()".to_string()) }
+// pub fn get_strange_TP_IO() -> (TP_IO, String) { (TP_IO::default(), "TP_IO::default()".to_string()) }
+// pub fn get_strange_TP_TIMER() -> (TP_TIMER, String) { (TP_TIMER::default(), "TP_TIMER::default()".to_string()) }
+// pub fn get_strange_TP_WAIT() -> (TP_WAIT, String) { (TP_WAIT::default(), "TP_WAIT::default()".to_string()) }
+// pub fn get_strange_TP_WORK() -> (TP_WORK, String) { (TP_WORK::default(), "TP_WORK::default()".to_string()) }
+// pub fn get_strange_UNWIND_HISTORY_TABLE() -> (UNWIND_HISTORY_TABLE, String) { (UNWIND_HISTORY_TABLE::default(), "UNWIND_HISTORY_TABLE::default()".to_string()) }
+// pub fn get_strange_VALIDATEUNC_OPTION() -> (VALIDATEUNC_OPTION, String) { (VALIDATEUNC_OPTION::default(), "VALIDATEUNC_OPTION::default()".to_string()) }
+// pub fn get_strange_WAITCHAIN_NODE_INFO() -> (WAITCHAIN_NODE_INFO, String) { (WAITCHAIN_NODE_INFO::default(), "WAITCHAIN_NODE_INFO::default()".to_string()) }
+// pub fn get_strange_WAIT_CHAIN_THREAD_OPTIONS() -> (WAIT_CHAIN_THREAD_OPTIONS, String) { (WAIT_CHAIN_THREAD_OPTIONS::default(), "WAIT_CHAIN_THREAD_OPTIONS::default()".to_string()) }
+// pub fn get_strange_WOW64_CONTEXT() -> (WOW64_CONTEXT, String) { (WOW64_CONTEXT::default(), "WOW64_CONTEXT::default()".to_string()) }
+// pub fn get_strange_WOW64_LDT_ENTRY() -> (WOW64_LDT_ENTRY, String) { (WOW64_LDT_ENTRY::default(), "WOW64_LDT_ENTRY::default()".to_string()) }
+// pub fn get_strange_WSMAN_API() -> (WSMAN_API, String) { (WSMAN_API::default(), "WSMAN_API::default()".to_string()) }
+// pub fn get_strange_WSMAN_COMMAND() -> (WSMAN_COMMAND, String) { (WSMAN_COMMAND::default(), "WSMAN_COMMAND::default()".to_string()) }
+// pub fn get_strange_WSMAN_OPERATION() -> (WSMAN_OPERATION, String) { (WSMAN_OPERATION::default(), "WSMAN_OPERATION::default()".to_string()) }
+// pub fn get_strange_WSMAN_SESSION() -> (WSMAN_SESSION, String) { (WSMAN_SESSION::default(), "WSMAN_SESSION::default()".to_string()) }
+// pub fn get_strange_WSMAN_SHELL() -> (WSMAN_SHELL, String) { (WSMAN_SHELL::default(), "WSMAN_SHELL::default()".to_string()) }
+// pub fn get_strange__APPCONSTRAIN_REGISTRATION() -> (_APPCONSTRAIN_REGISTRATION, String) { (_APPCONSTRAIN_REGISTRATION::default(), "_APPCONSTRAIN_REGISTRATION::default()".to_string()) }
+// pub fn get_strange__APPSTATE_REGISTRATION() -> (_APPSTATE_REGISTRATION, String) { (_APPSTATE_REGISTRATION::default(), "_APPSTATE_REGISTRATION::default()".to_string()) }
+// pub fn get_strange___MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0001() -> (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0001, String) { (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0001::default(), "__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0001::default()".to_string()) }
+// pub fn get_strange___MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0002() -> (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0002, String) { (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0002::default(), "__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0002::default()".to_string()) }
+// pub fn get_strange___MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0003() -> (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0003, String) { (__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0003::default(), "__MIDL___MIDL_itf_mfvirtualcamera_0000_0000_0003::default()".to_string()) }
+// pub fn get_strange_ldapsearch() -> (ldapsearch, String) { (ldapsearch::default(), "ldapsearch::default()".to_string()) }
 
 
 
@@ -2741,7 +3264,28 @@ pub fn get_strange_smiOCTETS() -> (smiOCTETS, String) { (smiOCTETS::default(), "
 pub fn get_strange_smiOID() -> (smiOID, String) { (smiOID::default(), "smiOID::default()".to_string()) }
 pub fn get_strange_smiVALUE() -> (smiVALUE, String) { (smiVALUE::default(), "smiVALUE::default()".to_string()) }
 pub fn get_strange_smiVENDORINFO() -> (smiVENDORINFO, String) { (smiVENDORINFO::default(), "smiVENDORINFO::default()".to_string()) }
-pub fn get_strange_tACMFORMATDETAILSW() -> (tACMFORMATDETAILSW, String) { (tACMFORMATDETAILSW::default(), "tACMFORMATDETAILSW::default()".to_string()) }
+pub fn get_strange_tACMFORMATDETAILSW() -> (tACMFORMATDETAILSW, String) { (tACMFORMATDETAILSW::default(), "tACMFORMATDETAILSW::default()".to_string()) }pub fn get_strange_IEObjectType() -> (IEObjectType, String) { (IEObjectType::default(), "IEObjectType::default()".to_string()) }
+pub fn get_strange_INSTANCE_INFORMATION_CLASS() -> (INSTANCE_INFORMATION_CLASS, String) { (INSTANCE_INFORMATION_CLASS::default(), "INSTANCE_INFORMATION_CLASS::default()".to_string()) }
+pub fn get_strange_INTERACTION_CONTEXT_OUTPUT_CALLBACK() -> (INTERACTION_CONTEXT_OUTPUT_CALLBACK, String) { (INTERACTION_CONTEXT_OUTPUT_CALLBACK::default(), "INTERACTION_CONTEXT_OUTPUT_CALLBACK::default()".to_string()) }
+pub fn get_strange_INTERACTION_CONTEXT_OUTPUT_CALLBACK2() -> (INTERACTION_CONTEXT_OUTPUT_CALLBACK2, String) { (INTERACTION_CONTEXT_OUTPUT_CALLBACK2::default(), "INTERACTION_CONTEXT_OUTPUT_CALLBACK2::default()".to_string()) }
+pub fn get_strange_INTERACTION_CONTEXT_PROPERTY() -> (INTERACTION_CONTEXT_PROPERTY, String) { (INTERACTION_CONTEXT_PROPERTY::default(), "INTERACTION_CONTEXT_PROPERTY::default()".to_string()) }
+pub fn get_strange_INTERNETFEATURELIST() -> (INTERNETFEATURELIST, String) { (INTERNETFEATURELIST::default(), "INTERNETFEATURELIST::default()".to_string()) }
+pub fn get_strange_INTERNET_AUTODIAL() -> (INTERNET_AUTODIAL, String) { (INTERNET_AUTODIAL::default(), "INTERNET_AUTODIAL::default()".to_string()) }
+pub fn get_strange_INTERNET_COOKIE_FLAGS() -> (INTERNET_COOKIE_FLAGS, String) { (INTERNET_COOKIE_FLAGS::default(), "INTERNET_COOKIE_FLAGS::default()".to_string()) }
+pub fn get_strange_INTERNET_PORT() -> (INTERNET_PORT, String) { (INTERNET_PORT::default(), "INTERNET_PORT::default()".to_string()) }
+pub fn get_strange_INTERNET_SCHEME() -> (INTERNET_SCHEME, String) { (INTERNET_SCHEME::default(), "INTERNET_SCHEME::default()".to_string()) }
+pub fn get_strange__LI_METRIC() -> (_LI_METRIC, String) { (_LI_METRIC::default(), "_LI_METRIC::default()".to_string()) }
+pub fn get_strange_PUNICAST_IPADDRESS_CHANGE_CALLBACK() -> (PUNICAST_IPADDRESS_CHANGE_CALLBACK, String) { (PUNICAST_IPADDRESS_CHANGE_CALLBACK::default(), "PUNICAST_IPADDRESS_CHANGE_CALLBACK::default()".to_string()) }
+pub fn get_strange_IcmpHandle() -> (IcmpHandle, String) { (IcmpHandle::default(), "IcmpHandle::default()".to_string()) }
+pub fn get_strange_IMAGELIST_CREATION_FLAGS() -> (IMAGELIST_CREATION_FLAGS, String) { (IMAGELIST_CREATION_FLAGS::default(), "IMAGELIST_CREATION_FLAGS::default()".to_string()) }
+pub fn get_strange_IMAGE_LIST_COPY_FLAGS() -> (IMAGE_LIST_COPY_FLAGS, String) { (IMAGE_LIST_COPY_FLAGS::default(), "IMAGE_LIST_COPY_FLAGS::default()".to_string()) }
+pub fn get_strange_IMAGE_LIST_DRAW_STYLE() -> (IMAGE_LIST_DRAW_STYLE, String) { (IMAGE_LIST_DRAW_STYLE::default(), "IMAGE_LIST_DRAW_STYLE::default()".to_string()) }
+pub fn get_strange_IMCENUMPROC() -> (IMCENUMPROC, String) { (IMCENUMPROC::default(), "IMCENUMPROC::default()".to_string()) }
+pub fn get_strange_IMAGE_FLAGS() -> (IMAGE_FLAGS, String) { (IMAGE_FLAGS::default(), "IMAGE_FLAGS::default()".to_string()) }
+pub fn get_strange_IPSEC_SA_CONTEXT_CALLBACK0() -> (IPSEC_SA_CONTEXT_CALLBACK0, String) { (IPSEC_SA_CONTEXT_CALLBACK0::default(), "IPSEC_SA_CONTEXT_CALLBACK0::default()".to_string()) }
+pub fn get_strange_IP_PER_ADAPTER_INFO_W2KSP1() -> (IP_PER_ADAPTER_INFO_W2KSP1, String) { (IP_PER_ADAPTER_INFO_W2KSP1::default(), "IP_PER_ADAPTER_INFO_W2KSP1::default()".to_string()) }
+pub fn get_strange_IP_UNIDIRECTIONAL_ADAPTER_ADDRESS() -> (IP_UNIDIRECTIONAL_ADAPTER_ADDRESS, String) { (IP_UNIDIRECTIONAL_ADAPTER_ADDRESS::default(), "IP_UNIDIRECTIONAL_ADAPTER_ADDRESS::default()".to_string()) }
+pub fn get_strange_INERTIA_PARAMETER() -> (INERTIA_PARAMETER, String) { (INERTIA_PARAMETER::default(), "INERTIA_PARAMETER::default()".to_string()) }
 
 // ([^\n]+)
 // pub fn get_strange_$1\(\) -> \($1, String\) { \($1::default\(\), "$1::default\(\)".to_string\(\)\) }
