@@ -309,20 +309,34 @@ pub fn a_<<function_name>>(file : &mut File)  {
             let spl: Vec<_> = add_arg.argument_type.split("::").collect();
             add_arg.latest_value = spl[spl.len() - 1].to_string();
 
-            if arg.contains("*const") || arg.contains("ffi::c_void") || arg.contains("*mut *mut ") {
+            if arg.contains("ffi::c_void") {
                 // println!("Not supported '''{}'''", arg); // Maybe TODO
                 // add_to_ignore_arguments(ignored_arguments, arg); // TODO Renable this later
                 is_supported = false;
-            } else if arg.contains("*mut *mut ") {
-                // println!("Not supported '''{}''' twice *mut", arg); // Maybe TODO
-                add_to_ignore_arguments(ignored_arguments, arg);
+            } else if arg.contains("*const *const") {
+                // println!("Not supported '''{}'''", arg); // Maybe TODO
+                // add_to_ignore_arguments(ignored_arguments, arg); // TODO Renable this later
                 is_supported = false;
+            } else if arg.contains("*const") {
+                let value = match add_arg.latest_value.as_str() {
+                    "u8" | "u16" | "u32" | "u64" | "usize" | "i8" | "i16" | "i32" | "i64" | "isize" | "f32" | "f64" | "char" | "string" => true,
+                    _ => false,
+                };
+
+                if value {
+                    add_arg.function_name = function_name.clone();
+                    function_info.arguments.push(add_arg);
+                } else {
+                    add_to_ignore_arguments(ignored_arguments, arg);
+                    is_supported = false;
+                }
             } else if let Some(function_creator) = create_renames.get(add_arg.argument_type.as_str()) {
                 // println!("Supported '''{}'''", arg);
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
             } else {
                 if non_creatable_arguments.contains(add_arg.latest_value.as_str()) {
+                    // add_to_ignore_arguments(ignored_arguments, &add_arg.argument_type);
                     is_supported = false;
                     continue;
                 };
@@ -334,6 +348,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
                     // println!("Not supported '''{}''' due missing function", arg);
                     add_to_ignore_arguments(ignored_arguments, &add_arg.argument_type);
                     is_supported = false;
+                    continue;
                 }
             }
         }
@@ -354,7 +369,27 @@ pub fn a_<<function_name>>(file : &mut File)  {
         function_list += &format!("(a_{},\"{}\"),", function_name, function_name);
         number_of_functions += 1;
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
-            if additional_arguments.argument_before.contains("mut") {
+            if additional_arguments.argument_before.contains("*mut") {
+                creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!(
+                    "\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n",
+                    index, index
+                );
+                let how_many = additional_arguments.argument_before.matches("*mut").count();
+                let mut mut_iteration = "".to_string();
+
+                for _i in 0..how_many {
+                    mut_iteration += "*mut ";
+                    creation_of_arguments += &format!(
+                        "\tlet mut argument_{} : ({}_,_) = (&mut argument_{}.0,argument_{}.1);\n",
+                        index, mut_iteration, index, index
+                    );
+                    creation_of_arguments += &format!(
+                        "\tprint_and_save(file,format!(\"let mut argument_{} : {} _ = {{}};\", argument_{}.1));\n",
+                        index, mut_iteration, index
+                    );
+                }
+            } else if additional_arguments.argument_before.contains("mut") {
                 creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
                 creation_of_arguments += &format!(
                     "\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n",
@@ -362,6 +397,34 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 );
                 creation_of_arguments += &format!("\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
                 creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = &mut argument{};\"));\n", index, index);
+            } else if additional_arguments.argument_before.contains("const") {
+                let value = if create_renames.contains_key(additional_arguments.argument_type.as_str()) {
+                    match additional_arguments.latest_value.as_str() {
+                        "u8" | "u16" | "u32" | "u64" | "usize" | "i8" | "i16" | "i32" | "i64" | "isize" => "0",
+                        "f32" | "f64" => "0.0",
+                        "char" => "'0'",
+                        "string" => "\"0\"",
+                        _ => panic!(""),
+                    }
+                } else {
+                    panic!("");
+                };
+                // else if ["HWND", "GUID", "HANDLE"].contains(&additional_arguments.argument_type.as_str()) {
+                //     match additional_arguments.argument_type.as_str() {
+                //         "HWND" => "HWND(0)",
+                //         "GUID" => "GUID::zeroed()",
+                //         "HANDLE" => "HANDLE(0)",
+                //         _ => panic!(""),
+                //     }
+                // } else {
+                //     additional_arguments.argument_type.as_str()
+                // };
+
+                creation_of_arguments += &format!("\tlet argument_{} : (*const _, _)  = (&{},\"{}\");\n", index, value, value);
+                creation_of_arguments += &format!(
+                    "\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n",
+                    index, index
+                );
             } else {
                 creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
                 creation_of_arguments += &format!(
@@ -415,6 +478,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
     // writeln!(file, "{}", footer).unwrap();
     used_functions
 }
+
 pub fn add_to_ignore_arguments(btreemap: &mut BTreeMap<String, u32>, key: &str) {
     if btreemap.contains_key(key) {
         *btreemap.get_mut(key).unwrap() += 1;

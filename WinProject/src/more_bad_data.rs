@@ -1538,9 +1538,6 @@ use windows::Win32::Storage::Xps::IXpsOMPackageTarget;
 // pub fn get_strange_IXpsOMPackageTarget() -> (IXpsOMPackageTarget, String) { (IXpsOMPackageTarget::default(), "IXpsOMPackageTarget::default()".to_string()) }
 // pub fn get_strange_IXpsPrintJob() -> (IXpsPrintJob, String) { (IXpsPrintJob::default(), "IXpsPrintJob::default()".to_string()) }
 // pub fn get_strange_IXpsPrintJobStream() -> (IXpsPrintJobStream, String) { (IXpsPrintJobStream::default(), "IXpsPrintJobStream::default()".to_string()) }
-
-
-
 // pub fn get_strange_AM_MEDIA_TYPE() -> (AM_MEDIA_TYPE, String) { (AM_MEDIA_TYPE::default(), "AM_MEDIA_TYPE::default()".to_string()) }
 // pub fn get_strange_APPBARDATA() -> (APPBARDATA, String) { (APPBARDATA::default(), "APPBARDATA::default()".to_string()) }
 // pub fn get_strange_ASSOCKEY() -> (ASSOCKEY, String) { (ASSOCKEY::default(), "ASSOCKEY::default()".to_string()) }

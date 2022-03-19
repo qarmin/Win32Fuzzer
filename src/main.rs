@@ -10,7 +10,7 @@ mod parse_file;
 mod settings;
 mod sort_settings;
 
-use crate::automatic_type_renames::{ADVANCED_RENAMES, NON_CREATABLE_ARGUMENTS};
+use crate::automatic_type_renames::*;
 use crate::find_things::*;
 use crate::parse_file::*;
 use crate::settings::*;
@@ -55,26 +55,8 @@ fn main() {
     // }
     // sort_settings(&things);
 
-    let create_renames2 = [
-        // Basic
-        ("u32", "take_u32"),
-        ("usize", "take_usize"),
-        ("u8", "take_u8"),
-        ("u16", "take_u16"),
-        ("i16", "take_i16"),
-        ("u64", "take_u64"),
-        ("f32", "take_f32"),
-        ("f64", "take_f64"),
-        ("i32", "take_i32"),
-        ("i8", "take_i8"),
-        ("i64", "take_i64"),
-        ("isize", "take_isize"),
-        ("char", "take_char"),
-        ("string", "take_string"),
-    ];
-
     let mut create_renames: HashMap<&str, &str> = HashMap::new();
-    for i in create_renames2 {
+    for i in BASIC_RENAMES {
         create_renames.insert(i.0, i.1);
     }
 

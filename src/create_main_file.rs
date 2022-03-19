@@ -19,6 +19,7 @@ pub fn create_main_file(things: &[(&str, &str)]) {
 #![allow(unused_must_use)]
 #![allow(dead_code)]
 #![allow(non_snake_case)]
+#![allow(unused_mut)]
 
 mod basic_data;
 mod more_bad_data;
