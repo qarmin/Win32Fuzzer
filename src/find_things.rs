@@ -1,8 +1,10 @@
-use crate::get_windows_rs_folder;
-use crate::settings::*;
 use std::collections::{BTreeSet, HashSet};
 use std::fs;
+
 use walkdir::WalkDir;
+
+use crate::get_windows_rs_folder;
+use crate::settings::*;
 
 pub fn find_things(things: &[(&str, &str)]) {
     let base_path = format!("{}crates/libs/sys/src/Windows/Win32/", get_windows_rs_folder());
@@ -56,10 +58,7 @@ pub fn find_things(things: &[(&str, &str)]) {
                     // println!("END {}", end);
                 }
 
-                btreeset.insert(format!(
-                    "(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),",
-                    end, without_prefix
-                ));
+                btreeset.insert(format!("(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),", end, without_prefix));
                 // println!("(\"{}\",format!(\"{{}}{{}}\",get_windows_rs_folder(),\"{}\"),vec![],),", end, without_prefix);
                 // println!("CONTAINS! {}", path);
             }

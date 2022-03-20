@@ -1,6 +1,25 @@
 #![allow(clippy::type_complexity)]
 #![allow(unused_imports)]
 #![allow(dead_code)]
+
+use std::cmp::Ordering;
+use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fs;
+use std::path::Path;
+
+use walkdir::WalkDir;
+
+use create_main_file::*;
+use create_project_file::*;
+use generate_reproducer_file::*;
+
+use crate::automatic_type_renames::*;
+use crate::find_things::*;
+use crate::parse_file::*;
+use crate::settings::*;
+use crate::sort_settings::*;
+use crate::TypeOfProblem::InvalidNumberOfArguments;
+
 mod automatic_type_renames;
 mod create_main_file;
 mod create_project_file;
@@ -9,21 +28,6 @@ mod generate_reproducer_file;
 mod parse_file;
 mod settings;
 mod sort_settings;
-
-use crate::automatic_type_renames::*;
-use crate::find_things::*;
-use crate::parse_file::*;
-use crate::settings::*;
-use crate::sort_settings::*;
-use crate::TypeOfProblem::InvalidNumberOfArguments;
-use create_main_file::*;
-use create_project_file::*;
-use generate_reproducer_file::*;
-use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap, HashSet};
-use std::fs;
-use std::path::Path;
-use walkdir::WalkDir;
 
 fn main() {
     let args: Vec<_> = std::env::args().collect();

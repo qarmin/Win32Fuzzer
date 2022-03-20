@@ -1,6 +1,3 @@
-mod classes_origin;
-
-use crate::OsThing::{Linux, Windows};
 use classes_origin::*;
 use rayon::prelude::*;
 use std::collections::BTreeMap;
@@ -11,6 +8,10 @@ use std::process::Command;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::SystemTime;
+
+use crate::OsThing::{Linux, Windows};
+
+mod classes_origin;
 
 // Needs to execute - winetricks nocrashdialog - to hide crash dialog
 
@@ -26,6 +27,7 @@ enum TypeOfProblem {
     NoProblem,             // No error,
                            // MissingError,          //
 }
+
 impl TypeOfProblem {
     pub fn to_string(&self) -> &'static str {
         match self {
@@ -63,6 +65,7 @@ enum OsThing {
     Windows,
     Linux,
 }
+
 #[derive(Eq, PartialEq)]
 enum Reproducibility {
     Fuzzer,
@@ -91,11 +94,7 @@ fn main() {
     };
 
     let lowercase = args[3].to_lowercase();
-    let app_mode = if lowercase.starts_with("fuz") {
-        Reproducibility::Fuzzer
-    } else {
-        Reproducibility::Reproducible
-    };
+    let app_mode = if lowercase.starts_with("fuz") { Reproducibility::Fuzzer } else { Reproducibility::Reproducible };
 
     let path_to_fuzzer = args[1].clone();
 
@@ -207,10 +206,7 @@ fn main() {
                             function_info.type_of_problem = TypeOfProblem::CrashesWindows;
                         }
                     } else {
-                        println!(
-                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n {}\n, {}",
-                            command_output, command_error
-                        );
+                        println!("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n {}\n, {}", command_output, command_error);
 
                         if os_thing == Linux {
                             function_info.type_of_problem = TypeOfProblem::Other;
@@ -228,12 +224,7 @@ fn main() {
             }
             {
                 let mut file = temp_file.lock().unwrap();
-                let to_print = format!(
-                    "{},{},{}",
-                    function_info.class_name,
-                    function_info.function_name,
-                    function_info.type_of_problem.to_string()
-                );
+                let to_print = format!("{},{},{}", function_info.class_name, function_info.function_name, function_info.type_of_problem.to_string());
 
                 writeln!(file, "{}", to_print).unwrap();
             }
@@ -245,21 +236,11 @@ fn main() {
     println!("ENDING CHECKING");
 
     // Consider to save this to file, because output may be polluted by wine messages
-    let mut file_csv = OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .create(true)
-        .open("csv_results.csv")
-        .unwrap();
+    let mut file_csv = OpenOptions::new().write(true).truncate(true).create(true).open("csv_results.csv").unwrap();
 
     let mut btreemap: BTreeMap<TypeOfProblem, u32> = Default::default();
     for function_info in function_infos {
-        let to_print = format!(
-            "{},{},{}",
-            function_info.class_name,
-            function_info.function_name,
-            function_info.type_of_problem.to_string()
-        );
+        let to_print = format!("{},{},{}", function_info.class_name, function_info.function_name, function_info.type_of_problem.to_string());
 
         println!("{}", to_print);
         writeln!(file_csv, "{}", to_print).unwrap();

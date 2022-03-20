@@ -10,6 +10,7 @@ struct FunctionDataOverTime {
     pub maps: BTreeMap<String, String>,
     pub class: String,
 }
+
 impl FunctionDataOverTime {
     fn new() -> Self {
         FunctionDataOverTime {
@@ -71,12 +72,7 @@ fn main() {
         }
     }
 
-    let mut result_file = fs::OpenOptions::new()
-        .create(true)
-        .truncate(true)
-        .write(true)
-        .open("results.csv")
-        .unwrap();
+    let mut result_file = fs::OpenOptions::new().create(true).truncate(true).write(true).open("results.csv").unwrap();
 
     let mut to_print: String = "Class,Function,".to_string();
     for (file, _smaller_file) in &things {

@@ -1,5 +1,6 @@
-use crate::FileData;
 use std::fs;
+
+use crate::FileData;
 
 pub fn parse_file(file_data: &mut FileData, file_path: &str) {
     let file_content = match fs::read_to_string(file_path) {

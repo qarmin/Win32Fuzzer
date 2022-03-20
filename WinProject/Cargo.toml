@@ -16,8 +16,8 @@ features = [
     #"Foundation_Numerics",# ld: cannot find -ld2d1
     # Used in Bad data, not touch
     "Win32_Foundation",
-        "Win32_Graphics_Printing",
-        "Win32_Graphics_Gdi",
+    "Win32_Graphics_Printing",
+    "Win32_Graphics_Gdi",
     # Normal
     "Win32_AI",
     "Win32_AI_MachineLearning",

@@ -1,8 +1,9 @@
-use crate::{TypeOfProblem, DISABLED_CLASSES};
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::io::Write;
+
+use crate::{TypeOfProblem, DISABLED_CLASSES};
 
 pub fn create_main_file(things: &[(&str, &str)]) {
     let file_name = "WinProject/src/main.rs";

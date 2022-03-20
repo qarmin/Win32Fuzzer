@@ -1,10 +1,11 @@
-use crate::TypeOfProblem::{CrashesLinux, CrashesWindows, NotImplementedLinux};
-use crate::{FileData, TypeOfProblem, IGNORE_INVALID};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::io::Write;
+
+use crate::TypeOfProblem::{CrashesLinux, CrashesWindows, NotImplementedLinux};
+use crate::{FileData, TypeOfProblem, IGNORE_INVALID};
 
 pub fn create_project_file(
     file_data: &FileData,
@@ -217,6 +218,36 @@ use windows::Win32::System::SystemServices::*;
 use windows::Win32::Security::Cryptography::UI::*;
 use windows::Win32::Media::Audio::DirectSound::*;
 
+use windows::Win32::Devices::DeviceQuery::DevCloseObjectQuery;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQuery;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQueryEx;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQueryFromId;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQueryFromIdEx;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQueryFromIds;
+use windows::Win32::Devices::DeviceQuery::DevCreateObjectQueryFromIdsEx;
+use windows::Win32::Devices::DeviceQuery::DevFindProperty;
+use windows::Win32::Devices::DeviceQuery::DevFreeObjectProperties;
+use windows::Win32::Devices::DeviceQuery::DevFreeObjects;
+use windows::Win32::Devices::DeviceQuery::DevGetObjectProperties;
+use windows::Win32::Devices::DeviceQuery::DevGetObjectPropertiesEx;
+use windows::Win32::Devices::DeviceQuery::DevGetObjects;
+use windows::Win32::Devices::DeviceQuery::DevGetObjectsEx;
+use windows::Win32::Media::KernelStreaming::KsCreateAllocator2;
+use windows::Win32::Media::KernelStreaming::KsCreateAllocator;
+use windows::Win32::Media::KernelStreaming::KsCreateClock2;
+use windows::Win32::Media::KernelStreaming::KsCreateClock;
+use windows::Win32::Media::KernelStreaming::KsCreatePin2;
+use windows::Win32::Media::KernelStreaming::KsCreatePin;
+use windows::Win32::Media::KernelStreaming::KsCreateTopologyNode2;
+use windows::Win32::Media::KernelStreaming::KsCreateTopologyNode;
+use windows::Win32::Storage::OperationRecorder::OperationEnd;
+use windows::Win32::Storage::OperationRecorder::OperationStart;
+use windows::Win32::System::PasswordManagement::MSChapSrvChangePassword2;
+use windows::Win32::System::PasswordManagement::MSChapSrvChangePassword;
+use windows::Win32::System::Restore::SRSetRestorePointA;
+use windows::Win32::System::Restore::SRSetRestorePointW;
+use windows::Win32::System::Wmi::MI_Application_InitializeV1;
+
 use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
 use crate::more_bad_data::*;
@@ -232,7 +263,7 @@ use std::fs::File;
 pub fn z_<<class_lowercase>>(file: &mut File, st: &SettingsTaker) {
     let functions: [(fn(&mut File) -> (), &str); <<number_of_functions>>] = [<<functions>>]; // function, function_name_in_rust, function_name 
 
-    println!("////////// Class <<class>>");
+    // println!("////////// Class <<class>>");
 
     let mut functions_to_check: Vec<(fn(&mut File) -> (), &str)> = Vec::new();
     if !st.allowed_functions.is_empty() {
@@ -480,6 +511,7 @@ struct ArgumentAdditional {
     pub argument_before: String,   // Like "*mut" from "*mut AABB"
     pub latest_value: String,      // "POINT" from "roman::POINT"
 }
+
 impl ArgumentAdditional {
     pub fn new() -> Self {
         ArgumentAdditional {

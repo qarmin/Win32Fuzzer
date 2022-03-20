@@ -1,7 +1,9 @@
-use self::TypeOfProblem::*;
-use once_cell::sync::Lazy;
 use std::collections::BTreeMap;
 use std::sync::Mutex;
+
+use once_cell::sync::Lazy;
+
+use self::TypeOfProblem::*;
 
 static WINDOWS_RS_FOLDER: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new(String::new()));
 
@@ -80,6 +82,15 @@ pub const DISABLED_CLASSES: &[&str] = &[
     "Iis",                                 // rpcproxy.dll
     "LicenseProtection",                   // licenseprotection.dll
     "TabletPC",                            // inkobjcore.dll
+    "ApplicationVerifier",                 // verifier.dll
+    "Dxc",                                 // dxcompiler.dll
+    "Environment",                         // vertdll.dll
+    "NetworkDiagnosticsFramework",         // ndfapi.dll
+    "RemoteManagement",                    // wsmsvc.dll
+    "TextServices",                        // vertdll.dll
+    "WinRT",                               // rometadata.dll
+    "Wmi",                                 // mi.dll
+    "Threading",                           // vertdll.dll
                                            /////////////////////////
                                            // "Accessibility",
                                            // "ActiveDirectory",
@@ -88,7 +99,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "Antimalware",
                                            // "AppLocker",
                                            // "ApplicationInstallationAndServicing",
-                                           // "ApplicationVerifier",
                                            // "Appx",
                                            // "Audio",
                                            // "Authorization",
@@ -140,10 +150,8 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "Dns",
                                            // "Dwm",
                                            // "DxMediaObjects",
-                                           // "Dxc",
                                            // "Dxgi",
                                            // "EnterpriseData",
-                                           // "Environment",
                                            // "ErrorReporting",
                                            // "Etw",
                                            // "EventCollector",
@@ -199,7 +207,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "NetBios",
                                            // "NetManagement",
                                            // "NetShell",
-                                           // "NetworkDiagnosticsFramework",
                                            // "NonVolatile",
                                            // "OfflineFiles",
                                            // "Ole",
@@ -226,7 +233,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "Recovery",
                                            // "Registry",
                                            // "RemoteDesktop",
-                                           // "RemoteManagement",
                                            // "RestartManager",
                                            // "Restore",
                                            // "RightsManagement",
@@ -250,8 +256,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "SystemInformation",
                                            // "SystemServices",
                                            // "Tapi",
-                                           // "TextServices",
-                                           // "Threading",
                                            // "Time",
                                            // "ToolHelp",
                                            // "Touch",
@@ -271,7 +275,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "WinHttp",
                                            // "WinInet",
                                            // "WinML",
-                                           // "WinRT",
                                            // "WinSock",
                                            // "WinTrust",
                                            // "WindowsConnectionManager",
@@ -281,7 +284,6 @@ pub const DISABLED_CLASSES: &[&str] = &[
                                            // "WindowsNetworkVirtualization",
                                            // "WindowsProgramming",
                                            // "WindowsWebServices",
-                                           // "Wmi",
                                            // "XAudio2",
                                            // "XboxController",
                                            // "XmlLite",
@@ -297,11 +299,13 @@ pub enum TypeOfProblem {
     ShowsDialogLinux,
     CrashesWindows,
     CrashesLinux,
-    CrashAutomatic, // Crashes are normal for this code
+    CrashAutomatic,
+    // Crashes are normal for this code
     Freeze,
     Other,
     Mismatch3264BitFunctions, // 32 and 64 bit functions have different definition and currently are not handled
 }
+
 impl TypeOfProblem {
     pub fn to_string(self) -> String {
         match self {
@@ -869,6 +873,8 @@ pub const EXCEPTIONS: &[(&str, &str, TypeOfProblem)] = &[
     ("DataExchange", "GlobalGetAtomNameA", CrashesWindows),
     ("DataExchange", "GlobalGetAtomNameW", CrashesWindows),
     ("Debug", "Beep", Freeze),
+    ("Debug", "ImageRvaToSection", Mismatch3264BitFunctions),
+    ("Debug", "ImageRvaToVa", Mismatch3264BitFunctions),
     ("Debug", "DebugBreak", CrashAutomatic),
     ("Debug", "FatalAppExitA", CrashAutomatic),
     ("Debug", "FatalAppExitW", CrashAutomatic),
@@ -1121,6 +1127,7 @@ pub const EXCEPTIONS: &[(&str, &str, TypeOfProblem)] = &[
     ("Environment", "SetEnvironmentStringsW", CrashesWindows),
     ("Environment", "SetEnvironmentVariableW", CrashesWindows),
     ("ErrorReporting", "AddERExcludedApplicationW", CrashesLinux),
+    ("ErrorReporting", "WerReportCreate", InvalidNumberOfArguments),
     ("ErrorReporting", "WerFreeString", NotImplementedLinux),
     ("ErrorReporting", "WerGetFlags", InvalidNumberOfArguments),
     ("ErrorReporting", "WerRegisterAdditionalProcess", NotImplementedLinux),
@@ -2565,11 +2572,37 @@ pub const EXCEPTIONS: &[(&str, &str, TypeOfProblem)] = &[
     ("WindowsProgramming", "QueryAuxiliaryCounterFrequency", InvalidNumberOfArguments),
     ("WindowsProgramming", "WldpIsDynamicCodePolicyEnabled", InvalidNumberOfArguments),
     ("WindowsWebServices", "WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable", InvalidNumberOfArguments),
+    ("Isolation", "CreateAppContainerProfile", InvalidNumberOfArguments),
+    ("NetManagement", "NetGetAadJoinInformation", InvalidNumberOfArguments),
+    ("Pnp", "SwDeviceCreate", InvalidNumberOfArguments),
+    ("Pnp", "SwDeviceInterfaceRegister", InvalidNumberOfArguments),
+    ("Shell", "AssocCreateForClasses", InvalidNumberOfArguments),
+    ("Shell", "QISearch", InvalidNumberOfArguments),
+    ("Shell", "Shell_NotifyIconGetRect", InvalidNumberOfArguments),
+    ("Urlmon", "GetComponentIDFromCLSSPEC", InvalidNumberOfArguments),
+    ("WebServicesOnDevices", "WSDGenerateFaultEx", InvalidNumberOfArguments),
+    ("WebSocket", "WebSocketCreateClientHandle", InvalidNumberOfArguments),
+    ("WebSocket", "WebSocketCreateServerHandle", InvalidNumberOfArguments),
+    ("Appx", "ActivatePackageVirtualizationContext", InvalidNumberOfArguments),
+    ("Appx", "CreatePackageVirtualizationContext", InvalidNumberOfArguments),
+    ("Appx", "DuplicatePackageVirtualizationContext", InvalidNumberOfArguments),
+    ("Appx", "GetIdForPackageDependencyContext", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQuery", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQueryEx", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQueryFromId", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQueryFromIdEx", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQueryFromIds", InvalidNumberOfArguments),
+    ("DeviceQuery", "DevCreateObjectQueryFromIdsEx", InvalidNumberOfArguments),
+    ("KernelStreaming", "KsCreateAllocator2", InvalidNumberOfArguments),
+    ("KernelStreaming", "KsCreateClock2", InvalidNumberOfArguments),
+    ("KernelStreaming", "KsCreatePin2", InvalidNumberOfArguments),
+    ("KernelStreaming", "KsCreateTopologyNode2", InvalidNumberOfArguments),
 ];
 
 pub struct FileData {
     pub(crate) functions: BTreeMap<String, Vec<String>>,
 }
+
 impl FileData {
     pub fn new() -> Self {
         FileData { functions: Default::default() }
