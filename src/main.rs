@@ -28,9 +28,7 @@ use walkdir::WalkDir;
 fn main() {
     let args: Vec<_> = std::env::args().collect();
     if args.len() < 2 {
-        println!(
-            "You need to set path to windows-rs library(https://github.com/microsoft/windows-rs) - 0.33.0 is supported at this moment(example run)"
-        );
+        println!("You need to set path to windows-rs library(https://github.com/microsoft/windows-rs) - 0.33.0 is supported at this moment(example run)");
         return;
     }
     let mut path = args[1].clone();
@@ -55,9 +53,9 @@ fn main() {
     // }
     // sort_settings(&things);
 
-    let mut create_renames: HashMap<&str, &str> = HashMap::new();
+    let mut basic_renames: HashMap<&str, &str> = HashMap::new();
     for i in BASIC_RENAMES {
-        create_renames.insert(i.0, i.1);
+        basic_renames.insert(i.0, i.1);
     }
 
     let mut advanced_renames: HashMap<&str, String> = Default::default();
@@ -68,6 +66,11 @@ fn main() {
     let mut non_creatable_arguments: HashSet<&str> = Default::default();
     for i in NON_CREATABLE_ARGUMENTS {
         non_creatable_arguments.insert(*i);
+    }
+
+    let mut strange_renames: HashMap<&str, &str> = Default::default();
+    for i in STRANGE_RENAMES {
+        strange_renames.insert(i.0, i.1);
     }
 
     find_things(&place_of_mod_rs);
@@ -112,11 +115,12 @@ fn main() {
         let used_functions = create_project_file(
             &file_data,
             class_name,
-            &create_renames,
+            &basic_renames,
             &advanced_renames,
             &exceptions,
             &mut ignored_arguments,
             &non_creatable_arguments,
+            &strange_renames,
         );
         using_functions += used_functions.len();
         functions_classes.insert(class_name.to_string(), used_functions);
@@ -164,7 +168,7 @@ pub fn print_excluded_things(things: &[(&'static str, String, Vec<(&'static str,
                 TypeOfProblem::CrashAutomatic => "Functions which close app(this is expected behaviour)",
                 TypeOfProblem::Freeze => "Freeze app",
                 TypeOfProblem::Other => "Other",
-                TypeOfProblem::InvalidNumberOfArguments => {
+                TypeOfProblem::InvalidNumberOfArguments | TypeOfProblem::Mismatch3264BitFunctions => {
                     continue; //"Not checked function(not Wine bug, just problem with parsing)"
                 }
             };

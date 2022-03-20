@@ -1,3 +1,5 @@
+pub const STRANGE_RENAMES: &[(&str, &str)] = &[("c_void", "get_c_void")];
+
 pub const BASIC_RENAMES: &[(&str, &str)] = &[
     ("u32", "take_u32"),
     ("usize", "take_usize"),

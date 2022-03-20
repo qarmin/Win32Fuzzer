@@ -9,11 +9,12 @@ use std::io::Write;
 pub fn create_project_file(
     file_data: &FileData,
     class_name: &str,
-    create_renames: &HashMap<&str, &str>,
+    basic_renames: &HashMap<&str, &str>,
     automatic_renames: &HashMap<&str, String>,
     ignored_functions: &HashMap<String, TypeOfProblem>,
     ignored_arguments: &mut BTreeMap<String, u32>,
     non_creatable_arguments: &HashSet<&str>,
+    strange_renames: &HashMap<&str, &str>,
 ) -> Vec<String> {
     let header = r###"use windows::{Win32::Foundation::*, Win32::Graphics::Printing::*};
 use windows::Win32::Data::RightsManagement::*;
@@ -201,6 +202,21 @@ use windows::Win32::System::Diagnostics::ToolHelp::*;
 use windows::Win32::Networking::WebSocket::*;
 use windows::Win32::Devices::PortableDevices::DMProcessConfigXMLFiltered;
 
+use windows::Win32::System::ApplicationVerifier::*;
+use windows::Win32::Graphics::DXCore::*;
+use windows::Win32::Graphics::Direct3D12::*;
+use windows::Win32::Graphics::DirectDraw::*;
+use windows::Win32::System::DistributedTransactionCoordinator::*;
+use windows::Win32::Graphics::Direct3D::Dxc::*;
+use windows::Win32::Storage::IndexServer::*;
+use windows::Win32::System::Mapi::*;
+use windows::Win32::NetworkManagement::NetworkDiagnosticsFramework::*;
+use windows::Win32::System::Memory::NonVolatile::*;
+use windows::Win32::System::RemoteManagement::*;
+use windows::Win32::System::SystemServices::*;
+use windows::Win32::Security::Cryptography::UI::*;
+use windows::Win32::Media::Audio::DirectSound::*;
+
 use windows::core::{GUID, PCSTR, PCWSTR};
 use crate::basic_data::*;
 use crate::more_bad_data::*;
@@ -309,15 +325,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
             let spl: Vec<_> = add_arg.argument_type.split("::").collect();
             add_arg.latest_value = spl[spl.len() - 1].to_string();
 
-            if arg.contains("ffi::c_void") {
-                // println!("Not supported '''{}'''", arg); // Maybe TODO
-                // add_to_ignore_arguments(ignored_arguments, arg); // TODO Renable this later
-                is_supported = false;
-            } else if arg.contains("*const *const") {
-                // println!("Not supported '''{}'''", arg); // Maybe TODO
-                // add_to_ignore_arguments(ignored_arguments, arg); // TODO Renable this later
-                is_supported = false;
-            } else if let Some(function_creator) = create_renames.get(add_arg.argument_type.as_str()) {
+            if let Some(function_creator) = basic_renames.get(add_arg.argument_type.as_str()) {
                 // println!("Supported '''{}'''", arg);
                 add_arg.function_name = function_creator.to_string();
                 function_info.arguments.push(add_arg);
@@ -330,6 +338,10 @@ pub fn a_<<function_name>>(file : &mut File)  {
                 if let Some(function_name) = automatic_renames.get(add_arg.latest_value.as_str()) {
                     // println!("AUTOMATIC SUPPORTED: {} --- {}", add_arg.latest_value, function_name);
                     add_arg.function_name = function_name.clone();
+                    function_info.arguments.push(add_arg);
+                } else if let Some(function_name) = strange_renames.get(add_arg.latest_value.as_str()) {
+                    // println!("AUTOMATIC SUPPORTED: {} --- {}", add_arg.latest_value, function_name);
+                    add_arg.function_name = function_name.to_string();
                     function_info.arguments.push(add_arg);
                 } else {
                     // println!("Not supported '''{}''' due missing function", arg);
@@ -347,6 +359,9 @@ pub fn a_<<function_name>>(file : &mut File)  {
             if IGNORE_INVALID || ![NotImplementedLinux, CrashesLinux, CrashesWindows].contains(f) {
                 continue;
             }
+            if *f == TypeOfProblem::Other {
+                continue;
+            }
         }
 
         used_functions.push(function_name.clone());
@@ -358,52 +373,44 @@ pub fn a_<<function_name>>(file : &mut File)  {
         for (index, additional_arguments) in function_info.arguments.iter().enumerate() {
             if additional_arguments.argument_before.contains("*mut") {
                 creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
-                creation_of_arguments += &format!(
-                    "\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n",
-                    index, index
-                );
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n", index, index);
                 let how_many = additional_arguments.argument_before.matches("*mut").count();
                 let mut mut_iteration = "".to_string();
 
                 for _i in 0..how_many {
                     mut_iteration += "*mut ";
-                    creation_of_arguments += &format!(
-                        "\tlet mut argument_{} : ({}_,_) = (&mut argument_{}.0,argument_{}.1);\n",
-                        index, mut_iteration, index, index
-                    );
-                    creation_of_arguments += &format!(
-                        "\tprint_and_save(file,format!(\"let mut argument_{} : {} _ = {{}};\", argument_{}.1));\n",
-                        index, mut_iteration, index
-                    );
+                    creation_of_arguments += &format!("\tlet mut argument_{} : ({}_,_) = (&mut argument_{}.0,argument_{}.1);\n", index, mut_iteration, index, index);
+                    creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let mut argument_{} : {} _ = {{}};\", argument_{}.1));\n", index, mut_iteration, index);
                 }
             } else if additional_arguments.argument_before.contains("mut") {
                 creation_of_arguments += &format!("\tlet mut argument_{} = {}();\n", index, additional_arguments.function_name);
-                creation_of_arguments += &format!(
-                    "\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n",
-                    index, index
-                );
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let mut argument_{} = {{}};\", argument_{}.1));\n", index, index);
                 creation_of_arguments += &format!("\tlet argument_{} = (&mut argument_{}.0,argument_{}.1);\n", index, index, index);
                 creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = &mut argument{};\"));\n", index, index);
+            } else if additional_arguments.argument_before.contains("*const *const *const") {
+                creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const _ = &argument{};\"));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const *const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const *const _ = &argument{};\"));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const *const *const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const *const *const _ = &argument{};\"));\n", index, index);
+            } else if additional_arguments.argument_before.contains("*const *const") {
+                creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const _ = &argument{};\"));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const *const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const *const _ = &argument{};\"));\n", index, index);
             } else if additional_arguments.argument_before.contains("const") {
                 creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
-                creation_of_arguments += &format!(
-                    "\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n",
-                    index, index
-                );
-                creation_of_arguments += &format!(
-                    "\tlet argument_{} : (*const _, _) = (&argument_{}.0,argument_{}.1);\n",
-                    index, index, index
-                );
-                creation_of_arguments += &format!(
-                    "\tprint_and_save(file,format!(\"let argument_{} : *const _ = &argument{};\"));\n",
-                    index, index
-                );
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n", index, index);
+                creation_of_arguments += &format!("\tlet argument_{} : (*const _, _) = (&argument_{}.0,argument_{}.1);\n", index, index, index);
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} : *const _ = &argument{};\"));\n", index, index);
             } else {
                 creation_of_arguments += &format!("\tlet argument_{} = {}();\n", index, additional_arguments.function_name);
-                creation_of_arguments += &format!(
-                    "\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n",
-                    index, index
-                );
+                creation_of_arguments += &format!("\tprint_and_save(file,format!(\"let argument_{} = {{}};\", argument_{}.1));\n", index, index);
             }
 
             execute_arguments += &format!("argument_{}.0", index);
@@ -417,11 +424,7 @@ pub fn a_<<function_name>>(file : &mut File)  {
             function_name, class_name
         );
         let executed_arguments = format!("{}({});\n", function_name, execute_arguments);
-        let print_executed_arguments = format!(
-            "print_and_save(file,format!(\"{}({});\"));",
-            function_name,
-            execute_arguments.replace(".0", "")
-        );
+        let print_executed_arguments = format!("print_and_save(file,format!(\"{}({});\"));", function_name, execute_arguments.replace(".0", ""));
 
         each_function_body.push(
             single_function
