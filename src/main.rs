@@ -172,7 +172,7 @@ pub fn print_excluded_things(things: &[(&'static str, String, Vec<(&'static str,
                 TypeOfProblem::CrashAutomatic => "Functions which close app(this is expected behaviour)",
                 TypeOfProblem::Freeze => "Freeze app",
                 TypeOfProblem::Other => "Other",
-                TypeOfProblem::InvalidNumberOfArguments | TypeOfProblem::Mismatch3264BitFunctions => {
+                TypeOfProblem::InvalidNumberOfArguments | TypeOfProblem::Mismatch3264BitFunctions | TypeOfProblem::Only64Bit => {
                     continue; //"Not checked function(not Wine bug, just problem with parsing)"
                 }
             };

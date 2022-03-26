@@ -300,6 +300,7 @@ pub enum TypeOfProblem {
     CrashesWindows,
     CrashesLinux,
     CrashAutomatic,
+    Only64Bit,
     // Crashes are normal for this code
     Freeze,
     Other,
@@ -320,6 +321,7 @@ impl TypeOfProblem {
             Freeze => "Freeze",
             Other => "Other",
             Mismatch3264BitFunctions => "Mismatch3264BitFunctions",
+            Only64Bit => "Only64Bit",
         }
         .to_string()
     }
@@ -2655,7 +2657,36 @@ pub const EXCEPTIONS: &[(&str, &str, TypeOfProblem)] = &[
     ("InstallableFileSystems", "FilterVolumeFindNext", NotImplementedWindows),
     ("InstallableFileSystems", "FilterVolumeInstanceFindFirst", NotImplementedWindows),
     ("InstallableFileSystems", "FilterVolumeInstanceFindNext", NotImplementedWindows),
-    ("", "", NotImplementedWindows),
+    ("Debug", "RtlAddFunctionTable", Only64Bit),
+    ("Debug", "RtlAddGrowableFunctionTable", Only64Bit),
+    ("Debug", "RtlDeleteFunctionTable", Only64Bit),
+    ("Debug", "RtlDeleteGrowableFunctionTable", Only64Bit),
+    ("Debug", "RtlGrowFunctionTable", Only64Bit),
+    ("NonVolatile", "RtlDrainNonVolatileFlush", Only64Bit),
+    ("NonVolatile", "RtlFillNonVolatileMemory", Only64Bit),
+    ("NonVolatile", "RtlFlushNonVolatileMemory", Only64Bit),
+    ("NonVolatile", "RtlFlushNonVolatileMemoryRanges", Only64Bit),
+    ("NonVolatile", "RtlFreeNonVolatileToken", Only64Bit),
+    ("NonVolatile", "RtlGetNonVolatileToken", Only64Bit),
+    ("NonVolatile", "RtlWriteNonVolatileMemory", Only64Bit),
+    ("Shell", "SHBrowseForFolderA", ShowsDialogLinux),
+    ("Shell", "SHBrowseForFolderW", ShowsDialogLinux),
+    ("UI", "CryptUIDlgSelectCertificateFromStore", ShowsDialogLinux),
+    ("UI", "CryptUIWizExport", ShowsDialogLinux),
+    ("Ole", "OleUIInsertObjectA", ShowsDialogLinux),
+    ("Ole", "OleUIPasteSpecialW", ShowsDialogLinux),
+    ("DeviceAndDriverInstallation", "SetupDiEnumDeviceInfo", Freeze), // Not completely, but execute ~1/3 minutes
+    ("WinTrust", "OpenPersonalTrustDBDialogEx", ShowsDialogWindows),
+    ("WiFi", "WlanUIEditProfile", NotImplementedWindows),
+    ("Debug", "RaiseException", CrashAutomatic),
+    ("UI", "CryptUIWizDigitalSign", ShowsDialogWindows),
+    ("Performance", "PdhBrowseCountersA", ShowsDialogWindows),
+    ("Performance", "PdhBrowseCountersW", ShowsDialogWindows),
+    ("Shell", "SHOpenWithDialog", ShowsDialogWindows),
+    ("Mapi", "MAPIFreeBuffer", ShowsDialogWindows),
+    ("UI", "CryptUIWizImport", ShowsDialogWindows),
+    ("Performance", "PdhBrowseCountersHW", ShowsDialogWindows),
+    ("Performance", "PdhBrowseCountersHA", ShowsDialogWindows),
 ];
 
 pub struct FileData {

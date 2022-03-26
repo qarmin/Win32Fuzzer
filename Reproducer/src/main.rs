@@ -168,7 +168,7 @@ fn main() {
             let command_output = String::from_utf8_lossy(&handler.stdout).to_string();
             let command_error = String::from_utf8_lossy(&handler.stderr).to_string();
             let status = handler.status.code().unwrap();
-            println!("Output {}", command_output);
+            // println!("Output {}", command_output);
 
             match status {
                 0 => {
@@ -192,7 +192,10 @@ fn main() {
                         || command_output.contains("page fault on read access")
                         || command_output.contains("page fault on write access")
                         || command_output.contains("page fault on execute access")
+                        || command_output.contains("Unhandled page fault")
                         || command_output.contains("Unhandled exception")
+                        || command_output.contains("stack overflow")
+                        || command_output.contains("Exception frame is not in stack limits")
                     {
                         if os_thing == Linux {
                             function_info.type_of_problem = TypeOfProblem::CrashesLinux;
@@ -206,7 +209,7 @@ fn main() {
                             function_info.type_of_problem = TypeOfProblem::CrashesWindows;
                         }
                     } else {
-                        println!("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n {}\n, {}", command_output, command_error);
+                        println!("========================= Non handled OUTPUT\n {}\n, {}", command_output, command_error);
 
                         if os_thing == Linux {
                             function_info.type_of_problem = TypeOfProblem::Other;
