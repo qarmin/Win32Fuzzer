@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::io::Write;
 
-const BAD_MESSAGES: &[&str] = &["CrashesLinux", "NotImplementedLinux", "CrashesLinux0Info", "CrashesWindows", "Other"];
+const BAD_MESSAGES: &[&str] = &["CrashesLinux", "NotImplementedLinux", "CrashesLinux0Info", "CrashesWindows", "Other", "CrashesWindows0Info"];
 
 const GOOD_MESSAGES: &[&str] = &["NoProblem"];
 
@@ -25,10 +25,11 @@ fn main() {
 
     let mut things: BTreeMap<String, String> = Default::default();
 
-    let files = ["_7_04_64.csv", "_f_7_04.csv", "_win10.csv"];
+    let files = ["7_04.csv", "7_05.csv", "win10.txt"];
 
     for name in files {
-        let n = name.split('.').next().unwrap().strip_prefix('_').unwrap();
+        // let n = name.split('.').next().unwrap().strip_prefix('_').unwrap();
+        let n = name.split('.').next().expect("File must have extension");
         things.insert(name.to_string(), n.to_string());
     }
 
@@ -44,9 +45,12 @@ fn main() {
         let lines = content.lines();
 
         for line in lines {
+            if line.trim().is_empty() {
+                continue;
+            }
             let parts: Vec<_> = line.split(',').collect();
             if parts.len() != 3 {
-                println!("Should be prepared 3 parts in row {}", line);
+                println!("Should be prepared 3 parts in row {}, found {} part", line, parts.len());
                 continue;
             }
 
